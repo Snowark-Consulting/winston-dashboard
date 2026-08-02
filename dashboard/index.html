@@ -141,6 +141,21 @@ header .generated {
 .filter-btn.active.recommendation { background: #c4820e; border-color: #c4820e; }
 .filter-btn.active.owner-only { background: #b33; border-color: #b33; }
 
+/* Flat authority dots for filter buttons (no emoji) */
+.filter-dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 6px;
+    vertical-align: middle;
+    position: relative;
+    top: -1px;
+}
+.filter-dot.autonomous { background: var(--green); }
+.filter-dot.recommendation { background: #c4820e; }
+.filter-dot.owner-only { background: #b33; }
+
 /* ── Timeline ───────────────────────────── */
 .timeline {
     max-width: 900px;
@@ -231,7 +246,7 @@ header .generated {
 <header>
     <h1>Winston Activity</h1>
     <p class="subtitle">Every meaningful action, recorded. Trust through visibility.</p>
-    <p class="generated">Generated 2026-08-02 13:48 ACST</p>
+    <p class="generated">Generated 2026-08-02 13:53 ACST</p>
 </header>
 
 <div class="stats-bar">
@@ -251,9 +266,9 @@ header .generated {
 
 <div class="filters">
     <button class="filter-btn active" onclick="filterActivities('all', this)">All</button>
-    <button class="filter-btn" onclick="filterActivities('autonomous', this)">🟢 Autonomous</button>
-    <button class="filter-btn" onclick="filterActivities('recommendation', this)">🟡 Recommended</button>
-    <button class="filter-btn" onclick="filterActivities('owner-only', this)">🔴 Owner-Only</button>
+    <button class="filter-btn" onclick="filterActivities('autonomous', this)"><span class="filter-dot autonomous"></span>Autonomous</button>
+    <button class="filter-btn" onclick="filterActivities('recommendation', this)"><span class="filter-dot recommendation"></span>Recommended</button>
+    <button class="filter-btn" onclick="filterActivities('owner-only', this)"><span class="filter-dot owner-only"></span>Owner-Only</button>
 </div>
 
 <div class="timeline" id="timeline"></div>
