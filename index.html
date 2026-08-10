@@ -246,12 +246,12 @@ header .generated {
 <header>
     <h1>Winston Activity</h1>
     <p class="subtitle">Every meaningful action, recorded. Trust through visibility.</p>
-    <p class="generated">Generated 2026-08-11 07:00 ACST</p>
+    <p class="generated">Generated 2026-08-11 08:00 ACST</p>
 </header>
 
 <div class="stats-bar">
     <div class="stat-card autonomous">
-        <div class="count">3</div>
+        <div class="count">4</div>
         <div class="label">Autonomous</div>
     </div>
     <div class="stat-card recommendation">
@@ -274,7 +274,7 @@ header .generated {
 <div class="timeline" id="timeline"></div>
 
 <script>
-const activities = [{"timestamp": "2026-08-11 06:00 ACST", "action": "Dashboard built and published — 5 activities (2 autonomous, 3 recommendations). Deployed to snowark-consulting.github.io/winston-dashboard.", "authority": "🟢 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "2026-08-10 19:01 ACST", "action": "Dashboard built and published — 4 activities (1 autonomous, 3 recommendations). Deployed to snowark-consulting.github.io/winston-dashboard.", "authority": "🟢 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "2026-08-10 15:10 ACST", "action": "Insurance email from Peter Carter — Miller/Armilla unavailable (Canadian facility). Alternative SURA Technology Risks quote in progress. Proposal form (11pp) + fact sheet (3pp) + 11 AI risk questions downloaded and reviewed. Presented to Josh for approval.", "authority": "🟡 Recommendation", "category": "Client", "level": "recommendation"}, {"timestamp": "2026-08-10 12:30 ACST", "action": "Dashboard built and published — 2 activities (both recommendations). Deployed to snowark-consulting.github.io/winston-dashboard.", "authority": "🟢 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "2026-08-10 12:22 ACST", "action": "Reversed intro direction — particles now start at desk, explode outward to fill viewport, then settle back. Softened text-clear rectangles (halved padding + alpha fade).", "authority": "🟡 Recommendation", "category": "Deployment", "level": "recommendation"}, {"timestamp": "2026-08-10 12:17 ACST", "action": "Deployed full-viewport particle scatter to snowark.com.au — particles burst across viewport then condense into desk", "authority": "🟡 Recommendation", "category": "Deployment", "level": "recommendation"}];
+const activities = [{"timestamp": "2026-08-11 19:00 ACST", "action": "Dashboard built and published — 6 activities (3 autonomous, 3 recommendations). Deployed to snowark-consulting.github.io/winston-dashboard.", "authority": "🟢 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "2026-08-11 06:00 ACST", "action": "Dashboard built and published — 5 activities (2 autonomous, 3 recommendations). Deployed to snowark-consulting.github.io/winston-dashboard.", "authority": "🟢 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "2026-08-10 19:01 ACST", "action": "Dashboard built and published — 4 activities (1 autonomous, 3 recommendations). Deployed to snowark-consulting.github.io/winston-dashboard.", "authority": "🟢 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "2026-08-10 15:10 ACST", "action": "Insurance email from Peter Carter — Miller/Armilla unavailable (Canadian facility). Alternative SURA Technology Risks quote in progress. Proposal form (11pp) + fact sheet (3pp) + 11 AI risk questions downloaded and reviewed. Presented to Josh for approval.", "authority": "🟡 Recommendation", "category": "Client", "level": "recommendation"}, {"timestamp": "2026-08-10 12:30 ACST", "action": "Dashboard built and published — 2 activities (both recommendations). Deployed to snowark-consulting.github.io/winston-dashboard.", "authority": "🟢 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "2026-08-10 12:22 ACST", "action": "Reversed intro direction — particles now start at desk, explode outward to fill viewport, then settle back. Softened text-clear rectangles (halved padding + alpha fade).", "authority": "🟡 Recommendation", "category": "Deployment", "level": "recommendation"}, {"timestamp": "2026-08-10 12:17 ACST", "action": "Deployed full-viewport particle scatter to snowark.com.au — particles burst across viewport then condense into desk", "authority": "🟡 Recommendation", "category": "Deployment", "level": "recommendation"}];
 
 function renderActivities(filter) {
     const container = document.getElementById('timeline');
