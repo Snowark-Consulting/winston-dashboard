@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Winston — Activity Dashboard</title>
+<title>SnowArk — Activity Ledger</title>
 <link href="https://fonts.googleapis.com/css2?family=Cambo&family=Lato:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -59,15 +59,20 @@ header .generated { color: rgba(233,231,227,0.5); font-size: 0.72rem; margin-top
 </head>
 <body>
 <header>
-    <h1>Winston Activity</h1>
-    <p class="subtitle">Every meaningful action, auto-logged. Trust through visibility.</p>
-    <p class="generated">Generated 2026-08-12 19:16 ACST</p>
+    <h1>Activity Ledger</h1>
+    <p class="subtitle">Immutable record of every agent action. Git-backed, auto-captured, forensically traceable.</p>
+    <p class="generated">Generated 2026-08-12 19:51 ACST — git @e3aa7f03</p>
 </header>
 <div class="stats-bar">
     <div class="stat-card autonomous"><div class="count">14</div><div class="label">Autonomous</div></div>
     <div class="stat-card recommendation"><div class="count">5</div><div class="label">Recommended</div></div>
     <div class="stat-card owner-only"><div class="count">0</div><div class="label">Owner-Only</div></div>
 </div>
+<p style="text-align:center;max-width:700px;margin:0 auto 16px;font-size:0.78rem;color:#888;line-height:1.6;">
+    Every row is traceable to the exact git commit and file versions the agent ran under.
+    For insurance defence or compliance audit, follow any action back to who changed what,
+    when it was deployed, and what happened after.
+</p>
 <div class="filters">
     <button class="filter-btn active" onclick="filterActivities('all', this)">All</button>
     <button class="filter-btn" onclick="filterActivities('autonomous', this)"><span class="filter-dot autonomous"></span>Autonomous</button>
@@ -84,18 +89,7 @@ function renderActivities(filter) {
         container.innerHTML = '<div class="timeline-empty">No activities to show.</div>';
         return;
     }
-    container.innerHTML = filtered.map(a => `
-        <div class="activity-row" data-level="${a.level}">
-            <div class="activity-dot ${a.level}"></div>
-            <div class="activity-body">
-                <div class="activity-meta">
-                    <span class="activity-time">${a.timestamp}</span>
-                    <span class="activity-category">${a.category}</span>
-                </div>
-                <div class="activity-action">${a.action}</div>
-            </div>
-        </div>
-    `).join('');
+    container.innerHTML = filtered.map(a => ).join('');
 }
 function filterActivities(level, btn) {
     document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
