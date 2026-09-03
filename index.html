@@ -1,113 +1,892 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SnowArk — Activity Ledger</title>
-<link href="https://fonts.googleapis.com/css2?family=Cambo&family=Lato:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono&display=swap" rel="stylesheet">
-<style>
-:root {
-    --teal: #174445; --green: #0d8f64; --warm: #e9e7e3; --ink: #0b2021;
-    --font-heading: 'Cambo', Georgia, serif;
-    --font-body: 'Lato', -apple-system, sans-serif;
-    --font-mono: 'JetBrains Mono', monospace;
-}
-* { margin: 0; padding: 0; box-sizing: border-box; }
-body { font-family: var(--font-body); background: var(--warm); color: #000; line-height: 1.7; min-height: 100vh; }
-header {
-    background: linear-gradient(180deg, #0d2d2e 0%, #123a3b 50%, #0d2d2e 100%);
-    padding: 48px 32px 40px; text-align: center;
-}
-header h1 { font-family: var(--font-heading); font-size: clamp(1.8rem, 4vw, 2.6rem); color: #fff; font-weight: 400; margin-bottom: 8px; }
-header .subtitle { color: rgba(233,231,227,0.78); font-size: 0.95rem; }
-header .generated { color: rgba(233,231,227,0.5); font-size: 0.72rem; margin-top: 12px; font-family: var(--font-mono); }
-.stats-bar { display: flex; gap: 16px; justify-content: center; padding: 24px 32px; max-width: 900px; margin: -28px auto 0; position: relative; z-index: 1; }
-.stat-card { background: #fff; border-radius: 12px; padding: 20px 28px; text-align: center; flex: 1; max-width: 200px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); border: 1px solid rgba(0,0,0,0.06); }
-.stat-card .count { font-family: var(--font-heading); font-size: 2.4rem; line-height: 1; margin-bottom: 4px; }
-.stat-card .label { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #666; }
-.stat-card.autonomous .count { color: var(--green); }
-.stat-card.recommendation .count { color: #c4820e; }
-.stat-card.owner-only .count { color: #b33; }
-.filters { display: flex; gap: 8px; justify-content: center; padding: 0 32px 24px; flex-wrap: wrap; }
-.filter-btn { font-family: var(--font-body); font-size: 0.82rem; font-weight: 700; padding: 8px 20px; border-radius: 100px; border: 1.5px solid rgba(0,0,0,0.12); background: #fff; cursor: pointer; transition: all 0.15s ease; color: #444; }
-.filter-btn:hover { border-color: rgba(0,0,0,0.25); }
-.filter-btn.active { background: var(--teal); border-color: var(--teal); color: #fff; }
-.filter-dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; vertical-align: middle; position: relative; top: -1px; }
-.filter-dot.autonomous { background: var(--green); }
-.filter-dot.recommendation { background: #c4820e; }
-.filter-dot.owner-only { background: #b33; }
-.timeline { max-width: 900px; margin: 0 auto; padding: 0 32px 64px; }
-.timeline-empty { text-align: center; padding: 64px 32px; color: #999; font-style: italic; }
-.activity-row { display: flex; gap: 16px; align-items: flex-start; padding: 16px 0; border-bottom: 1px solid rgba(0,0,0,0.05); }
-.activity-row.hidden { display: none; }
-.activity-dot { width: 12px; height: 12px; border-radius: 50%; margin-top: 6px; flex-shrink: 0; }
-.activity-dot.autonomous { background: var(--green); }
-.activity-dot.recommendation { background: #c4820e; }
-.activity-dot.owner-only { background: #b33; }
-.activity-body { flex: 1; min-width: 0; }
-.activity-meta { display: flex; gap: 12px; align-items: center; margin-bottom: 2px; flex-wrap: wrap; }
-.activity-time { font-family: var(--font-mono); font-size: 0.78rem; color: #888; }
-.activity-category { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; padding: 2px 10px; border-radius: 100px; background: rgba(23,68,69,0.08); color: var(--teal); }
-.activity-action { font-size: 0.95rem; color: #222; line-height: 1.5; }
-@media (max-width: 640px) {
-    header { padding: 36px 20px 32px; }
-    .stats-bar { flex-direction: column; align-items: center; margin-top: -20px; padding: 20px; }
-    .stat-card { max-width: 100%; width: 100%; }
-    .timeline { padding: 0 16px 48px; }
-}
-</style>
-</head>
-<body>
-<header>
-    <h1>Activity Ledger</h1>
-    <p class="subtitle">Immutable record of every agent action. Git-backed, auto-captured, forensically traceable.</p>
-    <p class="generated">Generated 2026-09-03 21:30 ACST — git @0ed32646</p>
-</header>
-<div class="stats-bar">
-    <div class="stat-card autonomous"><div class="count">74</div><div class="label">Autonomous</div></div>
-    <div class="stat-card recommendation"><div class="count">5</div><div class="label">Recommended</div></div>
-    <div class="stat-card owner-only"><div class="count">6</div><div class="label">Owner-Only</div></div>
-</div>
-<p style="text-align:center;max-width:700px;margin:0 auto 16px;font-size:0.78rem;color:#888;line-height:1.6;">
-    Every row links to the exact git commit and file versions the agent ran under.
-    For insurance or compliance audit, trace any action back to the code state that produced it —
-    who changed what, when it was deployed, and what happened after.
-</p>
-<div class="filters">
-    <button class="filter-btn active" onclick="filterActivities('all', this)">All</button>
-    <button class="filter-btn" onclick="filterActivities('autonomous', this)"><span class="filter-dot autonomous"></span>Autonomous</button>
-    <button class="filter-btn" onclick="filterActivities('recommendation', this)"><span class="filter-dot recommendation"></span>Recommended</button>
-    <button class="filter-btn" onclick="filterActivities('owner-only', this)"><span class="filter-dot owner-only"></span>Owner-Only</button>
-</div>
-<div class="timeline" id="timeline"></div>
-<script>
-const activities = [{"timestamp": "| 2026-09-03 07:00 ACST", "action": "\ud83c\udf3e Learning harvest: 1 from Atlas (pandadoc-extract.py syntax defect + Chrome CDP not running \u2192 browser). Deploy kit pushed (6a3fefe), Atlas updated, Winston synced.", "authority": "\ud83d\udfe2 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "| 2026-08-23 21:00 ACST", "action": "Rendered Google Store Pixel receipt from email HTML to 4-page PDF via Chrome headless (trimmed promo pages), uploaded to Asana card. Updated receipt-filing skill: email-body receipts now render via Chrome headless PDF instead of .txt dump.", "authority": "\ud83d\udfe2 Autonomous", "category": "Financial", "level": "autonomous"}, {"timestamp": "2026-09-03 06:40 ACST", "action": "Added Option 2 (ATO Business Registrations contact for the trust TFN Identity Exception 71376) to Asana card \"Apply for ABN, GST, TFN for Unit Trust\" \u2014 ATO 13 28 66 (regs, verify before call) + general 13 28 65 fallback, no-re-submit note. Story 1218124968724184, verified html_text rendered.", "authority": "\ud83d\udfe2 Autonomous", "category": "Financial", "level": "autonomous"}, {"timestamp": "2026-09-02 12:18 ACST", "action": "Marked ABA Trades INV-001 paid: attached Osko receipt PDF (I 0119 3816, $1,650.00, 2 Sep) to invoice card, tagged **Paid** (retained ABA Trades client tag), updated notes to PAID, completed card. Created status tags **Pending Payment** + **Paid**. Sent threaded recipient-acknowledgement reply to Paul Chaina (thread 1a0239e9100bbab3, msg 1a06003e28286889, cc josh, In-Reply-To/References set).", "authority": "\ud83d\udfe2 Autonomous", "category": "Financial", "level": "autonomous"}, {"timestamp": "2026-09-02 07:00 ACST", "action": "\ud83c\udf3e Learning harvest: 3 from Winston (ops skills \u2192 git, render.py DEPLOY.DATE \u2192 git, Gmail CC+threading \u2192 gmail) + 1 from Atlas (no_agent cron exit-code semantics \u2192 cron). Deploy kit pushed (e3e5fd3 + c6094d8), Atlas updated, Winston synced.", "authority": "\ud83d\udfe2 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "2026-09-01 22:07 ACST", "action": "Session: [Replying to: \"Verified \u2014 yes, and more substantially than I'd assumed. You were", "authority": "\ud83d\udfe2 Autonomous", "category": "Email", "level": "autonomous"}, {"timestamp": "2026-09-01 21:31 ACST", "action": "Nightly backup completed and pushed to GitHub \u2014 34 files changed, 801 insertions, 300 deletions", "authority": "\ud83d\udfe2 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "2026-09-01 18:49 ACST", "action": "Session: Winston, can you see the information at the following URL? https://app.notion.co", "authority": "\ud83d\udfe2 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "2026-09-01 13:16 ACST", "action": "Removed `network-exposure-audit` from deploy kit's `core/skills/snowark/` (git rm, committed + pushed 17c46e3), verified 0 occurrences on origin/main. Now 5 generalised ops skills ship: session-hygiene, hermes-session-health, langfuse-observability, delegate-first, session-mining.", "authority": "\ud83d\udd34 Owner-Only", "category": "System", "level": "owner-only"}, {"timestamp": "2026-09-01 13:02 ACST", "action": "Fixed deploy kit `render.py` so a test render of sample-client completes: (1) inject `DEPLOY.DATE` (defaults to today) for Activity template header, (2) tightened placeholder regex `[A-Z][A-Z0-9_.]*` so f-string CSS braces in build-*.py (`{{...}}`) aren't falsely flagged as unresolved placeholders. Committed + pushed (03a26fd), verified render exit 0 + on origin/main.", "authority": "\ud83d\udd34 Owner-Only", "category": "System", "level": "owner-only"}, {"timestamp": "2026-09-01 12:28 ACST", "action": "Filed Google Workspace monthly billing statement (A$25.96, Aug 1\u201331) as receipt card in Accounting \u2192 Receipts \u2014 named \"Receipt \u2014 Google Workspace \u2014 A$25.96 \u2014 1 Sep 2026\", tagged Receipt + Reimburse Josh (payment method unclear), uploaded PDF evidence.", "authority": "\ud83d\udfe2 Autonomous", "category": "Financial", "level": "autonomous"}, {"timestamp": "2026-09-01 12:05 ACST", "action": "Updated Hermes deploy kit `skills/email-draft/SKILL.md` Gmail traps section with the CC + threading pitfall; committed + pushed (e99094e) to Snowark-Consulting/hermes-deploy-kit so it ships to every client agent. Verified present on origin/main.", "authority": "\ud83d\udd34 Owner-Only", "category": "System", "level": "owner-only"}, {"timestamp": "2026-09-01 12:04 ACST", "action": "Patched `winston-email-send` skill (the sending skill that generated the Dino CC/threading bug) with CRITICAL CC + threading sections: one comma-separated `--cc`, `gmail reply` CLI limits, verified MIME reply pattern, verify-after-send rule.", "authority": "\ud83d\udd34 Owner-Only", "category": "System", "level": "owner-only"}, {"timestamp": "2026-09-01 12:02 ACST", "action": "Patched `email-pipeline` skill with pitfall + reference pattern: double `--cc` drops all but last (store not append), and `gmail send` never sets In-Reply-To/References \u2014 use single comma-separated `--cc` and build threaded replies with CC via Python.", "authority": "\ud83d\udd34 Owner-Only", "category": "System", "level": "owner-only"}, {"timestamp": "2026-09-01 12:01 ACST", "action": "Sent follow-up to orphaned Dino chain advising to disregard it and that the onboarding note went on the main thread (msg 1a05ad581d6b1983).", "authority": "\ud83d\udfe2 Autonomous", "category": "Email", "level": "autonomous"}, {"timestamp": "2026-09-01 12:00 ACST", "action": "Sent properly-threaded reply to Dino (Lagom) re Harley@ABAtrades.com.au Google Workspace setup for GA4/Ads service account \u2014 CC Paul + Josh, In-Reply-To/References set, thread 1a04ba7334eae6a5 (msg 1a05ad322dc1aa1b).", "authority": "\ud83d\udfe2 Autonomous", "category": "Email", "level": "autonomous"}, {"timestamp": "2026-09-01 11:42 ACST", "action": "Session: Do you have the email from and to Dino?", "authority": "\ud83d\udfe2 Autonomous", "category": "Email", "level": "autonomous"}, {"timestamp": "2026-09-01 10:40 ACST", "action": "Retried the SNOWARK UNIT TRUST TFN application via a CLEAN ABR application (new task ID) after the cron job \"Retry trust TFN application\" failed at 09:14 by exhausting its 60-call budget stuck on the Associates step (its resumed draft only rendered \"Add associated individual\", missing the \"Add associated organisation\" needed for the trustee). Clean flow completed correctly: Fixed unit trust, trustee SnowArk Pty Ltd (ACN 700488179 / ABN 79700488179 / TFN 108676303, position Trustee) captured, Declaration signed Joshua Hancock / Director / 01-09-2026. Result: SAME Identity Exception 71376 recurred \u2014 confirming the 3-day ABN-linkage wait did not resolve the issue; the ABR web route cannot confirm this new trust/trustee identity. Per decided rule, did NOT keep retrying. Recommended pivot to myGovID/ATO online route or James West (agent portal). Updated LEARNINGS entry.", "authority": "\ud83d\udfe1 Recommendation", "category": "Compliance", "level": "recommendation"}, {"timestamp": "2026-08-31 21:31 ACST", "action": "Nightly backup completed and pushed to GitHub (48 files changed, 1224 insertions, 228 deletions)", "authority": "\ud83d\udfe2 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "2026-08-31 21:10 ACST", "action": "Built + enabled a `pre_verify` review-hook PoC (Claude Code \"Stop hook\" equivalent): `~/.hermes/agent-hooks/review-mistakes.py` reads `mistakes-checklist.md` (derived from SOUL immutable rules + learnings) and returns a `continue` nudge when a turn edits files, forcing one extra model pass against the checklist. Tested 5 cases (edit\u2192emit, throttled, chat turn, missing key, malformed\u2192all silent-safe). Registered in config.yaml + allowlist. Takes effect on next session restart.", "authority": "\ud83d\udfe2 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "2026-08-31 21:00 ACST", "action": "Session: https://www.xda-developers.com/added-one-hook-claude-code-stopped-same-mistake-t", "authority": "\ud83d\udfe2 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "2026-08-31 19:00 ACST", "action": "Downloaded \"org chart updated.png\" from Paul Chaina (ABA Trades) email of 31 Aug (\"RE CONFIDENTIAL! Updated ORG Chart\"), created task \"ORG Chart - ABA Trades (updated)\" in ABA Trades project (Admin section), uploaded chart as attachment. Discarded image.png (incidental email-signature banner).", "authority": "\ud83d\udfe2 Autonomous", "category": "Client", "level": "autonomous"}, {"timestamp": "2026-08-31 13:40 ACST", "action": "Report Card avatar switched to hosted GitHub Pages URL. Established avatar-registration practice: SOUL Core Identity points to hosted avatar, deploy kit render.py resolves AGENT.AVATAR_URL, sample fixture documents it. Kit push 493ce21.", "authority": "\ud83d\udfe2 Autonomous", "category": "Dashboard", "level": "autonomous"}, {"timestamp": "2026-08-31 13:20 ACST", "action": "Report Card: retitled role to AI Chief of Staff, removed manager review section and reliability stat. Verified + published. Kit push 342f9ff.", "authority": "\ud83d\udfe2 Autonomous", "category": "Dashboard", "level": "autonomous"}, {"timestamp": "2026-08-31 13:00 ACST", "action": "Reworked Client OS Report Card into an employee report: cumulative project ledger (brief/outcome/metric, no terms), auto stat tiles, Impact-over-time SVG timeline, per-project image cards (generated via gemini-3.1-flash-image). Verified desktop + foldable. Pushed deploy-kit 492db29.", "authority": "\ud83d\udfe1 Recommendation", "category": "Dashboard", "level": "recommendation"}, {"timestamp": "2026-08-31 12:35 ACST", "action": "Built the Client OS Report Card tab (wins ledger + auto/curated subject grades) into build-client-os.py; generated Winston avatar + report hero via gemini-3.1-flash-image; seeded report-winston.json ledger; verified desktop + foldable layout; pushed deploy-kit commit 95b400b and republished live Client OS.", "authority": "\ud83d\udfe1 Recommendation", "category": "Dashboard", "level": "recommendation"}, {"timestamp": "2026-08-31 12:08 ACST", "action": "Session: I want to iterate on our dashboard OS that we have for you and for Atlas and for", "authority": "\ud83d\udfe2 Autonomous", "category": "Client", "level": "autonomous"}, {"timestamp": "2026-08-30 15:30 ACST", "action": "Follow-up to Peter Carter sharing SnowArk's cover is underwritten by CFC on the Lloyd's market (per Josh veto on naming Webber), explaining the deciding factor was proper AI output + cyber cover without the flagged exclusion. Threaded to 1a0411c5dbaca586.", "authority": "\ud83d\udfe2 Autonomous", "category": "Financial", "level": "autonomous"}, {"timestamp": "2026-08-30 15:24 ACST", "action": "Session: Hey, can you pull up the last email that you received from Peter?", "authority": "\ud83d\udfe2 Autonomous", "category": "Email", "level": "autonomous"}, {"timestamp": "2026-08-30 08:45 ACST", "action": "Sent email to Paul Chaina (ABA Trades): acknowledged onboarding doc + invoice forward, confirmed CC on all correspondence. CC'd Josh.", "authority": "\ud83d\udfe2 Autonomous", "category": "Email", "level": "autonomous"}, {"timestamp": "2026-08-30 07:33 ACST", "action": "Created `invoice-lifecycle` skill (snowark): end-to-end send/record/track/reconcile of client invoices into the Accounting board Invoices section (GID 1217972006818083), tagged by client, with due_on locked to invoice due date and the fortnightly reconciliation rhythm (cron ae3cd81d3876, wakeAgent gate). Set ABA Trades INV-001 card due_on = 2026-09-25 to match invoice.", "authority": "\ud83d\udfe2 Autonomous", "category": "Financial", "level": "autonomous"}, {"timestamp": "2026-08-30 07:11 ACST", "action": "Simplified invoice template per Josh: dropped the ACN (not required on a tax invoice). Header now `SnowArk Unit Trust \u00b7 ABN 282 674 605 68` + `Trustee: SnowArk Pty Ltd`; footer `SnowArk Unit Trust \u00b7 ABN 282 674 605 68`. Re-rendered, re-verified (no ACN, md5 match), replaced shared-drive `Invoice_Template.pdf`, updated accounts INDEX.md.", "authority": "\ud83d\udfe2 Autonomous", "category": "Financial", "level": "autonomous"}, {"timestamp": "2026-08-30 07:08 ACST", "action": "Updated SnowArk invoice template to reflect the trust as trading entity: canonical HTML (`~/.hermes/templates/invoice-template.html`) header/footer now show `SnowArk Unit Trust \u00b7 ABN 282 674 605 68` and `Trustee: SnowArk Pty Ltd \u00b7 ACN 700 488 179` (replacing company ABN 79 700 488 179 / SnowArk Pty Ltd), re-rendered via Chrome headless, replaced shared-drive `Invoice_Template.pdf` (verified md5 match). Updated accounts INDEX.md.", "authority": "\ud83d\udfe2 Autonomous", "category": "Financial", "level": "autonomous"}, {"timestamp": "2026-08-29 12:19 ACST", "action": "Productised Atlas's gateway-supervisor fix into deploy kit as supervisord standard (commit caf11ed, pushed). Added support/orchestration/ (hermes-gateway.conf + start-gw.sh); updated playbooks 02/03 + maintenance to use supervisorctl; updated orgo learning card + LEARNINGS template + hermes-client-deploy skill. Retired Atlas's bespoke watchdog daemon; registered gateway as supervisord program `/etc/supervisor/conf.d/hermes-gateway.conf` \u2192 now child of supervisord (610), verified auto-recovery (restart \u2192 new PID 23424 RUNNING, Telegram reconnected). Records: atlas-deployment.md + Activity.md + learnings updated.", "authority": "\ud83d\udfe2 Autonomous", "category": "Deployment", "level": "autonomous"}, {"timestamp": "2026-08-29 08:44 ACST", "action": "Atlas gateway relaunched on request \u2014 found down (last shutdown reason \"Gateway restart requested\", clean exit, no orphan/PID). Health OK (disk 36% blocks / 24% inodes, mem 2.6G free). Launched start-gw.sh nohup \u2192 PID 14987, Telegram connected, housekeeping + kanban dispatcher live.", "authority": "\ud83d\udfe2 Autonomous", "category": "Monitoring", "level": "autonomous"}, {"timestamp": "2026-08-29 08:44 ACST", "action": "Session: Please restart Atlas's gateway, it seems to be down", "authority": "\ud83d\udfe2 Autonomous", "category": "Client", "level": "autonomous"}, {"timestamp": "2026-08-28 21:30 ACST", "action": "Atlas gateway found down (died ~8.5h earlier, ungraceful exit after memory-pressure kanban warnings; PID 6993 gone, state.json stale). Health checks passed (mem 3.5G free, disk 36% blocks / 24% inodes). Relaunched via start-gw.sh nohup \u2192 PID 31822, Telegram connected, housekeeping + kanban dispatcher live.", "authority": "\ud83d\udfe2 Autonomous", "category": "Monitoring", "level": "autonomous"}, {"timestamp": "2026-08-28 21:30 ACST", "action": "Nightly backup completed and pushed to GitHub (28 files, +381/-151)", "authority": "\ud83d\udfe2 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "2026-08-28 20:24 ACST", "action": "Session: This order for my new laptop doesn't seem to have moved. I also haven't been cha", "authority": "\ud83d\udfe2 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "2026-08-28 14:40 ACST", "action": "Added subtask \"Apply for trust TFN via myGovID (ATO online services)\" (gid 1217933476551078) to trust registration task (1217850353570384), assigned to Josh with ATO application steps in notes.", "authority": "\ud83d\udfe2 Autonomous", "category": "Client", "level": "autonomous"}, {"timestamp": "2026-08-28 14:35 ACST", "action": "Josh completed ABR registration for SNOWARK UNIT TRUST: ABN 282 674 605 68 + GST (accrual) both successful (app 2608-PJ-8179). Recorded trust ABN as PRIMARY invoicing ABN in snowark-accounting skill + memory + LEARNINGS. Trust TFN still pending \u2014 flagged application path (ATO, not ABR).", "authority": "\ud83d\udfe1 Recommendation", "category": "Client", "level": "recommendation"}, {"timestamp": "2026-08-28 13:06 ACST", "action": "Fixed broken HTML-styling comment on Trust card (story 1217898161079409), then restored rich-text formatting per Josh request. Final: comment re-posted via `html_text` wrapped in `<body>` with only supported tags (strong/ul/li) \u2014 verified renders cleanly. Updated asana-api skill + LEARNINGS with verified `<body>`+tag recipe (plain-text was a wrong first fix).", "authority": "\ud83d\udd34 Owner-Only", "category": "Asana", "level": "owner-only"}, {"timestamp": "2026-08-28 13:06 ACST", "action": "Session: Please fix the HTML styling on your latest comment on the Sasana card, and then", "authority": "\ud83d\udfe2 Autonomous", "category": "CRM", "level": "autonomous"}, {"timestamp": "2026-08-28 07:00 ACST", "action": "Harvested 1 learning from Winston \u2014 Cron prompt/skill divergence trap appended to cron card. Deploy kit pushed (commit 5e2c92d), Atlas updated, Winston synced.", "authority": "\ud83d\udfe2 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "2026-08-27 21:30 ACST", "action": "Nightly activity consolidation: filtered raw log, rotated, appended 6 entries. Dashboard rebuilt + deployed (40 activities, 39 auto / 1 rec / 0 owner).", "authority": "\ud83d\udfe2 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "2026-08-27 21:30 ACST", "action": "Nightly backup completed \u2014 commit 45251a9c, 36 files pushed to GitHub", "authority": "\ud83d\udfe2 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "2026-08-27 20:31 ACST", "action": "Received official Webber tax invoice (240339, policy 7711212) for IT Liability + Cyber cover \u2014 updated Receipt card with full breakdown (GST component $25) and attached invoice PDF as evidence replacing the payment screenshot.", "authority": "\ud83d\udfe2 Autonomous", "category": "Financial", "level": "autonomous"}, {"timestamp": "2026-08-27 20:29 ACST", "action": "Recorded receipt A$1,848.00 to Webber Insurance Group (IT Liability + Cyber cover) into Asana Accounting Receipts section \u2014 ref G2069637674, paid from SnowArk business account. Card: Receipt \u2014 Webber Insurance Group \u2014 A$1,848.00 \u2014 27 Aug 2026, payment screenshot attached pending official tax invoice.", "authority": "\ud83d\udfe2 Autonomous", "category": "Financial", "level": "autonomous"}, {"timestamp": "2026-08-27 20:13 ACST", "action": "Recorded director loan $2,000 (27 Aug) into Asana Accounting Admin section \u2014 ref T7555322642, transfer credit to SnowArk business account. Card: Director loan \u2014 $2,000.00 (Josh Hancock, 27 Aug 2026).", "authority": "\ud83d\udfe2 Autonomous", "category": "Financial", "level": "autonomous"}, {"timestamp": "2026-08-27 20:05 ACST", "action": "Session: [The user sent a document: 'FSG Webber Insurance Services_V31_20260818.pdf'. It", "authority": "\ud83d\udfe2 Autonomous", "category": "Client", "level": "autonomous"}, {"timestamp": "2026-08-27 13:23 ACST", "action": "Responded to Josh's Asana @mention in \"Apply for ABN, GST, TFN for Unit Trust\" \u2014 fetched full task context + parent + prior ABN/GST process, compiled all details for registration, posted structured comment on the task.", "authority": "\ud83d\udfe2 Autonomous", "category": "Client", "level": "autonomous"}, {"timestamp": "2026-08-26 21:51 ACST", "action": "Fixed nightly-backup git abort (exit 128 on cron/output deletions): untracked full cron/output/, chrome-profile/ (1688 files, 318MB browser cache), node_modules/, __pycache__, cron/executions.db from backup repo; synced live .gitignore to canonical (added chrome-profile, node_modules, cron/executions.db). Deploy-kit .gitignore.template + hermes-backup skill updated with node_modules & chrome-profile. Pushed hermes-winston-backup + hermes-deploy-kit.", "authority": "\ud83d\udfe2 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "2026-08-26 20:16 ACST", "action": "Session: The deep seek V4 flash 0731 model seems to be very verbose compared to our pro a", "authority": "\ud83d\udfe2 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "2026-08-26 19:54 ACST", "action": "Session: Skip this recommendation: deepseek-v4-pro on Telegram still drives 88% of your w", "authority": "\ud83d\udfe2 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "2026-08-26 19:16 ACST", "action": "Session: Based on what you know about snow arc, what would you say my value proposition i", "authority": "\ud83d\udfe2 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "2026-08-26 12:38 ACST", "action": "Removed 'SnowArk Consulting' wordmark from snowark.com.au footer (index.html). Committed only the footer hunk via git add -p (Josh's uncommitted particle/scatter work was folded into history by rebase+autostash, verified intact on disk == HEAD == live). Pushed main \u2192 live. Verified: wordmark gone, assets 200.", "authority": "\ud83d\udfe2 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "2026-08-26 11:54 ACST", "action": "Session: bring yourself up to speed on this card - im about to have a call with my accoun", "authority": "\ud83d\udfe2 Autonomous", "category": "CRM", "level": "autonomous"}, {"timestamp": "2026-08-26 07:01 ACST", "action": "\ud83c\udf3e Learning harvest: 2 from Atlas \u2014 Missing Data \u2260 Automatic Hold \u2192 agent-architecture, rich_sent_index truncation \u2192 gmail. Pushed to deploy kit (main), Atlas instance, Winston local.", "authority": "\ud83d\udfe2 Autonomous", "category": "Monitoring", "level": "autonomous"}, {"timestamp": "2026-08-25 22:00 ACST", "action": "Dream ran: 1,937 events, 86 candidates, 3 survivors. Updated dream-cost-v4-pro-dominance (v4-pro 88% of Telegram spend, $20.95 USD/wk) and dream-wf-inline-api-calls (40 OpenRouter inline calls). New: dream-session-rot-watchdog-not-cronned (2 zombie CLI sessions at 180h, watchdog script has no cron job).", "authority": "\ud83d\udfe2 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "2026-08-25 21:31 ACST", "action": "Session:", "authority": "\ud83d\udfe2 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "2026-08-25 17:45 ACST", "action": "Session: Let's move all telegram chats to openrouter deeps seek V4 flash default", "authority": "\ud83d\udfe2 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "2026-08-25 17:43 ACST", "action": "Switched nightly-activity-consolidation cron from deepseek/deepseek-v4-pro to deepseek/deepseek-v4-flash. Kept Dream on pro (reasoning-critical).", "authority": "\ud83d\udfe2 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "2026-08-25 16:45 ACST", "action": "Saved OpenRouter Benchmarks API reference (`references/benchmarks-api.md`) to openrouter-models skill \u2014 endpoint, params, response shapes, usage by task type. Registered pointer in SKILL.md.", "authority": "\ud83d\udfe2 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "2026-08-25 16:42 ACST", "action": "Filed receipt: Higgsfield Inc. \u2014 US$20.90 \u2014 21 Aug 2026 (Invoice JN6COQRG-0003). Created Asana card in Accounting/Receipts with PDF attachment + Receipt + Reimburse Josh tags.", "authority": "\ud83d\udfe2 Autonomous", "category": "Financial", "level": "autonomous"}, {"timestamp": "2026-08-25 16:30 ACST", "action": "Session: hey this might be a useful tool to add to the daily cron that checks for discoun", "authority": "\ud83d\udfe2 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "2026-08-25 16:15 ACST", "action": "Deployed state-db-watchdog (every 6h, no_agent): monitors DB size/WAL/dead-space/integrity, silent when healthy. Added to deploy kit (script + Infrastructure template + playbook 03 + hermes-backup skill). Replaced stale bin/backup-state-db.sh with symlink to scripts/backup-state-db.sh", "authority": "\ud83d\udfe2 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "2026-08-25 16:09 ACST", "action": "Session: any considerations for us here on a fix atlas made to prevent state.db corruptio", "authority": "\ud83d\udfe2 Autonomous", "category": "Client", "level": "autonomous"}, {"timestamp": "2026-08-24 21:57 ACST", "action": "Session: Happy to proceed with one tweak. I want the dream Cron to run on Pro", "authority": "\ud83d\udfe2 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "2026-08-24 21:53 ACST", "action": "Fixed state.db backup: Python sqlite3 backup API (no CLI), FTS-strip so 556MB\u219223MB fits GitHub 100MB limit. Added `backups/*.corrupted*` + `backups/*.db` to .gitignore (mirrors Atlas convention). Removed 556MB corrupted dump from git history. Verified push to hermes-winston-backup (23MB).", "authority": "\ud83d\udfe2 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "2026-08-24 21:53 ACST", "action": "Deployed fixed backup-state-db.sh to Atlas (Python sqlite3, portable over orgo where CLI absent) and kit (86ce63d). Ran Atlas backup end-to-end: 2.7MB snapshot pushed to client-notforgotten.", "authority": "\ud83d\udfe2 Autonomous", "category": "Client", "level": "autonomous"}, {"timestamp": "2026-08-24 21:19 ACST", "action": "Ported recommendations reconcile subcommand + PHASE 0 (auto-close stale recs) into Winston's recommendations.py and consolidation-sop.md, plus the deploy kit core/. Committed + pushed kit (beab4d2; bypassed hanging gh credential helper).", "authority": "\ud83d\udfe2 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "2026-08-24 21:19 ACST", "action": "Deployed reconcile + PHASE 0 to Atlas (orgo) via printf-chunk base64; ran reconciliation pass \u2014 dismissed dream-error-cron-path-format, kept 9 still-open items (re-verify found 3 already closed by Atlas's own consolidation).", "authority": "\ud83d\udfe2 Autonomous", "category": "Client", "level": "autonomous"}, {"timestamp": "2026-08-24 20:49 ACST", "action": "Session: See below a fix that's one of my agents did for his OS dashboard. We probably ha", "authority": "\ud83d\udfe2 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "2026-08-24 18:50 ACST", "action": "Session: I got the blow back from Connor from Weber Insurance. What are my answers to his", "authority": "\ud83d\udfe2 Autonomous", "category": "Client", "level": "autonomous"}, {"timestamp": "2026-08-24 07:38 ACST", "action": "Deployed mitigation for state.db corruption root cause across all agents: (1) Atlas: bumped SIGTERM\u2192SIGKILL grace to 30s in all 3 restart scripts; scheduled weekly VACUUM cron (d84ff606097d, Sat 13:30 UTC). (2) Winston: created weekly-vacuum.sh, scheduled weekly VACUUM (a0ba9d84c3f8, Sat 22:20 ACST). (3) Deploy kit: added weekly-vacuum.sh to core/scripts/. Winston DB was 556MB with 35% dead space \u2014 first VACUUM will reclaim ~190MB", "authority": "\ud83d\udfe2 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "2026-08-24 07:30 ACST", "action": "Correction: Atlas already had a nightly backup (d998982d2e15, 21:30 ACST). Removed duplicate I mistakenly created (27567a6d3b3a). State DB backup is the only net-new cron on Atlas", "authority": "\ud83d\udfe2 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "2026-08-24 07:17 ACST", "action": "Atlas git push failed (Repository not found \u2014 PAT SSO likely). Local commit saved, nightly cron will retry. Watch item: re-authorize PAT for Snowark-Consulting org", "authority": "\ud83d\udfe1 Recommendation", "category": "System", "level": "recommendation"}, {"timestamp": "2026-08-24 07:16 ACST", "action": "Deployed state.db backup system across all agents: created backup-state-db.sh (sqlite3 .backup + gzip, 7-day retention), wired no_agent crons on Winston (cb3d07296635, 21:15 ACST) and Atlas (8ed9962a3929, 11:45 UTC), added to deploy kit core/scripts/, updated hermes-backup skill to v1.4.0", "authority": "\ud83d\udfe2 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "2026-08-24 07:00 ACST", "action": "Learning harvest: 1 from Winston (LLM cron output truncation) \u2192 cards/cron.md updated. Pushed to deploy kit (4c3cff1), Atlas instance, Winston local.", "authority": "\ud83d\udfe2 Autonomous", "category": "Monitoring", "level": "autonomous"}, {"timestamp": "2026-08-24 06:50 ACST", "action": "Investigated Atlas watchdog state.db corruption alert \u2014 hermes doctor --fix ran clean, integrity_check passes (ok), 233 sessions intact. Backed up state.db before fixing. Transient WAL-lock issue, self-resolved", "authority": "\ud83d\udfe2 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "2026-08-23 21:30 ACST", "action": "Restored Atlas gateway on orgo.ai after state.db corruption (1.4GB, btree damage). All recovery paths failed \u2014 archived corrupted DB, gateway created fresh 215KB state.db. Gateway running, Telegram reconnected", "authority": "\ud83d\udfe2 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "2026-08-23 19:50 ACST", "action": "Session: is this still an issue? Action this recommendation: OpenRouter credits exhausted", "authority": "\ud83d\udfe2 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "2026-08-23 19:38 ACST", "action": "Session: Please record this business loan including the image as evidence in the accounti", "authority": "\ud83d\udfe2 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "2026-08-23 19:05 ACST", "action": "Session: I just received this in the post. What is it? What am I supposed to do with it?", "authority": "\ud83d\udfe2 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "2026-08-23 18:58 ACST", "action": "Analysed ATO mail photo: backdated PAYGW registration receipt + first monthly IAS (26-31 Jul 2026, due 21 Aug, now past). Advised: nil lodge expected (no July wages), route monthly IAS cycle via James West as agent.", "authority": "\ud83d\udfe2 Autonomous", "category": "Financial", "level": "autonomous"}];
-function renderActivities(filter) {
-    const container = document.getElementById('timeline');
-    const filtered = filter === 'all' ? activities : activities.filter(a => a.level === filter);
-    if (filtered.length === 0) {
-        container.innerHTML = '<div class="timeline-empty">No activities to show.</div>';
-        return;
-    }
-    container.innerHTML = filtered.map(a => `
-        <div class="activity-row" data-level="${a.level}">
-            <div class="activity-dot ${a.level}"></div>
-            <div class="activity-body">
-                <div class="activity-meta">
-                    <span class="activity-time">${a.timestamp}</span>
-                    <span class="activity-category">${a.category}</span>
+<html class="staticrypt-html">
+    <head>
+        <meta charset="utf-8" />
+        <title>Protected Page</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+        <!-- do not cache this page -->
+        <meta http-equiv="cache-control" content="max-age=0" />
+        <meta http-equiv="cache-control" content="no-cache" />
+        <meta http-equiv="expires" content="0" />
+        <meta http-equiv="expires" content="Tue, 01 Jan 1980 1:00:00 GMT" />
+        <meta http-equiv="pragma" content="no-cache" />
+
+        <style>
+            .staticrypt-hr {
+                margin-top: 20px;
+                margin-bottom: 20px;
+                border: 0;
+                border-top: 1px solid #eee;
+            }
+
+            .staticrypt-page {
+                width: 360px;
+                padding: 8% 0 0;
+                margin: auto;
+                box-sizing: border-box;
+            }
+
+            .staticrypt-form {
+                position: relative;
+                z-index: 1;
+                background: #ffffff;
+                max-width: 360px;
+                margin: 0 auto 100px;
+                padding: 45px;
+                text-align: center;
+                box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
+            }
+
+            .staticrypt-form input[type="password"],
+            input[type="text"] {
+                background: inherit;
+                border: 0;
+                box-sizing: border-box; /* This ensures padding is included in the total width */
+                font-size: 14px;
+                outline: 0;
+                padding: 15px 30px 15px 15px; /* Adjust the padding to ensure there is space for the icon */
+                width: 100%;
+            }
+
+            .staticrypt-password-container {
+                position: relative;
+                outline: 0;
+                background: #f2f2f2;
+                width: 100%;
+                border: 0;
+                margin: 0 0 15px;
+                box-sizing: border-box;
+            }
+
+            .staticrypt-toggle-password-visibility {
+                cursor: pointer;
+                height: 20px;
+                opacity: 60%;
+                padding: 13px;
+                position: absolute;
+                right: 0;
+                top: 50%;
+                transform: translateY(-50%);
+                width: 20px;
+            }
+
+            .staticrypt-form .staticrypt-decrypt-button {
+                text-transform: uppercase;
+                outline: 0;
+                background: #4CAF50;
+                width: 100%;
+                border: 0;
+                padding: 15px;
+                color: #ffffff;
+                font-size: 14px;
+                cursor: pointer;
+            }
+
+            .staticrypt-form .staticrypt-decrypt-button:hover,
+            .staticrypt-form .staticrypt-decrypt-button:active,
+            .staticrypt-form .staticrypt-decrypt-button:focus {
+                background: #4CAF50;
+                filter: brightness(92%);
+            }
+
+            .staticrypt-html {
+                height: 100%;
+            }
+
+            .staticrypt-body {
+                height: 100%;
+                margin: 0;
+            }
+
+            .staticrypt-content {
+                height: 100%;
+                margin-bottom: 1em;
+                background: #76B852;
+                font-family: "Arial", sans-serif;
+                -webkit-font-smoothing: antialiased;
+                -moz-osx-font-smoothing: grayscale;
+            }
+
+            .staticrypt-instructions {
+                margin-top: -1em;
+                margin-bottom: 1em;
+            }
+
+            .staticrypt-title {
+                font-size: 1.5em;
+            }
+
+            label.staticrypt-remember {
+                display: flex;
+                align-items: center;
+                margin-bottom: 1em;
+            }
+
+            .staticrypt-remember input[type="checkbox"] {
+                transform: scale(1.5);
+                margin-right: 1em;
+            }
+
+            .hidden {
+                display: none !important;
+            }
+
+            .staticrypt-spinner-container {
+                height: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .staticrypt-spinner {
+                display: inline-block;
+                width: 2rem;
+                height: 2rem;
+                vertical-align: text-bottom;
+                border: 0.25em solid gray;
+                border-right-color: transparent;
+                border-radius: 50%;
+                -webkit-animation: spinner-border 0.75s linear infinite;
+                animation: spinner-border 0.75s linear infinite;
+                animation-duration: 0.75s;
+                animation-timing-function: linear;
+                animation-delay: 0s;
+                animation-iteration-count: infinite;
+                animation-direction: normal;
+                animation-fill-mode: none;
+                animation-play-state: running;
+                animation-name: spinner-border;
+            }
+
+            @keyframes spinner-border {
+                100% {
+                    transform: rotate(360deg);
+                }
+            }
+
+            @media screen and (-webkit-min-device-pixel-ratio: 0) {
+                .staticrypt-form input[type="password"],
+                input[type="text"] {
+                    font-size: 16px;
+                }
+            }
+        </style>
+    </head>
+
+    <body class="staticrypt-body">
+        <div id="staticrypt_loading" class="staticrypt-spinner-container">
+            <div class="staticrypt-spinner"></div>
+        </div>
+
+        <div id="staticrypt_content" class="staticrypt-content hidden">
+            <div class="staticrypt-page">
+                <div class="staticrypt-form">
+                    <div class="staticrypt-instructions">
+                        <p class="staticrypt-title">Protected Page</p>
+                        <p></p>
+                    </div>
+
+                    <hr class="staticrypt-hr" />
+
+                    <form id="staticrypt-form" action="#" method="post">
+                        <div class="staticrypt-password-container">
+                            <input
+                                id="staticrypt-password"
+                                type="password"
+                                name="password"
+                                placeholder="Password"
+                                autofocus
+                            />
+
+                            <img
+                                class="staticrypt-toggle-password-visibility"
+                                alt="Show password"
+                                title="Show password"
+                                src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NDAgNTEyIj48IS0tIUZvbnQgQXdlc29tZSBGcmVlIDYuNS4yIGJ5IEBmb250YXdlc29tZSAtIGh0dHBzOi8vZm9udGF3ZXNvbWUuY29tIExpY2Vuc2UgLSBodHRwczovL2ZvbnRhd2Vzb21lLmNvbS9saWNlbnNlL2ZyZWUgQ29weXJpZ2h0IDIwMjQgRm9udGljb25zLCBJbmMuLS0+PHBhdGggZD0iTTM4LjggNS4xQzI4LjQtMy4xIDEzLjMtMS4yIDUuMSA5LjJTLTEuMiAzNC43IDkuMiA0Mi45bDU5MiA0NjRjMTAuNCA4LjIgMjUuNSA2LjMgMzMuNy00LjFzNi4zLTI1LjUtNC4xLTMzLjdMNTI1LjYgMzg2LjdjMzkuNi00MC42IDY2LjQtODYuMSA3OS45LTExOC40YzMuMy03LjkgMy4zLTE2LjcgMC0yNC42Yy0xNC45LTM1LjctNDYuMi04Ny43LTkzLTEzMS4xQzQ2NS41IDY4LjggNDAwLjggMzIgMzIwIDMyYy02OC4yIDAtMTI1IDI2LjMtMTY5LjMgNjAuOEwzOC44IDUuMXpNMjIzLjEgMTQ5LjVDMjQ4LjYgMTI2LjIgMjgyLjcgMTEyIDMyMCAxMTJjNzkuNSAwIDE0NCA2NC41IDE0NCAxNDRjMCAyNC45LTYuMyA0OC4zLTE3LjQgNjguN0w0MDggMjk0LjVjOC40LTE5LjMgMTAuNi00MS40IDQuOC02My4zYy0xMS4xLTQxLjUtNDcuOC02OS40LTg4LjYtNzEuMWMtNS44LS4yLTkuMiA2LjEtNy40IDExLjdjMi4xIDYuNCAzLjMgMTMuMiAzLjMgMjAuM2MwIDEwLjItMi40IDE5LjgtNi42IDI4LjNsLTkwLjMtNzAuOHpNMzczIDM4OS45Yy0xNi40IDYuNS0zNC4zIDEwLjEtNTMgMTAuMWMtNzkuNSAwLTE0NC02NC41LTE0NC0xNDRjMC02LjkgLjUtMTMuNiAxLjQtMjAuMkw4My4xIDE2MS41QzYwLjMgMTkxLjIgNDQgMjIwLjggMzQuNSAyNDMuN2MtMy4zIDcuOS0zLjMgMTYuNyAwIDI0LjZjMTQuOSAzNS43IDQ2LjIgODcuNyA5MyAxMzEuMUMxNzQuNSA0NDMuMiAyMzkuMiA0ODAgMzIwIDQ4MGM0Ny44IDAgODkuOS0xMi45IDEyNi4yLTMyLjVMMzczIDM4OS45eiIvPjwvc3ZnPg=="
+                            />
+                        </div>
+
+                        <label id="staticrypt-remember-label" class="staticrypt-remember hidden">
+                            <input id="staticrypt-remember" type="checkbox" name="remember" />
+                            Remember me
+                        </label>
+
+                        <input type="submit" class="staticrypt-decrypt-button" value="DECRYPT" />
+                    </form>
                 </div>
-                <div class="activity-action">${a.action}</div>
             </div>
         </div>
-    `).join('');
+
+        <script>
+            // these variables will be filled when generating the file - the template format is 'variable_name'
+            const staticryptInitiator = ((function(){
+  const exports = {};
+  const cryptoEngine = ((function(){
+  const exports = {};
+  const { subtle } = crypto;
+
+const IV_BITS = 16 * 8;
+const HEX_BITS = 4;
+const ENCRYPTION_ALGO = "AES-CBC";
+
+/**
+ * Translates between utf8 encoded hexadecimal strings
+ * and Uint8Array bytes.
+ */
+const HexEncoder = {
+    /**
+     * hex string -> bytes
+     * @param {string} hexString
+     * @returns {Uint8Array}
+     */
+    parse: function (hexString) {
+        if (hexString.length % 2 !== 0) throw "Invalid hexString";
+        const arrayBuffer = new Uint8Array(hexString.length / 2);
+
+        for (let i = 0; i < hexString.length; i += 2) {
+            const byteValue = parseInt(hexString.substring(i, i + 2), 16);
+            if (isNaN(byteValue)) {
+                throw "Invalid hexString";
+            }
+            arrayBuffer[i / 2] = byteValue;
+        }
+        return arrayBuffer;
+    },
+
+    /**
+     * bytes -> hex string
+     * @param {Uint8Array} bytes
+     * @returns {string}
+     */
+    stringify: function (bytes) {
+        const hexBytes = [];
+
+        for (let i = 0; i < bytes.length; ++i) {
+            let byteString = bytes[i].toString(16);
+            if (byteString.length < 2) {
+                byteString = "0" + byteString;
+            }
+            hexBytes.push(byteString);
+        }
+        return hexBytes.join("");
+    },
+};
+
+/**
+ * Translates between utf8 strings and Uint8Array bytes.
+ */
+const UTF8Encoder = {
+    parse: function (str) {
+        return new TextEncoder().encode(str);
+    },
+
+    stringify: function (bytes) {
+        return new TextDecoder().decode(bytes);
+    },
+};
+
+/**
+ * Salt and encrypt a msg with a password.
+ */
+async function encrypt(msg, hashedPassword) {
+    // Must be 16 bytes, unpredictable, and preferably cryptographically random. However, it need not be secret.
+    // https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/encrypt#parameters
+    const iv = crypto.getRandomValues(new Uint8Array(IV_BITS / 8));
+
+    const key = await subtle.importKey("raw", HexEncoder.parse(hashedPassword), ENCRYPTION_ALGO, false, ["encrypt"]);
+
+    const encrypted = await subtle.encrypt(
+        {
+            name: ENCRYPTION_ALGO,
+            iv: iv,
+        },
+        key,
+        UTF8Encoder.parse(msg)
+    );
+
+    // iv will be 32 hex characters, we prepend it to the ciphertext for use in decryption
+    return HexEncoder.stringify(iv) + HexEncoder.stringify(new Uint8Array(encrypted));
 }
-function filterActivities(level, btn) {
-    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    renderActivities(level);
+exports.encrypt = encrypt;
+
+/**
+ * Decrypt a salted msg using a password.
+ *
+ * @param {string} encryptedMsg
+ * @param {string} hashedPassword
+ * @returns {Promise<string>}
+ */
+async function decrypt(encryptedMsg, hashedPassword) {
+    const ivLength = IV_BITS / HEX_BITS;
+    const iv = HexEncoder.parse(encryptedMsg.substring(0, ivLength));
+    const encrypted = encryptedMsg.substring(ivLength);
+
+    const key = await subtle.importKey("raw", HexEncoder.parse(hashedPassword), ENCRYPTION_ALGO, false, ["decrypt"]);
+
+    const outBuffer = await subtle.decrypt(
+        {
+            name: ENCRYPTION_ALGO,
+            iv: iv,
+        },
+        key,
+        HexEncoder.parse(encrypted)
+    );
+
+    return UTF8Encoder.stringify(new Uint8Array(outBuffer));
 }
-renderActivities('all');
-</script>
-</body>
+exports.decrypt = decrypt;
+
+/**
+ * Salt and hash the password so it can be stored in localStorage without opening a password reuse vulnerability.
+ *
+ * @param {string} password
+ * @param {string} salt
+ * @returns {Promise<string>}
+ */
+async function hashPassword(password, salt) {
+    // we hash the password in multiple steps, each adding more iterations. This is because we used to allow less
+    // iterations, so for backward compatibility reasons, we need to support going from that to more iterations.
+    let hashedPassword = await hashLegacyRound(password, salt);
+
+    hashedPassword = await hashSecondRound(hashedPassword, salt);
+
+    return hashThirdRound(hashedPassword, salt);
+}
+exports.hashPassword = hashPassword;
+
+/**
+ * This hashes the password with 1k iterations. This is a low number, we need this function to support backwards
+ * compatibility.
+ *
+ * @param {string} password
+ * @param {string} salt
+ * @returns {Promise<string>}
+ */
+function hashLegacyRound(password, salt) {
+    return pbkdf2(password, salt, 1000, "SHA-1");
+}
+exports.hashLegacyRound = hashLegacyRound;
+
+/**
+ * Add a second round of iterations. This is because we used to use 1k, so for backwards compatibility with
+ * remember-me/autodecrypt links, we need to support going from that to more iterations.
+ *
+ * @param hashedPassword
+ * @param salt
+ * @returns {Promise<string>}
+ */
+function hashSecondRound(hashedPassword, salt) {
+    return pbkdf2(hashedPassword, salt, 14000, "SHA-256");
+}
+exports.hashSecondRound = hashSecondRound;
+
+/**
+ * Add a third round of iterations to bring total number to 600k. This is because we used to use 1k, then 15k, so for
+ * backwards compatibility with remember-me/autodecrypt links, we need to support going from that to more iterations.
+ *
+ * @param hashedPassword
+ * @param salt
+ * @returns {Promise<string>}
+ */
+function hashThirdRound(hashedPassword, salt) {
+    return pbkdf2(hashedPassword, salt, 585000, "SHA-256");
+}
+exports.hashThirdRound = hashThirdRound;
+
+/**
+ * Salt and hash the password so it can be stored in localStorage without opening a password reuse vulnerability.
+ *
+ * @param {string} password
+ * @param {string} salt
+ * @param {int} iterations
+ * @param {string} hashAlgorithm
+ * @returns {Promise<string>}
+ */
+async function pbkdf2(password, salt, iterations, hashAlgorithm) {
+    const key = await subtle.importKey("raw", UTF8Encoder.parse(password), "PBKDF2", false, ["deriveBits"]);
+
+    const keyBytes = await subtle.deriveBits(
+        {
+            name: "PBKDF2",
+            hash: hashAlgorithm,
+            iterations,
+            salt: UTF8Encoder.parse(salt),
+        },
+        key,
+        256
+    );
+
+    return HexEncoder.stringify(new Uint8Array(keyBytes));
+}
+
+function generateRandomSalt() {
+    const bytes = crypto.getRandomValues(new Uint8Array(128 / 8));
+
+    return HexEncoder.stringify(new Uint8Array(bytes));
+}
+exports.generateRandomSalt = generateRandomSalt;
+
+async function signMessage(hashedPassword, message) {
+    const key = await subtle.importKey(
+        "raw",
+        HexEncoder.parse(hashedPassword),
+        {
+            name: "HMAC",
+            hash: "SHA-256",
+        },
+        false,
+        ["sign"]
+    );
+    const signature = await subtle.sign("HMAC", key, UTF8Encoder.parse(message));
+
+    return HexEncoder.stringify(new Uint8Array(signature));
+}
+exports.signMessage = signMessage;
+
+function getRandomAlphanum() {
+    const possibleCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+
+    let byteArray;
+    let parsedInt;
+
+    // Keep generating new random bytes until we get a value that falls
+    // within a range that can be evenly divided by possibleCharacters.length
+    do {
+        byteArray = crypto.getRandomValues(new Uint8Array(1));
+        // extract the lowest byte to get an int from 0 to 255 (probably unnecessary, since we're only generating 1 byte)
+        parsedInt = byteArray[0] & 0xff;
+    } while (parsedInt >= 256 - (256 % possibleCharacters.length));
+
+    // Take the modulo of the parsed integer to get a random number between 0 and totalLength - 1
+    const randomIndex = parsedInt % possibleCharacters.length;
+
+    return possibleCharacters[randomIndex];
+}
+
+/**
+ * Generate a random string of a given length.
+ *
+ * @param {int} length
+ * @returns {string}
+ */
+function generateRandomString(length) {
+    let randomString = "";
+
+    for (let i = 0; i < length; i++) {
+        randomString += getRandomAlphanum();
+    }
+
+    return randomString;
+}
+exports.generateRandomString = generateRandomString;
+
+  return exports;
+})());
+const codec = ((function(){
+  const exports = {};
+  /**
+ * Initialize the codec with the provided cryptoEngine - this return functions to encode and decode messages.
+ *
+ * @param cryptoEngine - the engine to use for encryption / decryption
+ */
+function init(cryptoEngine) {
+    const exports = {};
+
+    /**
+     * Top-level function for encoding a message.
+     * Includes password hashing, encryption, and signing.
+     *
+     * @param {string} msg
+     * @param {string} password
+     * @param {string} salt
+     *
+     * @returns {string} The encoded text
+     */
+    async function encode(msg, password, salt) {
+        const hashedPassword = await cryptoEngine.hashPassword(password, salt);
+
+        const encrypted = await cryptoEngine.encrypt(msg, hashedPassword);
+
+        // we use the hashed password in the HMAC because this is effectively what will be used a password (so we can store
+        // it in localStorage safely, we don't use the clear text password)
+        const hmac = await cryptoEngine.signMessage(hashedPassword, encrypted);
+
+        return hmac + encrypted;
+    }
+    exports.encode = encode;
+
+    /**
+     * Encode using a password that has already been hashed. This is useful to encode multiple messages in a row, that way
+     * we don't need to hash the password multiple times.
+     *
+     * @param {string} msg
+     * @param {string} hashedPassword
+     *
+     * @returns {string} The encoded text
+     */
+    async function encodeWithHashedPassword(msg, hashedPassword) {
+        const encrypted = await cryptoEngine.encrypt(msg, hashedPassword);
+
+        // we use the hashed password in the HMAC because this is effectively what will be used a password (so we can store
+        // it in localStorage safely, we don't use the clear text password)
+        const hmac = await cryptoEngine.signMessage(hashedPassword, encrypted);
+
+        return hmac + encrypted;
+    }
+    exports.encodeWithHashedPassword = encodeWithHashedPassword;
+
+    /**
+     * Top-level function for decoding a message.
+     * Includes signature check and decryption.
+     *
+     * @param {string} signedMsg
+     * @param {string} hashedPassword
+     * @param {string} salt
+     * @param {int} backwardCompatibleAttempt
+     * @param {string} originalPassword
+     *
+     * @returns {Object} {success: true, decoded: string} | {success: false, message: string}
+     */
+    async function decode(signedMsg, hashedPassword, salt, backwardCompatibleAttempt = 0, originalPassword = "") {
+        const encryptedHMAC = signedMsg.substring(0, 64);
+        const encryptedMsg = signedMsg.substring(64);
+        const decryptedHMAC = await cryptoEngine.signMessage(hashedPassword, encryptedMsg);
+
+        if (decryptedHMAC !== encryptedHMAC) {
+            // we have been raising the number of iterations in the hashing algorithm multiple times, so to support the old
+            // remember-me/autodecrypt links we need to try bringing the old hashes up to speed.
+            originalPassword = originalPassword || hashedPassword;
+            if (backwardCompatibleAttempt === 0) {
+                const updatedHashedPassword = await cryptoEngine.hashThirdRound(originalPassword, salt);
+
+                return decode(signedMsg, updatedHashedPassword, salt, backwardCompatibleAttempt + 1, originalPassword);
+            }
+            if (backwardCompatibleAttempt === 1) {
+                let updatedHashedPassword = await cryptoEngine.hashSecondRound(originalPassword, salt);
+                updatedHashedPassword = await cryptoEngine.hashThirdRound(updatedHashedPassword, salt);
+
+                return decode(signedMsg, updatedHashedPassword, salt, backwardCompatibleAttempt + 1, originalPassword);
+            }
+
+            return { success: false, message: "Signature mismatch" };
+        }
+
+        return {
+            success: true,
+            decoded: await cryptoEngine.decrypt(encryptedMsg, hashedPassword),
+        };
+    }
+    exports.decode = decode;
+
+    return exports;
+}
+exports.init = init;
+
+  return exports;
+})());
+const decode = codec.init(cryptoEngine).decode;
+
+/**
+ * Initialize the staticrypt module, that exposes functions callbable by the password_template.
+ *
+ * @param {{
+ *  staticryptEncryptedMsgUniqueVariableName: string,
+ *  isRememberEnabled: boolean,
+ *  rememberDurationInDays: number,
+ *  staticryptSaltUniqueVariableName: string,
+ * }} staticryptConfig - object of data that is stored on the password_template at encryption time.
+ *
+ * @param {{
+ *  rememberExpirationKey: string,
+ *  rememberPassphraseKey: string,
+ *  replaceHtmlCallback: function,
+ *  clearLocalStorageCallback: function,
+ * }} templateConfig - object of data that can be configured by a custom password_template.
+ */
+function init(staticryptConfig, templateConfig) {
+    const exports = {};
+
+    /**
+     * Decrypt our encrypted page, replace the whole HTML.
+     *
+     * @param {string} hashedPassword
+     * @returns {Promise<boolean>}
+     */
+    async function decryptAndReplaceHtml(hashedPassword) {
+        const { staticryptEncryptedMsgUniqueVariableName, staticryptSaltUniqueVariableName } = staticryptConfig;
+        const { replaceHtmlCallback } = templateConfig;
+
+        const result = await decode(
+            staticryptEncryptedMsgUniqueVariableName,
+            hashedPassword,
+            staticryptSaltUniqueVariableName
+        );
+        if (!result.success) {
+            return false;
+        }
+        const plainHTML = result.decoded;
+
+        // if the user configured a callback call it, otherwise just replace the whole HTML
+        if (typeof replaceHtmlCallback === "function") {
+            replaceHtmlCallback(plainHTML);
+        } else {
+            document.write(plainHTML);
+            document.close();
+        }
+
+        return true;
+    }
+
+    /**
+     * Attempt to decrypt the page and replace the whole HTML.
+     *
+     * @param {string} password
+     * @param {boolean} isRememberChecked
+     *
+     * @returns {Promise<{isSuccessful: boolean, hashedPassword?: string}>} - we return an object, so that if we want to
+     *   expose more information in the future we can do it without breaking the password_template
+     */
+    async function handleDecryptionOfPage(password, isRememberChecked) {
+        const { staticryptSaltUniqueVariableName } = staticryptConfig;
+
+        // decrypt and replace the whole page
+        const hashedPassword = await cryptoEngine.hashPassword(password, staticryptSaltUniqueVariableName);
+        return handleDecryptionOfPageFromHash(hashedPassword, isRememberChecked);
+    }
+    exports.handleDecryptionOfPage = handleDecryptionOfPage;
+
+    async function handleDecryptionOfPageFromHash(hashedPassword, isRememberChecked) {
+        const { isRememberEnabled, rememberDurationInDays } = staticryptConfig;
+        const { rememberExpirationKey, rememberPassphraseKey } = templateConfig;
+
+        const isDecryptionSuccessful = await decryptAndReplaceHtml(hashedPassword);
+
+        if (!isDecryptionSuccessful) {
+            return {
+                isSuccessful: false,
+                hashedPassword,
+            };
+        }
+
+        // remember the hashedPassword and set its expiration if necessary
+        if (isRememberEnabled && isRememberChecked) {
+            window.localStorage.setItem(rememberPassphraseKey, hashedPassword);
+
+            // set the expiration if the duration isn't 0 (meaning no expiration)
+            if (rememberDurationInDays > 0) {
+                window.localStorage.setItem(
+                    rememberExpirationKey,
+                    (new Date().getTime() + rememberDurationInDays * 24 * 60 * 60 * 1000).toString()
+                );
+            }
+        }
+
+        return {
+            isSuccessful: true,
+            hashedPassword,
+        };
+    }
+    exports.handleDecryptionOfPageFromHash = handleDecryptionOfPageFromHash;
+
+    /**
+     * Clear localstorage from staticrypt related values
+     */
+    function clearLocalStorage() {
+        const { clearLocalStorageCallback, rememberExpirationKey, rememberPassphraseKey } = templateConfig;
+
+        if (typeof clearLocalStorageCallback === "function") {
+            clearLocalStorageCallback();
+        } else {
+            localStorage.removeItem(rememberPassphraseKey);
+            localStorage.removeItem(rememberExpirationKey);
+        }
+    }
+
+    async function handleDecryptOnLoad() {
+        let isSuccessful = await decryptOnLoadFromUrl();
+
+        if (!isSuccessful) {
+            isSuccessful = await decryptOnLoadFromRememberMe();
+        }
+
+        return { isSuccessful };
+    }
+    exports.handleDecryptOnLoad = handleDecryptOnLoad;
+
+    /**
+     * Clear storage if we are logging out
+     *
+     * @returns {boolean} - whether we logged out
+     */
+    function logoutIfNeeded() {
+        const logoutKey = "staticrypt_logout";
+
+        // handle logout through query param
+        const queryParams = new URLSearchParams(window.location.search);
+        if (queryParams.has(logoutKey)) {
+            clearLocalStorage();
+            return true;
+        }
+
+        // handle logout through URL fragment
+        const hash = window.location.hash.substring(1);
+        if (hash.includes(logoutKey)) {
+            clearLocalStorage();
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * To be called on load: check if we want to try to decrypt and replace the HTML with the decrypted content, and
+     * try to do it if needed.
+     *
+     * @returns {Promise<boolean>} true if we derypted and replaced the whole page, false otherwise
+     */
+    async function decryptOnLoadFromRememberMe() {
+        const { rememberDurationInDays } = staticryptConfig;
+        const { rememberExpirationKey, rememberPassphraseKey } = templateConfig;
+
+        // if we are login out, terminate
+        if (logoutIfNeeded()) {
+            return false;
+        }
+
+        // if there is expiration configured, check if we're not beyond the expiration
+        if (rememberDurationInDays && rememberDurationInDays > 0) {
+            const expiration = localStorage.getItem(rememberExpirationKey),
+                isExpired = expiration && new Date().getTime() > parseInt(expiration);
+
+            if (isExpired) {
+                clearLocalStorage();
+                return false;
+            }
+        }
+
+        const hashedPassword = localStorage.getItem(rememberPassphraseKey);
+
+        if (hashedPassword) {
+            // try to decrypt
+            const isDecryptionSuccessful = await decryptAndReplaceHtml(hashedPassword);
+
+            // if the decryption is unsuccessful the password might be wrong - silently clear the saved data and let
+            // the user fill the password form again
+            if (!isDecryptionSuccessful) {
+                clearLocalStorage();
+                return false;
+            }
+
+            return true;
+        }
+
+        return false;
+    }
+
+    async function decryptOnLoadFromUrl() {
+        const passwordKey = "staticrypt_pwd";
+        const rememberMeKey = "remember_me";
+
+        // try to get the password from the query param (for backward compatibility - we now want to avoid this method,
+        // since it sends the hashed password to the server which isn't needed)
+        const queryParams = new URLSearchParams(window.location.search);
+        const hashedPasswordQuery = queryParams.get(passwordKey);
+        const rememberMeQuery = queryParams.get(rememberMeKey);
+
+        const urlFragment = window.location.hash.substring(1);
+        // get the password from the url fragment
+        const hashedPasswordRegexMatch = urlFragment.match(new RegExp(passwordKey + "=([^&]*)"));
+        const hashedPasswordFragment = hashedPasswordRegexMatch ? hashedPasswordRegexMatch[1] : null;
+        const rememberMeFragment = urlFragment.includes(rememberMeKey);
+
+        const hashedPassword = hashedPasswordFragment || hashedPasswordQuery;
+        const rememberMe = rememberMeFragment || rememberMeQuery;
+
+        if (hashedPassword) {
+            return handleDecryptionOfPageFromHash(hashedPassword, rememberMe);
+        }
+
+        return false;
+    }
+
+    return exports;
+}
+exports.init = init;
+
+  return exports;
+})());
+            const templateError = "Bad password!",
+                templateToggleAltShow = "Show password",
+                templateToggleAltHide = "Hide password",
+                isRememberEnabled = true,
+                staticryptConfig = {"staticryptEncryptedMsgUniqueVariableName":"6a2972666bd7c2713c9426867cf26cc6677de497e22fe47bb7be38b9f7a75451503cfd80a7332481edfa6634c06f4e9240b0b10c4a7248d7a0ed345f4ea0783491eae3d354af2a5b1895961b4eb4827e05bf76e7d366ac0fc116f2795976728a8e5f03744cacaf3439568ec3786a30170e4f26dfb18777378058f405fba36aa2066395163a4bbac768628119444b3b27ea7aac7444d48659a0acf5eda22bb43cf0c382a5fee4228ec293ba8a6857dd725e0700afcd31ecdb9be9b5211dc37e215eafcc612439e963e329d5554b33e181a200214e250f97c152b80ea29587088beab888adf59505e5c9f3d4164c23fe1d44ddcc11ffe9384a0e68513d85046459aa1c02238f884311d5144cd869888ead984b493fa80cc635126f972b5efe947bc41048fce1f1f2763e2069e6eaa64a6a880c5523d27a41a4cbcb2e1b089a3124d7422ba63dbbbb8a2b8f716de0bf46adffa890160982315535fe1c44494fa4e7b8babd59fffefa2f8b5d5b9c818a67cdaf3c83df6fad98f7c05a231e830fb52e6be028356ca9bb912612c188cdcea754f15c41be0a761f14b110407b11b85bd7073de077d5544b10cf0a62387f8c0b2df425f1b244b68f1b3867d027eebdb13e177c58121cfa9bf0df4766a499297aa3c1332ea9b5b0fb9c44ba7a049c8441b963b4e02ada322fcf50b7292d969af31021f550d3d0ce2c7b41200a390c5b6e16eb5dd4c410843eca7c597e531a82386c305e85780d63abd7ea6ef07438ea41f33ae84a92153a9d8df38227be0c7a68e48f34cbd0b350c352407fdcf53b5ff6d8a18ff331f8ab7d40335eaaf43b69af09ff949f6cb144bfc59754728071c129b5f83908ed17fc74987d5c1d5a7fe10944ee8322b2bc0dea4b14094581c18bc9920db49654494014c479430f39009c089cb48a824dba518ab7f1bbaa8a8226d3e7ba8ec842a8eb3d46b2cb81f8a2333afa819a9a0a2669ecc34e29c6fc5439970027bbde3f141d089000b7a95dbd5577b886c59940d8c34d545165c2e9af03d60e14fe2333e8efea43b1df5e142d4879bd8255129b1b6cdcebf5cdd4dd7a68e2780e377530642412e82c7892025205245f74533501a55f1e0cf4e2015868374cdd0428f5388516e50ff06236f5d7e8a3b5d738f8103466642752ab409cfba082a6507a84f82345b693760bb8e504c4b922951517a4453d9418f066aa83f49aa8884c08aa3fc4a0546b675fe3528a086c721e7481fb4466b7cc473745ee902b3c4806d211f462047cf681e3d97442f04e8d88d2db7ffecfc6b0129bed74b8430bd763940dc57e91c4e61c8a8026295d12c186c6c3aee92e632392cd3820210899f706f3b7a2c78aca180bc05ec389af742a3097a863ca5de1b56577573a9cf6377d000bcf4a669a90a11391b68aab9b64dbb675f4f23e3bb9a0cd2740164fd8b7f5c821b4b8160f06ace08b2d381ca53bca03961a3e38d4645a79c9318b863d0e34306d4118b4362d3fa45ba13b8255f851db90c3b7ab60998c06a0f72e39327ebb4c673a82dd2debbda3e0750aec3044ff9ccceb0035b936f084ae7f88bf7090835468165699cfaaaac85cc121affce6285d8861e5dc8a14f1d4d1798397628769470f87c8cd27175e10cd6f1c95675c7d3d3817feb3e2cd05c850f4c23c59dd478496ce49fa29d18027d95007e24244cd6aaca6db4855ba505b980cadddc8d96f1f0ca25a1f6a79596cf89e1f31833759e0c4aa6406daec9d7d694c4d9b31efaca0c175a7d1e4ed3b9fb7805062bd3fb6eb3d9b63ecd09be9c43247a2525a1db6f9b850a27d2bc4460cd1254c1b1854a98661cee7edbf1320f8758596154b2b726c09d01ed75e83421fd3312baa17873a0dc6daf09510f03f7b753a1613cf82a7d82bca3c6f9bf16cde7b1665674614ddeda5a55534906be89e2a0c8171afc0fa79971cf6578f39971e90656b970f3af33f61433d77a677434839422d2f66eb7f16cf354d53c192e9798cbe351c73109e1e8379eb9fb56f9a291b9b273dd840f294423c6663383debc582fb2b7d8e632f2e898a9626129f98647ee47971836f5e91cd06a399fa5cf0d8d89829ee4f592a3ae2bb17bd8a48b99496a12248a0b962d51314ae2b4b970ff7e16dd0abf61ff103b9ce38e77be4eb6699deb701a3642052118f7b844b684c2e5f4a89e8a62fcd211225d4fcf702bd5a93b8f22f70bc2a1b8a4a108eb7267527bd8c81ec90a17df88edb35a0f076036ea460dc04cc6d5acd06bcd42ce5eeb5eb9d7bf3a62f7777c96e54a628860fc5db0c584a99a99cf5d5664b7f1a42fcaf2dc7d4af6e12737a01bad6ea195cf120dbe7b49eeeccc5a9619a6eb6e8bfd8b8c3bdd25be6787cb0d46963be0953f350d322032169351f5e108446263498605d54d0bd5a35ee9e33c401f3641d1eda839fbdfc98c4fbc0887ce0a0823f646ab27b1e6f14e7047016914fe7743698bd917698d5d00e5849eb01c7a4daaf71e27571fe340a1db14f860d817fec93a3907117c16e0b794d2b60004bbb513781fd47656d4dd0162ee86422b747918fa2c9ba83f3eecd22405172425125c4d4d50d6c1eb66269031e0726ea28dd92a3e37eda4f6c66c928b1e444bb554d1704bd5fffe5601f4713577c49f69b00ef83fc5a8e2b4d4066d241f205e7184244ffdb96546ac2ffeca5bf1d24739d6e22b517d6d301c74d2a36372c38eb01d0f914bfe0ee8c93632e4aa0c454d754d5a312b6b89664ab79833e502f44c4a455ac9d180e237f68fdacb8e43672513eb0633cd02043a7a2405bfa192a978eda2fc2c32c61902452f35617890a6c90656178f8f0c5abc5146c50c4a7d0fcb84903ba9a4cfe74edce766a14805268215f7796255f1ebf0d5fd97c6217226b294e30380a6bdcf66834514c6c9443abc861ed989d250254414a0e1664810dd21d2958fffc2c5c97d99ef1d4c2ee6b17bebe58f1a575c0df001edf5d35a55ce28f4ff5c449b114e12e67702fbd8e242d486c555522d277c53af19c2f6444ead6dd04b62f539cd2a1333a826c19d9a03bf2d1e2f454c1cc87e42eb28228873c941f5292f0c83f6886759f5cfb8c09f9d197400756e4db4abd67a9dfefbc027a9953b91103bc2f8231b543314940b2f0d520cadd65648539d603c4c88d228a299cb438101fa1ba6626d9c1287e939512490434335dd834a0b94f09561571398d4b3f622937f7b958606510994b5c3fa339894b0f6a9ac0fadafa5d6da2f3135c4bab09dc7766ddae1ea665ce4c885b5f9aec19393027cfb0a2ae51b602106f312c282ca587a1c5c1018c7088dee1c2704f8f947575e68fc141925b519d82a72ff71452abac6c9a1fd02437bf7e4c62da1b230002e50af07354a54ae8be7ad741dafd846b01986a3f752692e78579c960f0b21d786944a63b7d44a8346d53a2df7c8179d94ff8f6e4af50e0de8410dfc1f3a6cfc88e1c80d5b5e7e41e08d45b173c0d8e4cb4aef25fe547e75effa635a1933076aed7b4c875c2d64be947dd7358ccd191f3662d7c1d403e9c78804fe452e615f59d2b406c7557c0a6f27cd4b1418777457e6bd896d36706d005fc2e7959cfe13620b480f81cf4837b758cd3f286e3559a1fd12a217cd57938960a209b10bf2d33df1c2214424a79bad50629b01641d47b5ff564c9844979a3ca55d3faef71fa2c112af494ed54425759d5a6a5b1d8d90aeb40f1b0dd54001a7e173f465eb47d15c232ad658745736f0145390c947c205ed1c909e64432f9fe2d51f11f848c3fcf093a4078ae898da692f6af634a28ff70fb389a2522b777c3129ecf2bf53223dca6f91a8c3f6a1000888b690fa26c443332980971b781af9ef58e9b2f842a38bcd13df81332222ae04233bd16dceb1cd176de9ec5c6fc6d011ab2e465bacacf18d00dbe5686cd4936060a145edfdc36e9d451d9f4aad7155940125999ecafabb1eb2b80f89e0a390856e45fad7f3cc215a0f0d6494569bd3bdedee7c144359761edac3710b3d73bf7d12a36bfb0b3b9d642087cd91ce41ade6510041303447cbde809e2d53333c92f2d5534fdc2d5ecd874428a163f401d37d49249744a7227daed028e41e40e4ee4f9084162029cce7dcdb2b841d3a4ddb8278d92115d9f7651cded2cb63d62589edef129f9ad834ce3f84999e663b4382246dc185f750a102635d1641c8b6736c428fd867c47f0c794dcf35790bcbdb075f9bb63dc1f1db6c1cb1c1af647900c23361f291158d46b2da82ac94aae3430fb5ff939adf84868815bbd699deb4ac296cb60d314416fc1cd6ac94274cb75cdf024406a851bf59bac2ddccd60d7b468e4b5d2c79481e0871714330897346e1df6bc3a955fa791d57a04d7e80c439e2768b53e7fc3b8c090fecc4a54e2acd3e48cac9a63540d3597a05384266bc1da30ed142ce8a8a324e248ae8aa3e2c1a90789a054f1ff7cd0dce58fb5d751b034ad5dd3f18447544599772c0fb58c74b0f29cbac9de7a06ffd378192f5651a42c061708e8e14f294293d9f932616e8c9a423c76ac1b3b3ac2be73b2c1f87cdd40253681febfa697bf4095cd8289812ff9216f58cd4490a7b827fd5c8565760d473558be70671bbe7e60b39b25ee8642e3b0dede6ae802b8e3f770004d2a23abe82afd0a07ccdb966b86c26b3e813ff4d31674d6b64f47f2fdd8e28f7f96502c5789a1fec28ebba37521c5b1551fd0cb00462d282638ba1027f3f110432d6105a6a06f4bb68955c37a4febc4f284bc9523bb46410beb5384a967fcf67c42484729160e9fb0d31dc346d8c58fb98b63648545fd65769e5f128bf5e16e7a2462bc1ebfe873c1ecd1687301403c84b35ab0a61fa0279d7019717ebcba603b6ce643c0a60560cfc0e0edde3f292a83bc97aff2a990949ccc95e354e687b8fcb25f6c979b69af66f04ea1a2fb445c51afa758b7e5898e21cb39ce75503b0fd37d38ccaface6e45e26323cac50abf596d9f2ad49124117f7cd93b850dab978920fcf7f8e2d0e32373e75bbbc14a58e5b5e4e9b7bdc183bb73b5b3d2e4e0ab2431192ba23a31d9c4e9b1d4a387e3c72b1fb1fbc7d786d1d03c08ec8f60d52e4859125f5fcc3c7bac58b90cd8f2f3874f45e8cced625eb923315fad24eca3047e3931c35ba9307184655cd267b29d3f5408def2a75641cefe56e5bc1f50c702b0583c552ad8605cbcbabfe230369eec35dc4344be9d2d73d926df38ce9e71f6896da23a54a72943a6c608877035c01025bc577965088c329826c5763fd8686832e6feaed1c25293f2e023cecc931e410ddc4dde21b23a2183daca313812d7562ddaaa0b3552c01663f305c8a4db9d3577a2bb3e885e59ba1ab038d28924f24051a9b888457118e3a75684fbb10b797e8e31109a8079dc478877a9a6f2118d9bd824feb75fe3d15f37343b3ce61e89885062d75f644d5ef7219423adcc72fd71b9376b93ffa17658dda5a4a32dfe49ad8d847adee685cc4b2bebaf8f8b5e4c998c0a193ece02d09311337d9d331c61993d3299c6124e29a06017eb951af478c15d68826b5642c9d859faedafe801c8183703ceaacd4575baa1396157106a0a61799f3ff81ed9e2db7df92c59d959d43fe9f5033eab15d1fc812250d55211de6fb2dd5dc8ed1ba25d8adb22402df1bc58282cc91683663e09ebcd5ebdc28a5422327bbb255f6c241a530a7f3c36042ace69d74e3d8e3a7ad93bea9cb8eb1fc3abeb31ca96bea945883a2879edf41db60939f258c84a3e259b69ad98332e9263b023c9b9b6b5d31091f46ce78699bd801663958f0b39a639467f33aec62d6d3981a5dbf2a410b64764ea00fe319bb4cddf3889300e772adf65a2d6f39da831c967a5185a726380cf20f7248d8fdae16d0bdc6a07f1e460e5b94d80cb6d4c61671482afbd1c15b31659119d63307a20a65b1c01e3800c0abac1948bb23ec30093935ead2df10af40322e7f315f8502b953ca8a36a79df2bbfba07ee323e670c6fe78e3c16fe8cd227359e7346c828740fd9f9c6a49b5014641bfa61e3be95c7f923ea174836f9d2c22b1154d2864e08c53031bef7bcb62b3a19a0bb4aa618bbc56f9a4781424a96ce3d578b0514724b2e9b1be36c06660b99a4b3acd1e1d6a97c929a546b50a1e12d0e2c376de8e0754a70350ad7c1ebb55e221d1b6d4c11239fc3e2b531948024196eb700671e6a3eea6313a4314c9cc51bd4254153ff534d916b9bb77cd5670a031eba322691c0b5f43965d51eaca699c06146e5567c28a5484fa419d52803eb4042c40fb9a9767e513127fd2a91a91eaa42379454140f1b422204f5347dcab53d0038f530a0aa69afbfc8e8469cc8b3ae234160d585fd9fd43851b80c07d153183f926dc63789415b4540c248d103912873cbc91e3b7bf48ea5122819a69982996cb09b3a527ddbd5c5638860d4f5c60e13dc769b12f57b6ad8f6ca662fb29a78ff57a056ae744c18e14c6d612a5580e616447332e7b9040b5d6cabbd24fab2c5487a79ff5bee6c7b221f540257808bb251a93754b2d98e0378ff12bec58e37105393c297d6fbdb91f48090617daf5706d079c44c618013b75efd963cded76a3e6dad269e5679ecdec367959bb2ccf2f380205427155b59ebafcf7d0eb34fef537eb1cd94208581e642e6976bff7c8cf686b3c8d739cde52e1e7f2941930b63989a571191207fe2ed872893c39dbe6897ba4960431080ccf0d5244f0892809e3cae3c267d759165c8bc4fd3da61732352c46c16f5797d7cc5df5902b7745da4adb710a99962395a96e085c7df4df8a87f55dcad9d48daf2a9869339d7f7fdde801b6b8563213e5bb9da38410839fce00323b0f3daf0e85ef162a148059e3d6bc21d3e66c85b2ab1effedc428fda991cc9c93888cd481112f56d35f29dc6294e0143256ec264f014944f4d5a3a1bd56a6cbe8ade67b1a661365b68f6dc751097382286c0db1bb704f3516b50bbcd77bdfffed0a2e5be2b0bf93b104fedf3c46c42c74edd9cb16711e64ada852174d3c1782e241666d01cc60a50a4a9f6c804ff369efe7bc27cc9fd60ffb6b4f588342696f0236687b4f4cf2477e8f2b717c8f17d711ae3ca0caa49ba2902e47834139f9708afe502ab1eb9e0b726a27e2d54537ac9c3ee8dbad24cdb476a74a0c8f68da14f1376cd9c8aeaeb545aceeea916dfb8a939e8f5ffdd6560aadd7c98352c98fcec540e14a44320b6358f17d3d93617add841452ac0ab5085958218195d48860b83e4c64cc5c7c2fe36f12438cc912f04d65be727386a38f82c5d9e87535111c6456c390d2aeef68d5bcdf9885dcda8d5c350fd01c7d62744a7fa07a5012550c0cdd68db94275ad05f1823afa9a00521f35a32f26f060947c501f7ae94cc7c5278cd50b507fc13ff01ea929213241c3de698a3cfe68b8f8e23ab7371f165562f52c2ce6e36a9bd515c41b36c2b9d6f47a12c0018d073c6e0f531a2e95e325a97a51ab636247691eabd1c9cf1f468f5791ea1a0138cc9bfcf338060aa3fbb75726bbec2af27af955b8a2f84a93b7383761ebac4c217185421e61d40f5a56a63c9d10f0ce5478dbd8d357b3118dceadd2f722f9bda9e83ba17477a81d933daec68e4ea4ee6a5aeffd34c3b8f062b6ca094fd20a3cbeb6171e43787847e1e2e933e9aba4ec752057d31095f0b96c97b42f34c7d8253d9f991fd3bc9f78dea9e473aa7bd29850f0cf075f826ec74c01830c90010b81c62522b39e3434dd0b77926c69f2fe874a4ac9c4c453f983a4a7db9b0e5f2803843d44c151d8bd50d0a73d3b5698b86f39f4dd30a768789425a3f6e9ea64b219607c686370b1b27009032eaf1660a665d86dd70f88704bd776202704082a43a2feb44724a715f916303573ff7f9ab7f7bec3e0384614e33f666202bdc8ef318ee52e25bdbe1e92cd61f039dce6966935ace7b0a15f514d4c80a932c2e2cd1fe1eda9625147352f7f3b7b1011f8ccd613e482deff029a8b96e7468ea3eb9de5f2251ae3ee5ff05e305845f7344b60b77760b41b8f047abb80ffe3431e69fbabafdaa724345b03bf9b0f8eb32e6ecfd2cd3123dde573b48a666fe75985b268306520a5ed6cccde00cb01610c5bbae7b6b2c98bd6b78a283fcfb7401c54ccbb99a923b0de954637f51be00ca053c7349c88a832f2e8441b6a05496612a37a903eab303a3ddcf119addd7e26f117b12e8fd30b2a8849d9e29a5cacfabb98799d3f85ab50e7af2d5caea2df3181e2ef9a7898f3274adaf41bfd7349a21012ee7cb78fae2bae8c257995f0982d145b19e9221537ec16a26988e7d3a609d65ede50fe4c975dc3073ab33edb31dbdbe3cc021dcf12ab5721bf49fdb14d3a77fe623dc2f4311044cd92050e30d201b6b2b70650a18af8229a83b55893b5d871d7a0ae28671ec52c2da0e6c62db0b0b5f0c66c6de4fc0ed8f30d0db7fb80bb0d218e4d96747c6e1c42510b31bfd7def6a01cb1014e7df26efa5113c845afcf1f69e96d1fdb7861e172b406b90a9850ea0f1a7b885dd9c9d7218497bce237a3b62542d55d2a04362b048715b77018d2f8f6b905bd7c39fcaa35192b068c039a6d9d1b1456f9580470f16aff03837ce3f70a380d51e57e6778a998cec29617702ea2c32b468f437adcf143846ed022ca73d071439740cfed71f1bd894747d9ec892657db3294494b5aa4a1dce0186511225d960f658b39633b359ec6bf346eda87cf9b4d22461f5d091a91eb74f2edc43083d9dd0ffaabae74054e0cbd6d3bca459b4d3f59f3c340182ba22236dc8fc2366c9a9488f08d7be5c42b33343e3ec03aa45694de97c6ad83535df8396207943a3a3dfbb5149322b86e83a389dba2f5015a5cc955804a89825d780e2b041e7852f4d05393140eab4023a2c54f7dd685702f789a641d8ed4e4bb8a9081ea8a0c90db900da2320acc68a4b062894e494ceb2864af12aa188bbadc78a54a66b0974571ec0d3a16d6d7876b65ea460f0d781934865d7584cd43be37718845ec4ff068c1d19d9d258174cd53c74402db6f8b91d706547505e79697ef808f1091af3be104ec3579da47d2eba28f2ae5e860a6b7b28a87a3c54baa405272f15e0f8f2d0e40d0c889751a95c0d5ebbadee8f9b6c7fead2081b8735891da0a3e0983a60a57a33d94db5d173d8532515cb236606eb685f9d2bee4309b22d9f2230b7baad6ad0eb6f3b6e4edbe5e126df87157c9a2010b4e2038b25c59970a5d13c0d14b312ffe4a07f048d85cfd5f2e6649a880bae97ba393376b097c621c29edac86f3ac005844f098924dbc983260e29126f7c16c335d959465b3a855b26f2dfd8131e7e83e366ce7da58c595b809664683d794d3be6cce3d7ab3fbce7b33258374c18f760b5e52a144c10f47768377a56e94ccdcaed6c3fd686ba3306ac7666af8894f1562d5afb3e9d4dc138ccf53b490530899fc0d3de50b296fe733ebd43ab4660de5f8f9664fbec698fb2525be483baf0230763401dc83ea942210f669992068be72c18c952931ef5b365d4677220d4677799c4e35884a2f22566161713f14a84184e30b284a1e0037dd5590f8452eb75ceb80e24f06aded70fad911e7653ae9ced5abf8ff63c32837079c9616cd1068acdbaa03859e85909c198e5b25c483fa605f6980c7bc15743d5ac0d455c2e660f0e465803f7a90011c16dc2178eb4e092c5a55f96cc66adbb9b8a1338be800a1982bdcdcb68dbaf13c302bf0b048e6c689bcfcec31eb49d5e48341fd7bfe7a347c9afb926d8bd5aaaced78ae50c7d0b89cfb286d02d49a24c8a39689bf87ae31729492d3107b50b48ee1b99ac823a39b52b73b0c859a2ff042771cabee113765566b1da15a73d8875b2317028820b0eb5787347a19f9c246e5d2391c776ebf7f699afc0f867712c953adb32a1182b75c9544c02c1967ce2d29cd6508a2f927e1839d8f0fff2c422c4a5094b369f975ae44089fe29cc80d37a7de39636ccae81139fb670440899a390ef6600f2386896905fa504f95c559ce7d456c5e28c5a558b0b2efa08ea53237de2a021eff0f8ff26876da7160373fd246ea1ce3d89ad69ced81f326b2911b6c0e23b243ba29906808cbdc79bf406283f49d9450311f1c29cbff4db7b032d0352ec48686d3491a55adca2094bc02936bf6743880d6edb0904173b41dbf83f4f4dac72d2748047c0bb75fdaa6218f2777051e3432522f66229606550a1b7f9216e47b0c07be699206dabc8d0400d0d19d69d457d05b1c1dcbabc88fa4d0b25b2dba600b9aea1bae5abd03d8822319b1995f9ef113109bdc9e4bfb4e72efbd206e6c3ad043d78f8faf7395319609cb87e00031d86c58a5ffa0039b01d04692fb4f420e241d0ea87e11df671feb2ca1ce84f45d848b3e3dff5571abb501be7f395478dd359dacf385e7202a064e39cc0346d1318cab20c6f233d32d252113493624a294c2ce014ab36a799fd9a6ce2008c53201be6e266abd28f00602b355ece8e00a4461ca6f9f852211d0a80f44135b7c626e9005c23bea7a84dff3224eb40023ff216bf271c201d16b919a6baab65ed1624405743bbde7ccae469cdc236b0ed5751a8e27aa3c30d91259f4f0e3f9a1eaeb77abfbe36234c3f39e33868f28afa87a2bac8e07f601df851622b5db5b2ecad4f896644fd0a71ae097850c341d92c9e2d2978b912336a4ef2640a5fdb7fb63929c69a6348e9a8f031cabef2e5743e4189fe5ebd090ea1d2c7406a41de4d7f06923f6b33972e77066bda68f1e57654b7372b9baef3abe30d56dec5f6c9e537a5bdb229eb380535f1b9be4175040a5ff086b4619741971ece963aa8f5652d174e7849754f7c920d91496c887a987f86dd89450df91fd13e5011070a79795d3ba564c5f605c876d55c0e94a6483c3c3916112548c4f12b835564d06c5ee5acb326b685f48ab26b50ec80c0109169fd095de6eab561b9ab3b0bf4bdf4aed3b07229af4cf7668a76f1663a30e80ad1f9a11e76a7661f5e059940a2b31fd7a2fab836aba4114285d3ed9147361ff116ff9eb3f3ca6aea5c00c8c885b7c315375c1f7a8e55126eded65d628b8cc0e297c7f5948c38f6e67072062f7b667e92d295ba82a54781000d06144688254f58a85f66fb591a398ca243a659fb0b51994d15cdf3a95c0ed951be2d6cad39bde6125c4f37746b86bd6891e7bbe80ed1d0770a371182093b29071253eea9ca70c8ffb49e5d4a79f8f1f3c7b6de74da1d144a07911980ca0a513413bac7aed8098ba609c53eda0cdc93b53f27cbd4d72285299d1a2f211449323689b8fafc5d898fdc3ae57be246a8242ed9c8c0c73f4b957ffc9a6e6c849416d86f82480d233cfb0d89f953124b70913dfb4d2a5dbec5220cad61a2373d24c64eb5c779e27b606903590b7e74b175c691116005ed864139181d3a3e3373ac2b5378153afb70c36ce47930822192a551e82dadbbbcbb52e3b9a822619efb7ded46aaf09dcb0a9fefb4ba50f5da467693d73727c6fef50943f2fa98080e7966abeb2ea6c7426877bc2f913ea3e270755a3df8f9ba4577bb3824bebc36cea5df7376c89a9c073b3a3ebb1ad278284f5d0fd466962a8684e564ef19cd81fa1255312f71b42540dbb1363e95e79444b374611a35d2f3a5b52f9a243823b48cfb646b8b2fff7552c8d74c8ac8c8bbdebb33b3320a7f39731a6485b13616971b99d07b8c1e94bf90e62150a756757139ec634d1c1b755c5e5a0b90f6a813a18e23b99ab9a929df072c23eaf19efeabac08241e72b8c91fa2ab71d72fd34d5ea2c4e9c922c68b29a1e61eedc8f9f55976afb74a2891150d6f085323312fdd0485979fca0e4cfd0e9586e8d2624d458ce04a66d6444f0796b3a8ca7c484f5ca5ae45","isRememberEnabled":true,"rememberDurationInDays":0,"staticryptSaltUniqueVariableName":"0ec99702b39a814c66cb2f41ad09b930"};
+
+            // you can edit these values to customize some of the behavior of StatiCrypt
+            const templateConfig = {
+                rememberExpirationKey: "staticrypt_expiration",
+                rememberPassphraseKey: "staticrypt_passphrase",
+                replaceHtmlCallback: null,
+                clearLocalStorageCallback: null,
+            };
+
+            // init the staticrypt engine
+            const staticrypt = staticryptInitiator.init(staticryptConfig, templateConfig);
+
+            // try to automatically decrypt on load if there is a saved password
+            window.onload = async function () {
+                const { isSuccessful } = await staticrypt.handleDecryptOnLoad();
+
+                // if we didn't decrypt anything on load, show the password prompt. Otherwise the content has already been
+                // replaced, no need to do anything
+                if (!isSuccessful) {
+                    // hide loading screen
+                    document.getElementById("staticrypt_loading").classList.add("hidden");
+                    document.getElementById("staticrypt_content").classList.remove("hidden");
+                    document.getElementById("staticrypt-password").focus();
+
+                    // show the remember me checkbox
+                    if (isRememberEnabled) {
+                        document.getElementById("staticrypt-remember-label").classList.remove("hidden");
+                    }
+                }
+            };
+
+            // toggle password visibility
+            const toggleIcon = document.querySelector(".staticrypt-toggle-password-visibility");
+            // these two icons are coming from FontAwesome
+            const imgSrcEyeClosed =
+                "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NDAgNTEyIj48IS0tIUZvbnQgQXdlc29tZSBGcmVlIDYuNS4yIGJ5IEBmb250YXdlc29tZSAtIGh0dHBzOi8vZm9udGF3ZXNvbWUuY29tIExpY2Vuc2UgLSBodHRwczovL2ZvbnRhd2Vzb21lLmNvbS9saWNlbnNlL2ZyZWUgQ29weXJpZ2h0IDIwMjQgRm9udGljb25zLCBJbmMuLS0+PHBhdGggZD0iTTM4LjggNS4xQzI4LjQtMy4xIDEzLjMtMS4yIDUuMSA5LjJTLTEuMiAzNC43IDkuMiA0Mi45bDU5MiA0NjRjMTAuNCA4LjIgMjUuNSA2LjMgMzMuNy00LjFzNi4zLTI1LjUtNC4xLTMzLjdMNTI1LjYgMzg2LjdjMzkuNi00MC42IDY2LjQtODYuMSA3OS45LTExOC40YzMuMy03LjkgMy4zLTE2LjcgMC0yNC42Yy0xNC45LTM1LjctNDYuMi04Ny43LTkzLTEzMS4xQzQ2NS41IDY4LjggNDAwLjggMzIgMzIwIDMyYy02OC4yIDAtMTI1IDI2LjMtMTY5LjMgNjAuOEwzOC44IDUuMXpNMjIzLjEgMTQ5LjVDMjQ4LjYgMTI2LjIgMjgyLjcgMTEyIDMyMCAxMTJjNzkuNSAwIDE0NCA2NC41IDE0NCAxNDRjMCAyNC45LTYuMyA0OC4zLTE3LjQgNjguN0w0MDggMjk0LjVjOC40LTE5LjMgMTAuNi00MS40IDQuOC02My4zYy0xMS4xLTQxLjUtNDcuOC02OS40LTg4LjYtNzEuMWMtNS44LS4yLTkuMiA2LjEtNy40IDExLjdjMi4xIDYuNCAzLjMgMTMuMiAzLjMgMjAuM2MwIDEwLjItMi40IDE5LjgtNi42IDI4LjNsLTkwLjMtNzAuOHpNMzczIDM4OS45Yy0xNi40IDYuNS0zNC4zIDEwLjEtNTMgMTAuMWMtNzkuNSAwLTE0NC02NC41LTE0NC0xNDRjMC02LjkgLjUtMTMuNiAxLjQtMjAuMkw4My4xIDE2MS41QzYwLjMgMTkxLjIgNDQgMjIwLjggMzQuNSAyNDMuN2MtMy4zIDcuOS0zLjMgMTYuNyAwIDI0LjZjMTQuOSAzNS43IDQ2LjIgODcuNyA5MyAxMzEuMUMxNzQuNSA0NDMuMiAyMzkuMiA0ODAgMzIwIDQ4MGM0Ny44IDAgODkuOS0xMi45IDEyNi4yLTMyLjVMMzczIDM4OS45eiIvPjwvc3ZnPg==";
+            const imgSrcEyeOpened =
+                "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1NzYgNTEyIj48IS0tIUZvbnQgQXdlc29tZSBGcmVlIDYuNS4yIGJ5IEBmb250YXdlc29tZSAtIGh0dHBzOi8vZm9udGF3ZXNvbWUuY29tIExpY2Vuc2UgLSBodHRwczovL2ZvbnRhd2Vzb21lLmNvbS9saWNlbnNlL2ZyZWUgQ29weXJpZ2h0IDIwMjQgRm9udGljb25zLCBJbmMuLS0+PHBhdGggZD0iTTI4OCAzMmMtODAuOCAwLTE0NS41IDM2LjgtMTkyLjYgODAuNkM0OC42IDE1NiAxNy4zIDIwOCAyLjUgMjQzLjdjLTMuMyA3LjktMy4zIDE2LjcgMCAyNC42QzE3LjMgMzA0IDQ4LjYgMzU2IDk1LjQgMzk5LjRDMTQyLjUgNDQzLjIgMjA3LjIgNDgwIDI4OCA0ODBzMTQ1LjUtMzYuOCAxOTIuNi04MC42YzQ2LjgtNDMuNSA3OC4xLTk1LjQgOTMtMTMxLjFjMy4zLTcuOSAzLjMtMTYuNyAwLTI0LjZjLTE0LjktMzUuNy00Ni4yLTg3LjctOTMtMTMxLjFDNDMzLjUgNjguOCAzNjguOCAzMiAyODggMzJ6TTE0NCAyNTZhMTQ0IDE0NCAwIDEgMSAyODggMCAxNDQgMTQ0IDAgMSAxIC0yODggMHptMTQ0LTY0YzAgMzUuMy0yOC43IDY0LTY0IDY0Yy03LjEgMC0xMy45LTEuMi0yMC4zLTMuM2MtNS41LTEuOC0xMS45IDEuNi0xMS43IDcuNGMuMyA2LjkgMS4zIDEzLjggMy4yIDIwLjdjMTMuNyA1MS4yIDY2LjQgODEuNiAxMTcuNiA2Ny45czgxLjYtNjYuNCA2Ny45LTExNy42Yy0xMS4xLTQxLjUtNDcuOC02OS40LTg4LjYtNzEuMWMtNS44LS4yLTkuMiA2LjEtNy40IDExLjdjMi4xIDYuNCAzLjMgMTMuMiAzLjMgMjAuM3oiLz48L3N2Zz4=";
+            toggleIcon.addEventListener("click", function () {
+                const passwordInput = document.getElementById("staticrypt-password");
+                if (passwordInput.type === "password") {
+                    passwordInput.type = "text";
+                    toggleIcon.src = imgSrcEyeOpened;
+                    toggleIcon.alt = templateToggleAltHide;
+                    toggleIcon.title = templateToggleAltHide;
+                } else {
+                    passwordInput.type = "password";
+                    toggleIcon.src = imgSrcEyeClosed;
+                    toggleIcon.alt = templateToggleAltShow;
+                    toggleIcon.title = templateToggleAltShow;
+                }
+            });
+
+            // handle password form submission
+            document.getElementById("staticrypt-form").addEventListener("submit", async function (e) {
+                e.preventDefault();
+
+                const password = document.getElementById("staticrypt-password").value,
+                    isRememberChecked = document.getElementById("staticrypt-remember").checked;
+
+                const { isSuccessful } = await staticrypt.handleDecryptionOfPage(password, isRememberChecked);
+
+                if (!isSuccessful) {
+                    alert(templateError);
+                }
+            });
+        </script>
+    </body>
 </html>
