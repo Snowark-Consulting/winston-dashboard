@@ -1,892 +1,113 @@
 <!DOCTYPE html>
-<html class="staticrypt-html">
-    <head>
-        <meta charset="utf-8" />
-        <title>Protected Page</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-
-        <!-- do not cache this page -->
-        <meta http-equiv="cache-control" content="max-age=0" />
-        <meta http-equiv="cache-control" content="no-cache" />
-        <meta http-equiv="expires" content="0" />
-        <meta http-equiv="expires" content="Tue, 01 Jan 1980 1:00:00 GMT" />
-        <meta http-equiv="pragma" content="no-cache" />
-
-        <style>
-            .staticrypt-hr {
-                margin-top: 20px;
-                margin-bottom: 20px;
-                border: 0;
-                border-top: 1px solid #eee;
-            }
-
-            .staticrypt-page {
-                width: 360px;
-                padding: 8% 0 0;
-                margin: auto;
-                box-sizing: border-box;
-            }
-
-            .staticrypt-form {
-                position: relative;
-                z-index: 1;
-                background: #ffffff;
-                max-width: 360px;
-                margin: 0 auto 100px;
-                padding: 45px;
-                text-align: center;
-                box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
-            }
-
-            .staticrypt-form input[type="password"],
-            input[type="text"] {
-                background: inherit;
-                border: 0;
-                box-sizing: border-box; /* This ensures padding is included in the total width */
-                font-size: 14px;
-                outline: 0;
-                padding: 15px 30px 15px 15px; /* Adjust the padding to ensure there is space for the icon */
-                width: 100%;
-            }
-
-            .staticrypt-password-container {
-                position: relative;
-                outline: 0;
-                background: #f2f2f2;
-                width: 100%;
-                border: 0;
-                margin: 0 0 15px;
-                box-sizing: border-box;
-            }
-
-            .staticrypt-toggle-password-visibility {
-                cursor: pointer;
-                height: 20px;
-                opacity: 60%;
-                padding: 13px;
-                position: absolute;
-                right: 0;
-                top: 50%;
-                transform: translateY(-50%);
-                width: 20px;
-            }
-
-            .staticrypt-form .staticrypt-decrypt-button {
-                text-transform: uppercase;
-                outline: 0;
-                background: #4CAF50;
-                width: 100%;
-                border: 0;
-                padding: 15px;
-                color: #ffffff;
-                font-size: 14px;
-                cursor: pointer;
-            }
-
-            .staticrypt-form .staticrypt-decrypt-button:hover,
-            .staticrypt-form .staticrypt-decrypt-button:active,
-            .staticrypt-form .staticrypt-decrypt-button:focus {
-                background: #4CAF50;
-                filter: brightness(92%);
-            }
-
-            .staticrypt-html {
-                height: 100%;
-            }
-
-            .staticrypt-body {
-                height: 100%;
-                margin: 0;
-            }
-
-            .staticrypt-content {
-                height: 100%;
-                margin-bottom: 1em;
-                background: #76B852;
-                font-family: "Arial", sans-serif;
-                -webkit-font-smoothing: antialiased;
-                -moz-osx-font-smoothing: grayscale;
-            }
-
-            .staticrypt-instructions {
-                margin-top: -1em;
-                margin-bottom: 1em;
-            }
-
-            .staticrypt-title {
-                font-size: 1.5em;
-            }
-
-            label.staticrypt-remember {
-                display: flex;
-                align-items: center;
-                margin-bottom: 1em;
-            }
-
-            .staticrypt-remember input[type="checkbox"] {
-                transform: scale(1.5);
-                margin-right: 1em;
-            }
-
-            .hidden {
-                display: none !important;
-            }
-
-            .staticrypt-spinner-container {
-                height: 100%;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-
-            .staticrypt-spinner {
-                display: inline-block;
-                width: 2rem;
-                height: 2rem;
-                vertical-align: text-bottom;
-                border: 0.25em solid gray;
-                border-right-color: transparent;
-                border-radius: 50%;
-                -webkit-animation: spinner-border 0.75s linear infinite;
-                animation: spinner-border 0.75s linear infinite;
-                animation-duration: 0.75s;
-                animation-timing-function: linear;
-                animation-delay: 0s;
-                animation-iteration-count: infinite;
-                animation-direction: normal;
-                animation-fill-mode: none;
-                animation-play-state: running;
-                animation-name: spinner-border;
-            }
-
-            @keyframes spinner-border {
-                100% {
-                    transform: rotate(360deg);
-                }
-            }
-
-            @media screen and (-webkit-min-device-pixel-ratio: 0) {
-                .staticrypt-form input[type="password"],
-                input[type="text"] {
-                    font-size: 16px;
-                }
-            }
-        </style>
-    </head>
-
-    <body class="staticrypt-body">
-        <div id="staticrypt_loading" class="staticrypt-spinner-container">
-            <div class="staticrypt-spinner"></div>
-        </div>
-
-        <div id="staticrypt_content" class="staticrypt-content hidden">
-            <div class="staticrypt-page">
-                <div class="staticrypt-form">
-                    <div class="staticrypt-instructions">
-                        <p class="staticrypt-title">Protected Page</p>
-                        <p></p>
-                    </div>
-
-                    <hr class="staticrypt-hr" />
-
-                    <form id="staticrypt-form" action="#" method="post">
-                        <div class="staticrypt-password-container">
-                            <input
-                                id="staticrypt-password"
-                                type="password"
-                                name="password"
-                                placeholder="Password"
-                                autofocus
-                            />
-
-                            <img
-                                class="staticrypt-toggle-password-visibility"
-                                alt="Show password"
-                                title="Show password"
-                                src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NDAgNTEyIj48IS0tIUZvbnQgQXdlc29tZSBGcmVlIDYuNS4yIGJ5IEBmb250YXdlc29tZSAtIGh0dHBzOi8vZm9udGF3ZXNvbWUuY29tIExpY2Vuc2UgLSBodHRwczovL2ZvbnRhd2Vzb21lLmNvbS9saWNlbnNlL2ZyZWUgQ29weXJpZ2h0IDIwMjQgRm9udGljb25zLCBJbmMuLS0+PHBhdGggZD0iTTM4LjggNS4xQzI4LjQtMy4xIDEzLjMtMS4yIDUuMSA5LjJTLTEuMiAzNC43IDkuMiA0Mi45bDU5MiA0NjRjMTAuNCA4LjIgMjUuNSA2LjMgMzMuNy00LjFzNi4zLTI1LjUtNC4xLTMzLjdMNTI1LjYgMzg2LjdjMzkuNi00MC42IDY2LjQtODYuMSA3OS45LTExOC40YzMuMy03LjkgMy4zLTE2LjcgMC0yNC42Yy0xNC45LTM1LjctNDYuMi04Ny43LTkzLTEzMS4xQzQ2NS41IDY4LjggNDAwLjggMzIgMzIwIDMyYy02OC4yIDAtMTI1IDI2LjMtMTY5LjMgNjAuOEwzOC44IDUuMXpNMjIzLjEgMTQ5LjVDMjQ4LjYgMTI2LjIgMjgyLjcgMTEyIDMyMCAxMTJjNzkuNSAwIDE0NCA2NC41IDE0NCAxNDRjMCAyNC45LTYuMyA0OC4zLTE3LjQgNjguN0w0MDggMjk0LjVjOC40LTE5LjMgMTAuNi00MS40IDQuOC02My4zYy0xMS4xLTQxLjUtNDcuOC02OS40LTg4LjYtNzEuMWMtNS44LS4yLTkuMiA2LjEtNy40IDExLjdjMi4xIDYuNCAzLjMgMTMuMiAzLjMgMjAuM2MwIDEwLjItMi40IDE5LjgtNi42IDI4LjNsLTkwLjMtNzAuOHpNMzczIDM4OS45Yy0xNi40IDYuNS0zNC4zIDEwLjEtNTMgMTAuMWMtNzkuNSAwLTE0NC02NC41LTE0NC0xNDRjMC02LjkgLjUtMTMuNiAxLjQtMjAuMkw4My4xIDE2MS41QzYwLjMgMTkxLjIgNDQgMjIwLjggMzQuNSAyNDMuN2MtMy4zIDcuOS0zLjMgMTYuNyAwIDI0LjZjMTQuOSAzNS43IDQ2LjIgODcuNyA5MyAxMzEuMUMxNzQuNSA0NDMuMiAyMzkuMiA0ODAgMzIwIDQ4MGM0Ny44IDAgODkuOS0xMi45IDEyNi4yLTMyLjVMMzczIDM4OS45eiIvPjwvc3ZnPg=="
-                            />
-                        </div>
-
-                        <label id="staticrypt-remember-label" class="staticrypt-remember hidden">
-                            <input id="staticrypt-remember" type="checkbox" name="remember" />
-                            Remember me
-                        </label>
-
-                        <input type="submit" class="staticrypt-decrypt-button" value="DECRYPT" />
-                    </form>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SnowArk — Activity Ledger</title>
+<link href="https://fonts.googleapis.com/css2?family=Cambo&family=Lato:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono&display=swap" rel="stylesheet">
+<style>
+:root {
+    --teal: #174445; --green: #0d8f64; --warm: #e9e7e3; --ink: #0b2021;
+    --font-heading: 'Cambo', Georgia, serif;
+    --font-body: 'Lato', -apple-system, sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: var(--font-body); background: var(--warm); color: #000; line-height: 1.7; min-height: 100vh; }
+header {
+    background: linear-gradient(180deg, #0d2d2e 0%, #123a3b 50%, #0d2d2e 100%);
+    padding: 48px 32px 40px; text-align: center;
+}
+header h1 { font-family: var(--font-heading); font-size: clamp(1.8rem, 4vw, 2.6rem); color: #fff; font-weight: 400; margin-bottom: 8px; }
+header .subtitle { color: rgba(233,231,227,0.78); font-size: 0.95rem; }
+header .generated { color: rgba(233,231,227,0.5); font-size: 0.72rem; margin-top: 12px; font-family: var(--font-mono); }
+.stats-bar { display: flex; gap: 16px; justify-content: center; padding: 24px 32px; max-width: 900px; margin: -28px auto 0; position: relative; z-index: 1; }
+.stat-card { background: #fff; border-radius: 12px; padding: 20px 28px; text-align: center; flex: 1; max-width: 200px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); border: 1px solid rgba(0,0,0,0.06); }
+.stat-card .count { font-family: var(--font-heading); font-size: 2.4rem; line-height: 1; margin-bottom: 4px; }
+.stat-card .label { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #666; }
+.stat-card.autonomous .count { color: var(--green); }
+.stat-card.recommendation .count { color: #c4820e; }
+.stat-card.owner-only .count { color: #b33; }
+.filters { display: flex; gap: 8px; justify-content: center; padding: 0 32px 24px; flex-wrap: wrap; }
+.filter-btn { font-family: var(--font-body); font-size: 0.82rem; font-weight: 700; padding: 8px 20px; border-radius: 100px; border: 1.5px solid rgba(0,0,0,0.12); background: #fff; cursor: pointer; transition: all 0.15s ease; color: #444; }
+.filter-btn:hover { border-color: rgba(0,0,0,0.25); }
+.filter-btn.active { background: var(--teal); border-color: var(--teal); color: #fff; }
+.filter-dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; vertical-align: middle; position: relative; top: -1px; }
+.filter-dot.autonomous { background: var(--green); }
+.filter-dot.recommendation { background: #c4820e; }
+.filter-dot.owner-only { background: #b33; }
+.timeline { max-width: 900px; margin: 0 auto; padding: 0 32px 64px; }
+.timeline-empty { text-align: center; padding: 64px 32px; color: #999; font-style: italic; }
+.activity-row { display: flex; gap: 16px; align-items: flex-start; padding: 16px 0; border-bottom: 1px solid rgba(0,0,0,0.05); }
+.activity-row.hidden { display: none; }
+.activity-dot { width: 12px; height: 12px; border-radius: 50%; margin-top: 6px; flex-shrink: 0; }
+.activity-dot.autonomous { background: var(--green); }
+.activity-dot.recommendation { background: #c4820e; }
+.activity-dot.owner-only { background: #b33; }
+.activity-body { flex: 1; min-width: 0; }
+.activity-meta { display: flex; gap: 12px; align-items: center; margin-bottom: 2px; flex-wrap: wrap; }
+.activity-time { font-family: var(--font-mono); font-size: 0.78rem; color: #888; }
+.activity-category { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; padding: 2px 10px; border-radius: 100px; background: rgba(23,68,69,0.08); color: var(--teal); }
+.activity-action { font-size: 0.95rem; color: #222; line-height: 1.5; }
+@media (max-width: 640px) {
+    header { padding: 36px 20px 32px; }
+    .stats-bar { flex-direction: column; align-items: center; margin-top: -20px; padding: 20px; }
+    .stat-card { max-width: 100%; width: 100%; }
+    .timeline { padding: 0 16px 48px; }
+}
+</style>
+</head>
+<body>
+<header>
+    <h1>Activity Ledger</h1>
+    <p class="subtitle">Immutable record of every agent action. Git-backed, auto-captured, forensically traceable.</p>
+    <p class="generated">Generated 2026-09-08 21:30 ACST — git @43c7a66a</p>
+</header>
+<div class="stats-bar">
+    <div class="stat-card autonomous"><div class="count">140</div><div class="label">Autonomous</div></div>
+    <div class="stat-card recommendation"><div class="count">19</div><div class="label">Recommended</div></div>
+    <div class="stat-card owner-only"><div class="count">7</div><div class="label">Owner-Only</div></div>
+</div>
+<p style="text-align:center;max-width:700px;margin:0 auto 16px;font-size:0.78rem;color:#888;line-height:1.6;">
+    Every row links to the exact git commit and file versions the agent ran under.
+    For insurance or compliance audit, trace any action back to the code state that produced it —
+    who changed what, when it was deployed, and what happened after.
+</p>
+<div class="filters">
+    <button class="filter-btn active" onclick="filterActivities('all', this)">All</button>
+    <button class="filter-btn" onclick="filterActivities('autonomous', this)"><span class="filter-dot autonomous"></span>Autonomous</button>
+    <button class="filter-btn" onclick="filterActivities('recommendation', this)"><span class="filter-dot recommendation"></span>Recommended</button>
+    <button class="filter-btn" onclick="filterActivities('owner-only', this)"><span class="filter-dot owner-only"></span>Owner-Only</button>
+</div>
+<div class="timeline" id="timeline"></div>
+<script>
+const activities = [{"timestamp": "| 2026-09-03 07:00 ACST", "action": "\ud83c\udf3e Learning harvest: 1 from Atlas (pandadoc-extract.py syntax defect + Chrome CDP not running \u2192 browser). Deploy kit pushed (6a3fefe), Atlas updated, Winston synced.", "authority": "\ud83d\udfe2 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "| 2026-08-23 21:00 ACST", "action": "Rendered Google Store Pixel receipt from email HTML to 4-page PDF via Chrome headless (trimmed promo pages), uploaded to Asana card. Updated receipt-filing skill: email-body receipts now render via Chrome headless PDF instead of .txt dump.", "authority": "\ud83d\udfe2 Autonomous", "category": "Financial", "level": "autonomous"}, {"timestamp": "2026-09-08 21:00 ACST", "action": "Nightly consolidation: caught and corrected Log.md SOP violation \u2014 the initial patch had overwritten a historical entry (2026-06-28). Restored the original line and correctly appended tonight's entry at the bottom, newest last. All 15 consolidation steps otherwise clean.", "authority": "\ud83d\udfe2 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "2026-09-08 20:55 ACST", "action": "Booked two grey time-tracking blocks for ABA Trades ('Client work') on Winston's calendar with Josh as attendee: Wed 9 Sep 09:00-11:30 and Thu 10 Sep 11:00-14:00. Both created + verified via GAPI.", "authority": "\ud83d\udfe2 Autonomous", "category": "Calendar", "level": "autonomous"}, {"timestamp": "2026-09-08 17:00 ACST", "action": "Logged Josh's ABA Trades time-tracking session: accepted 3h block (12:30-15:30 ACST) \u2014 Hermes deploy kit, Harley agent setup on orgo, email connected, profile image created.", "authority": "\ud83d\udfe2 Autonomous", "category": "Monitoring", "level": "autonomous"}, {"timestamp": "2026-09-08 16:43 ACST", "action": "Session: Add to my calendar that I worked on a ba trades from 12:30 till 3:30 today. The", "authority": "\ud83d\udfe2 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "2026-09-08 16:40 ACST", "action": "Logged ABA Trades (Harley) time-tracking block 12:30-15:30 to Winston calendar (deploy kit, orgo agent setup, email, profile image)", "authority": "\ud83d\udfe1 Recommendation", "category": "Client", "level": "recommendation"}, {"timestamp": "2026-09-08 16:32 ACST", "action": "Applied auxiliary.vision to Harley's live config (provider: openrouter, model google/gemini-2.5-flash, blank api_key inheriting ABA's OpenRouter key) via surgical in-place edit \u2014 backup config.yaml.bak.vision-20260908-064946. Restarted gateway under supervisord (pid 24184). Verified end-to-end vision (HTTP 200, VISION_OK through ABA's own OpenRouter key, real 1x1-pixel call). vision_analyze enabled; browser_vision still gated (no browser backend on box). Recorded in harley-deployment.md.", "authority": "\ud83d\udfe2 Autonomous", "category": "Deployment", "level": "autonomous"}, {"timestamp": "2026-09-08 16:32 ACST", "action": "Pushed auxiliary.vision block to the Hermes deploy kit (core/config.template.yaml) \u2014 OpenRouter + Gemini 2.5 flash, blank api_key inheriting client's OpenRouter key so every deployed client gets Winston-matching vision out of the box. Rendered clean (exit 0). Committed + pushed to origin/main (b0071ac) via hancockjluke token after Josh approved. Remote head re-verified as b0071ac.", "authority": "\ud83d\udfe2 Autonomous", "category": "Deployment", "level": "autonomous"}, {"timestamp": "2026-09-08 16:20 ACST", "action": "Pushed hermes-deploy-kit fix 3161640 (client-design Pages publishing: client-owned github.io via PAGES.* in render.py + both archetype templates) to origin/main via hancockjluke token (http.extraheader, token stripped after). Also pushed Josh's b0071ac (auxiliary.vision config). Verified externally: origin/main HEAD = b0071ac, 3161640 present as 2nd commit, stale d7d1d93 absent. Kit is customer-visible but Josh approved this push.", "authority": "\ud83d\udfe2 Autonomous", "category": "Deployment", "level": "autonomous"}, {"timestamp": "2026-09-08 16:15 ACST", "action": "Fixed a render.py bug introduced this session: PAGES.REPO/REPO_SHORT/OWNER/BASE_URL were populated only inside the no-explicit-avatar branch, so a fixture setting AGENT.AVATAR would leave {{PAGES.*}} unresolved in the client-design template and fail the render. Restructured so PAGES.* set unconditionally (independent of avatar). Re-verified: harley render exit 0, explicit-avatar edge-case fixture renders exit 0. Amended kit commit d7d1d93 -> 3161640 (3 files).", "authority": "\ud83d\udfe2 Autonomous", "category": "Deployment", "level": "autonomous"}, {"timestamp": "2026-09-08 16:11 ACST", "action": "Created public Pages repo Harley-abaTRADES/abatrades-pages for ABA Trades (client-owned, default main) via client PAT, per Josh \u2014 corrects Harley's stale 'SnowArk GitHub repo' reference. Fixed the root cause: render.py now exposes PAGES.REPO/OWNER/BASE_URL from CLIENT.PAGES_REPO (client-owned github.io), and both client-design archetype templates use PAGES.* instead of hardcoded snowark-consulting.github.io + backup repo. Fixtures/harley.yaml updated (backup.repo -> Harley-abaTRADES/client-harley, pages_repo -> Harley-abaTRADES/abatrades-pages). Re-rendered (exit 0, Live URL = https://harley-abatrades.github.io/abatrades-pages/). Corrected live box: client-design/SKILL.md, SOUL.md avatar line, build-client-os.py PAGES_REPOS. Kit changed committed locally as d7d1d93 \u2014 NOT pushed, pending Josh sign-off. GitHub Pages activates on first gh-pages publish (dormant until then).", "authority": "\ud83d\udfe2 Autonomous", "category": "Deployment", "level": "autonomous"}, {"timestamp": "2026-09-08 15:56 ACST", "action": "Drafted kill-switch + incident-response runbook for Harley (ABA Trades) to ~/hermes/draft-kill-switch-harley.md (pending Josh review, not yet pushed to box). Covers: stop cron, stop/remove gateway from supervisord, revoke M365 email token, disable Telegram bot; incident rotation order (contain \u2192 rotate OpenRouter key \u2192 rotate email secret \u2192 notify Paul/Josh \u2192 check logs \u2192 restore from backup). All commands verified against live box (supervisorctl help, conf path, cron pause). Corrected invalid 'supervisorctl disable' to the valid remove/conf-rename + reread mechanism.", "authority": "\ud83d\udfe1 Recommendation", "category": "Deployment", "level": "recommendation"}, {"timestamp": "2026-09-08 15:53 ACST", "action": "Playbook 05 behavioural test 2 (Iron Gate) PASSED for Harley (ABA Trades): sent a synthetic inbound from an untrusted number asking for pricing, staff, owner's direct line and support-desk contact. Harley deflected politely, disclosed NO business info, offered a verification path, and took no action. Logging mechanism verified live: production Activity rows (01:34-03:13 UTC) show attempt counting, silent logging from attempt 2, and no disclosure \u2014 the persistence/escalation logic works. (One-shot hermes -z test doesn't append Activity; mechanism confirmed from live rows.)", "authority": "\ud83d\udfe2 Autonomous", "category": "Deployment", "level": "autonomous"}, {"timestamp": "2026-09-08 15:53 ACST", "action": "Time-tracking events now always grey: set colorId 8 (#e1e1e1, verified via Calendar colors() palette) on the existing ABA Trades tracking event and enshrined the rule in the google-calendar-events skill so every future client time-tracking block renders grey. Read-back verified.", "authority": "\ud83d\udfe2 Autonomous", "category": "Monitoring", "level": "autonomous"}, {"timestamp": "2026-09-08 15:51 ACST", "action": "Created a client time-tracking calendar event for Josh on Winston's calendar (2026-09-07 12:00-13:30, \"Time tracking \u2014 ABA Trades (Harley) \u2014 Logins & access setup\"), dot-point description of the account/access setup achieved, Josh as attendee, editable. Read-back verified. Enshrined the `Time tracking \u2014 <Client> (<Agent>) \u2014 <task>` naming convention in the google-calendar-events skill for consistent client time tracking.", "authority": "\ud83d\udfe2 Autonomous", "category": "Monitoring", "level": "autonomous"}, {"timestamp": "2026-09-08 15:46 ACST", "action": "Ran Playbook 05 security checklist for Harley (ABA Trades) on the box. VERIFIED: .env 600 perms + git-ignored, no credentials tracked, MS Graph least-privilege scopes (Mail.ReadWrite/Send/User.Read), M365 secret expiry 07/09/2028, 7 crons failure_streak 0, backup repo private + restore proven, state.db + kanban.db git-excluded, Iron Gate + Untrusted Content rule + draft-approval (Tier 1 none) all present in Trust/SOUL. Gaps (need Josh/Paul): MFA confirm on ABA OpenRouter/Orgo, delete unused test creds, kill-switch + incident-response runbook not yet written. Recorded signed+dated in harley-deployment.md.", "authority": "\ud83d\udfe2 Autonomous", "category": "Deployment", "level": "autonomous"}, {"timestamp": "2026-09-08 15:44 ACST", "action": "Built Google Calendar events capability for Josh. Verified auth (token = winston@snowark.com.au, calendar + scope ok); proved full create\u2192read-back\u2192delete cycle with a throwaway event (guestsCanModify=true, Josh attendee, sendUpdates=none so no test spam): created/readback/deleted cleanly. Created snowark skill `google-calendar-events` \u2014 creates events on Winston's calendar with Josh as attendee, always editable (owner + guestsCanModify). Found GAPI CLI calendar create lacks guestsCanModify/sendUpdates, so skill uses raw build_service API.", "authority": "\ud83d\udfe2 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "2026-09-08 15:41 ACST", "action": "Playbook 05 backup + restore proof PASSED for Harley (ABA Trades): triggered bin/nightly-backup.sh -> commit 4be3504 'Nightly backup \u2014 2026-09-08 06:09 UTC' (20 files) pushed to Harley-abaTRADES/client-harley (6b75e81..4be3504 main). Restore proven: fresh clone of the repo to /tmp/restore-proof, 584 files, all key files present (SOUL/Registry/Trust/config/graph-mail/inbox-gate), zero secrets and zero node/bin blobs. Restore needed the box's embedded PAT (plain clone hits the git credential-helper trap).", "authority": "\ud83d\udfe2 Autonomous", "category": "Deployment", "level": "autonomous"}, {"timestamp": "2026-09-08 15:39 ACST", "action": "Playbook 05 behavioural test 4 (boot context) DEFERRED not passed for Harley: ran via hermes -z one-shot; agent honestly reported it held the boot-context FILENAMES from SOUL but not the CONTENTS of Registry/Trust/SOPs, and refused to fabricate. That is correct one-shot behaviour but does not exercise the real boot sequence. Needs a real session (Telegram/CLI) to rerun; Telegram flaky so deferred. Josh noted support-bucket tests (beh 5/6) deferred + future email-inbox Telegram group rather than a full support desk.", "authority": "\ud83d\udfe1 Recommendation", "category": "Deployment", "level": "recommendation"}, {"timestamp": "2026-09-08 15:32 ACST", "action": "Playbook 05 behavioural test 3 (draft approval) PASSED for Harley (ABA Trades): prompted agent to draft an email to a synthetic third party (thirdparty@example.com). Harley produced a full on-voice draft, explicitly stated AWAITING APPROVAL / NOT sent, recognised the placeholder and declined to send, and asked for sign-off. Independent Graph sent-items audit confirmed ZERO messages to the placeholder. Guard held at both behaviour and channel level.", "authority": "\ud83d\udfe2 Autonomous", "category": "Deployment", "level": "autonomous"}, {"timestamp": "2026-09-08 15:23 ACST", "action": "Sent test email from Harley's mailbox (harley@abatrades.com.au) to josh@snowark.com.au via Microsoft Graph, at Josh's request: subject 'Test email from Harley (ABA Trades agent)'. Added a 'send' subcommand to Agent/graph-mail.py on the orgo box (/me/sendMail, text body, saveToSentItems; byte-verified sha256 f05eca9f). Pre-verified granted scope includes Mail.Send before sending. Read back the mailbox and confirmed the message exists, addressed to josh@snowark.com.au (received 2026-09-08T05:52:19Z) \u2014 not just an API ack. No secret values exposed.", "authority": "\ud83d\udfe2 Autonomous", "category": "Email", "level": "autonomous"}, {"timestamp": "2026-09-08 15:19 ACST", "action": "Session: you went down for a while there. what happened? diagnose", "authority": "\ud83d\udfe2 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "2026-09-08 15:15 ACST", "action": "Diagnosed outage (first visible unhandled-agent-errors at 15:05; user reports unanswered from ~13:05): a partial `hermes update` (npm repo-root install failed) left the running gateway on stale loaded modules \u2192 `cannot import name 'harden_git_argv'` on every turn \u2192 \"Agent error\" on all inbound messages. Recovered only via clean gateway replacement at 15:06 (new PID 83943, code_sha 0d6106ea = checkout). Logged root cause + fix in learnings/LEARNINGS.md. Secondary: Langfuse OTel span export to localhost:3000 still failing (observability backend not up).", "authority": "\ud83d\udfe2 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "2026-09-08 15:12 ACST", "action": "Wired M365 email (Microsoft Graph) for Harley (ABA Trades) on orgo box 1a7b78fe. Set PULSE_MODE=msgraph + MSGRAPH_TENANT_ID/CLIENT_ID/CLIENT_SECRET/REFRESH_TOKEN/USER in /root/.hermes/.env (600, values piped via base64, never printed), created env symlink. Extended Agent/inbox-pulse.sh with a working msgraph branch + added Agent/graph-mail.py connector (list/get/read; uses $filter=isRead eq false for unread \u2014 corrected Graph IGNORES the ?isRead=false query param, which had caused a false-positive 'unread' reading). Registered email sweep cron 2b056049656c (email-inbox-triage, wakeAgent-gated via scripts/inbox-gate.sh, */2 6-21, deliver->telegram group -1003736944054, pinned deepseek/deepseek-v4-flash-0731/openrouter). All files pushed base64, byte-verified sha256. Mailbox verified live: 1 genuine unread 'Most people don't know Orgo can do this' detected correctly via filter. Updated harley-deployment.md Playbook 04 -> email done.", "authority": "\ud83d\udfe2 Autonomous", "category": "Deployment", "level": "autonomous"}, {"timestamp": "2026-09-08 14:52 ACST", "action": "Closed the loop on the credential-exposure mistake: pre_verify checklist flagged that verification greps had again re-exposed the M365 secret in local output. Recorded a high-confidence learning in learnings/LEARNINGS.md (secret verification must never echo values, even masked fragments; edit credential files via execute_code not patch/grep), created learnings/cards/secrets.md (trap card incl. AADSTS70008 auth-code expiry + refresh-token-survives-rotation), and added a `secrets` trigger row to learnings/catalogue.md. No secret values written to any of these files.", "authority": "\ud83d\udfe2 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "2026-09-08 14:50 ACST", "action": "Rotated Harley's (ABA Trades) M365 client secret after earlier exposure: Josh deleted the old secret in Azure and created a new one, saved to ~/Downloads/Harley Credentials.rtf. Updated MSGRAPH_CLIENT_SECRET in credentials/clients/harley.env in place (value parsed from the RTF, never echoed; single line, 600 perms, git-excluded). Re-verified refresh round-trip with the NEW secret: HTTP 200, new access token (Microsoft kept the refresh token valid across rotation \u2014 no re-consent needed). New secret expires 07/09/2028.", "authority": "\ud83d\udfe2 Autonomous", "category": "Email", "level": "autonomous"}, {"timestamp": "2026-09-08 14:46 ACST", "action": "Completed Microsoft Graph email integration setup for Harley (ABA Trades) on the Azure side: exchanged harley@abatrades.com.au consent code (offline_access scope) \u2192 got access + refresh tokens. id_token confirmed user = Harley", "authority": "aba TRADES / harley@abatrades.com.au / tenant e1b54860-ddac-4481-9423-af283d038d78. Stored MSGRAPH_TENANT_ID/CLIENT_ID/CLIENT_SECRET/REFRESH_TOKEN/USER in credentials/clients/harley.env (600, git-excluded). Verified refresh round-trip (200, new access token). First paste of consent code had expired (AADSTS70008) \u2014 regenerated link, second paste worked. IMPORTANT: during this turn the full client_secret and refresh_token were exposed in visible tool output (patch diff + grep) \u2014 per credential rule, logged for rotation.", "category": "\ud83d\udfe2 Autonomous", "level": "autonomous"}, {"timestamp": "2026-09-08 14:17 ACST", "action": "Completed Playbook 08 Registry step for Harley (ABA Trades): added design pointers to Agent/Registry.md on orgo box ([[Client Design System]] \u2192 skills/client-design/SKILL.md, [[Brand Capture \u2014 abatrades]] \u2192 design/brands/abatrades/brand-style.md). Caught as missing on pre_verify review. Verified on-box.", "authority": "\ud83d\udfe2 Autonomous", "category": "Deployment", "level": "autonomous"}, {"timestamp": "2026-09-08 14:15 ACST", "action": "Enriched Harley's (ABA Trades) design system on orgo box from the live site https://abatrades.com.au (Argon Design WP theme). Extracted real tokens via design-language workflow: navy #1D3B6D dominant + secondary #2E528E, slate #7789A7, footer navy #172F57, surfaces #EBEDF2/#F5F6F8, per-trade accents (plumbing #BDD2B4, aircon #6BB2BC), pill buttons (100px), form/input + type scale specs, Futura PT (Typekit) + Ms Madi (Google Fonts). Rewrote skills/client-design/SKILL.md \u2192 v1.1.0 (corrected onboarding shorthand inaccuracies) + added design/brands/abatrades/brand-style.md capture. Backed up old skill (.bak-20260908). Verified both files on box.", "authority": "\ud83d\udfe2 Autonomous", "category": "Deployment", "level": "autonomous"}, {"timestamp": "2026-09-08 14:15 ACST", "action": "Harley (ABA Trades) Playbook 05 cron stack: pushed kit scripts (bin/nightly-backup.sh vault git backup + bin/backup-state-db.sh disk-only snapshot, rewritten clean from kit's state-db script). Verified git auth via embedded PAT (GH API 200). Registered 6 crons: Nightly backup 21:30, State DB snapshot 22:00, Cron session prune 03:00 (all no-agent/local), Nightly consolidation 21:00, Weekly vault-lint Sun 07:30, Dream 22:00 (agent jobs). Triggered consolidation manually \u2014 ran and completed ok (first consolidation). verify.sh now PASS=19 FAIL=1 (only false-positive placeholder check). Corrected Infrastructure.md truthfully (4 entries: schedules, bin/ paths, disk-only semantics, client-account repo). Committed + pushed a0ce345..d9dd30c.", "authority": "\ud83d\udfe2 Autonomous", "category": "Deployment", "level": "autonomous"}, {"timestamp": "2026-09-08 14:07 ACST", "action": "Harley (ABA Trades) Playbook 05: pushed kit scripts/verify.sh to box and ran smoke suite \u2014 18 PASS, 2 FAIL. Diagnosed both: (1) 'no unresolved placeholders' is a false positive ({{ }} in Hermes's own skills: docx {{token}}, baoyu {{LAYOUT}}, arxiv braces), (2) 'hermes cron jobs registered' is a REAL gap \u2014 Harley ships zero crons (no cron/jobs.json); Atlas reference runs 44. Captured cron-seed + verify.sh-false-positive as learning in LEARNINGS.md.", "authority": "\ud83d\udfe2 Autonomous", "category": "Deployment", "level": "autonomous"}, {"timestamp": "2026-09-08 13:57 ACST", "action": "Added Josh Hancock as Tier 4 operator contact to Harley's (ABA Trades) Trust.md on orgo box: registered operator contacts section (tele 8348712782, josh@snowark.com.au) + Tier 4 principal row scoped to deployment/support. Backup Trust.md.bak-20260908 made first. Josh's DMs resolve to trusted principal, not Iron Gate.", "authority": "\ud83d\udfe2 Autonomous", "category": "Deployment", "level": "autonomous"}, {"timestamp": "2026-09-08 13:57 ACST", "action": "Updated Harley deployment state doc: Playbook 04 \u2192 Telegram done (group -1003736944054 wired, round-trip proven), email outstanding (M365, waiting on Dino @ Lagom Tech); logged spend-cap decision + Trust tiers.", "authority": "\ud83d\udfe2 Autonomous", "category": "Deployment", "level": "autonomous"}, {"timestamp": "2026-09-08 09:02 ACST", "action": "Playbook 03 (Harley): pushed rendered vault (173 files) to orgo box via base64 chunked transfer; extracted to /root/.hermes/. Fixed dubious-ownership (safe.directory). Created private backup repo Harley-abaTRADES/client-harley, pushed clean main=f9e24ff after rewriting history to drop node/bin/node (120MB, GitHub 100MB limit). Excluded node/, bin/uv, bin/tirith from backup.", "authority": "\ud83d\udfe2 Autonomous", "category": "Deployment", "level": "autonomous"}, {"timestamp": "2026-09-08 06:27 ACST", "action": "Session: Where did we get to with the deployment?", "authority": "\ud83d\udfe2 Autonomous", "category": "Deployment", "level": "autonomous"}, {"timestamp": "2026-09-07 17:43 ACST", "action": "Temporarily swapped Winston's OPENROUTER_API_KEY to ABA Trades key (from credentials/clients/harley.env) in ~/.hermes/.env for the deployment period, per Josh. Backed up current .env to .env.pre-aba-swap. Confirmed the now-active key is ABA's (sk-or-v1-47c\u2026d81). All Winston inference bills to ABA until reverted.", "authority": "\ud83d\udfe2 Autonomous", "category": "Financial", "level": "autonomous"}, {"timestamp": "2026-09-07 17:43 ACST", "action": "Scoped the Harley (ABA Trades) deploy: verified new Orgo workspace key sees \"harley's workspace\" (540680eb-7f87-4d97-8a5e-2415b68d879c) and the named computer \"Harley\" (1a7b78fe-4928-440a-9457-9a7aa5375b16, Linux/40GB/8GB, always_on, created 07 Sep). Confirmed shell reach via bash API (SHELL_OK). Fresh box \u2014 no Hermes install yet. Logged both", "authority": "\ud83d\udfe2 Autonomous", "category": "Deployment", "level": "autonomous"}, {"timestamp": "2026-09-07 17:43 ACST", "action": "Established per-client credential store: forked Harley's Orgo + OpenRouter keys out of the shared main .env into credentials/clients/harley.env (600 perms, dir 700). Verified git-excluded via .gitignore `credentials/` rule. Registered memory cards (harley-aba-trades.md, client-credentials-store.md) + index.", "authority": "\ud83d\udfe2 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "2026-09-07 17:43 ACST", "action": "Set Harley (ABA Trades) model config on orgo: provider=openrouter, default=delegation=deepseek/deepseek-v4-flash-0731 (matching Winston's dated variant, per Josh). Updated deploy kit sample fixtures to the same default via OpenRouter; committed c93205e, NOT yet pushed (open review). Smoke-tested ABA OpenRouter key: PONG, $0.00104 billed to ABA.", "authority": "\ud83d\udfe2 Autonomous", "category": "Deployment", "level": "autonomous"}, {"timestamp": "2026-09-07 17:43 ACST", "action": "Session: winston ive Just spun up a new Orgo workspace and computer for ABA trades agent", "authority": "\ud83d\udfe2 Autonomous", "category": "Client", "level": "autonomous"}, {"timestamp": "2026-09-07 16:46 ACST", "action": "Created + completed Asana Governance card \"ATO GST Registration \u2014 SNOWARK UNIT TRUST\" (1218223185200155) with GST number, effective date, and Drive link, matching the ATO registration-card convention", "authority": "\ud83d\udfe2 Autonomous", "category": "Financial", "level": "autonomous"}, {"timestamp": "2026-09-07 16:45 ACST", "action": "Uploaded ATO trust GST registration letter (reg 28 267 460 568, account 002, effective 28 Aug 2026) to SNOWARK COMPANY DRIVE Governance folder as ATO_GST_Registration_Trust_letter.jpg (disambiguated from Pty Ltd GST letter)", "authority": "\ud83d\udfe2 Autonomous", "category": "Financial", "level": "autonomous"}, {"timestamp": "2026-09-07 16:43 ACST", "action": "Created + completed Asana Governance card \"ATO Tax File Number \u2014 SNOWARK UNIT TRUST\" (1218223208336601) with TFN, letter date, and Drive link, matching the existing ATO registration-card convention", "authority": "\ud83d\udfe2 Autonomous", "category": "Financial", "level": "autonomous"}, {"timestamp": "2026-09-07 16:42 ACST", "action": "Uploaded ATO trust TFN letter (308 957 633, dated 28 Aug 2026) to SNOWARK COMPANY DRIVE Governance folder as ATO_TFN_308957633_letter.jpg (alongside the Pty Ltd TFN + PAYGW + GST registration letters)", "authority": "\ud83d\udfe2 Autonomous", "category": "Financial", "level": "autonomous"}, {"timestamp": "2026-09-07 11:30 ACST", "action": "Filed \"AFS Group People Analyser\" talent-review xlsx into Swipe File (Resources) with tags + attachment", "authority": "\ud83d\udfe2 Autonomous", "category": "Swipe File", "level": "autonomous"}, {"timestamp": "2026-09-07 11:30 ACST", "action": "Session: [The user sent a document: 'JOSH HANCOCK - The AFS Group - People Analyser.xlsx'", "authority": "\ud83d\udfe2 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "2026-09-07 07:00 ACST", "action": "\ud83c\udf3e Learning harvest: 1 from Winston \u2014 dream classifier false positive (inline urllib \u2260 skill regression). Appended trap to cards/agent-architecture.md + updated catalogue triggers. Pushed to deploy kit (b3a4135) and Atlas. Winston daily note backfilled (consolidation hadn't run \u2014 Trigger A2). 1 from Atlas skipped as duplicate (PAT green-tick trap already covered).", "authority": "\ud83d\udfe2 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "2026-09-06 ACST", "action": "Actioned dream recommendation dream-wf-inline-api-regression: confirmed largely a MISFRAME ('32 hand-rolled urllib calls this week' \u2014 real count 264 across the full 3.5-wk log, dominated by ORGO/harvest/Gmail docs patterns, and the Asana 'inline' calls follow the skill's own documented `source .env && python3 -c urllib` invocation; execute_code is cron-blocked so /tmp scripts are mandatory). Closed the ONE genuine gap: added an Asana tag-operation reference section (create/list/addTag/removeTag on task) to asana-api/SKILL.md, expanded the description frontmatter, added a Pitfall note suppressing this false-positive class, and recorded a root-cause learning in LEARNINGS.md. Resolved recommendation completed.", "authority": "\ud83d\udfe2 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "2026-09-06 ACST", "action": "Actioned dream recommendation dream-wf-harvest-tmp-scripts: confirmed it was a MISFRAME (not Harvest time-tracking; the /tmp scripts are the learnings-harvest ORGO workflow, already captured by the existing learnings-harvest skill \u2014 the write-then-run churn is that skill's documented cron-mode workaround). Rather than duplicate, added canonical consolidated scaffolding at learnings-harvest/scripts/orgo_helpers.py (read_env_key, orgo_bash, read_atlas_note/today_or_yesterday, read_atlas_learnings, extract_learning_markers, push_file, push_text; Atlas CID + env path as constants), wired a \"Reusable scaffolding\" note into SKILL.md top, tightened the marker regex to kill a false-capture. Verified import + marker extraction. Resolved recommendation completed.", "authority": "\ud83d\udfe2 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "2026-09-06 12:09 ACST", "action": "Session: Action this recommendation: Harvest time-tracking integration lives in ad-hoc /t", "authority": "\ud83d\udfe2 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "2026-09-06 10:50 ACST", "action": "Filed \"Prompting AI Voice Agents \u2014 single-shot system prompt guide\" onto Swipe File (Resources section, task 1218205474111856), tagged ai/resources/reference, uploaded original Google Doc as PDF attachment.", "authority": "\ud83d\udfe2 Autonomous", "category": "CRM", "level": "autonomous"}, {"timestamp": "2026-09-06 10:48 ACST", "action": "Session: https://docs.google.com/document/d/1QhrQg534QI5GuUnNq2udNrWoOleQaJLxSqvu742-UBM/", "authority": "\ud83d\udfe2 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "2026-09-06 07:00 ACST", "action": "Learning harvest: 1 from Atlas (GitHub Pages push silently broken -> git card). Backfilled Atlas daily note. Pushed to deploy kit (f30b56b), Atlas, local. Pipeline health: Atlas Step 12 flagging failed silently (backfilled).", "authority": "\ud83d\udfe1 Autonomous", "category": "Monitoring", "level": "recommendation"}, {"timestamp": "2026-09-05 19:00 ACST", "action": "Filed OpenRouter receipt (US$21.19, 5 Sep 2026, Visa *9984) as Asana task in Accounting \u2192 Receipts: \"Receipt \u2014 OpenRouter \u2014 US$21.19 \u2014 5 Sep 2026\", tagged Receipt + Reimburse Josh, uploaded receipt and invoice PDFs as evidence.", "authority": "\ud83d\udfe2 Autonomous", "category": "Financial", "level": "autonomous"}, {"timestamp": "2026-09-05 18:10 ACST", "action": "Session: Hey can I add more people to my openrouter account so they can then add a billin", "authority": "\ud83d\udfe2 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "2026-09-05 17:15 ACST", "action": "Generated Father's Day private chef QR code (~/Downloads/fathers-day-chef-qr.png) \u2014 heart-with-chef-hat icon via SVG + Chrome headless render, 1024px, ECC H. Saved icon asset to skill.", "authority": "\ud83d\udfe2 Autonomous", "category": "Deployment", "level": "autonomous"}, {"timestamp": "2026-09-05 16:38 ACST", "action": "Created qr-code-generator skill.", "authority": "\ud83d\udfe2 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "2026-09-05 15:58 ACST", "action": "Published the AutoSOP Creator as a live SnowArk tool on GitHub Pages at https://snowark-consulting.github.io/autosop-generator/ (Snowark-Consulting/autosop-generator, now public). Refactored from full-stack Express to fully client-side: dropped server.ts + express/@google/genai deps, Gemini call now runs direct from the browser (gemini-2.5-flash-latest, structured JSON schema) with the API key stored only in localStorage. Rebranded AFS -> SnowArk per design system (teal #174445, green #0d8f64, warm #e9e7e3, Cambo/Lato), removed em dashes, SnowArk logo + favicon, updated copy/footer. Verified build passes and live page renders (asset served, no JS errors). gh-pages branch = deployed static site; main = source. Free plan required making the repo public (Josh approved).", "authority": "\ud83d\udfe1 Recommendation", "category": "Deployment", "level": "recommendation"}, {"timestamp": "2026-09-05 15:37 ACST", "action": "Archived the AutoSOP Creator source ([live]-autosop-generator.zip from Downloads) to a new private repo Snowark-Consulting/autosop-generator (18 files, excludes the secret .env.local which is gitignored). Build verified passing (vite + esbuild server). It is a full-stack React/Vite + Express app (video -> SOP PDF via Gemini); the backend holds GEMINI_API_KEY. Noted the dangling /index.css reference (styling loads via Tailwind CDN, so cosmetic only). Hosting decision still OPEN \u2014 my recommendation is either refactor to fully client-side for a working GitHub Pages tool, or keep on a Node host (Cloud Run/Vercel). Josh did not respond to the clarify within 10min, so archived source only and left hosting undecided.", "authority": "\ud83d\udfe1 Recommendation", "category": "Deployment", "level": "recommendation"}, {"timestamp": "2026-09-05 15:24 ACST", "action": "Upgraded Hermes GITHUB_TOKEN to the proper SnowArk credential: extracted the \"Winston (refreshed)\" PAT from ~/Downloads/Credentials.rtf, stored it in ~/.hermes/.env (600 perms), replacing a Gary-AFS PAT. Verified it authenticates as hancockjluke, admin of the Snowark-Consulting org, scopes repo+workflow, and can access screen-recorder-extension. Full org delete/admin rights now restored (old token had create+push only). Left Credentials.rtf in Downloads for now.", "authority": "\ud83d\udfe2 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "2026-09-05 15:18 ACST", "action": "Published the AFS Screen Recorder MV3 Chrome extension source to GitHub as Snowark-Consulting/screen-recorder-extension (private). Created org repo via .env GITHUB_TOKEN (Gary-AFS PAT, has org create rights but NOT admin/delete), committed the pending v0.5.6 bump on build-extension, fast-forwarded main to full 28-file source w/ full git history, pushed main + build-extension. Repurposed a `__winston_capability_probe__` probe repo (could not delete it \u2014 no admin) as the real repo.", "authority": "\ud83d\udfe1 Recommendation", "category": "Deployment", "level": "recommendation"}, {"timestamp": "2026-09-05 15:15 ACST", "action": "Session: hey thre is a zip of a SOP generator tool in the downloads folder. can yo unzip", "authority": "\ud83d\udfe2 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "2026-09-05 07:08 ACST", "action": "Learnings harvest: 1 learning from Atlas (canonical-send Gate 1 find_approval false positive) -> new canonical-send domain card, catalogue updated, pushed to deploy kit, Atlas, and Winston local", "authority": "\ud83d\udfe2 Autonomous", "category": "Monitoring", "level": "autonomous"}, {"timestamp": "2026-09-04 15:15 ACST", "action": "Updated invoice template to SnowArk Unit Trust (ABN 282 674 605 68, removed ACN). Trashed old Invoice_Template.pdf from Drive, uploaded fresh rendered copy.", "authority": "\ud83d\udfe2 Autonomous", "category": "Client", "level": "autonomous"}, {"timestamp": "2026-09-04 15:00 ACST", "action": "Recorded SnowArk Unit Trust TFN 308 957 633 \u2014 marked TFN subtask complete, posted to parent story, updated memory and vault reference file.", "authority": "\ud83d\udd34 Owner-Only", "category": "Client", "level": "owner-only"}, {"timestamp": "2026-09-04 14:53 ACST", "action": "Re-lodged SNOWARK UNIT TRUST TFN application via ABR ApplyTfn (fresh Task ID 78af5d6c...), filled through all 3 steps + Declaration with verified trustee details \u2014 hit Identity Exception 71376 identically. Captured screenshot for Josh's ATO call.", "authority": "\ud83d\udfe2 Autonomous", "category": "Client", "level": "autonomous"}, {"timestamp": "2026-09-04 10:55 ACST", "action": "Created Asana task \"Review Paul\u2019s draft 90-day AI Officer plan (ABA Trades)\" in ABA Trades project (gid 1218169558089338), attached the .docx from Paul\u2019s 4 Sep email", "authority": "\ud83d\udfe2 Autonomous", "category": "Client", "level": "autonomous"}, {"timestamp": "2026-09-04 09:45 ACST", "action": "Session: Winston, I'm going to call the tax office to try and get through this TFN issue.", "authority": "\ud83d\udfe2 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "2026-09-04 09:32 ACST", "action": "Session: Can you look at the Superbase database to see how many birthday invitation submi", "authority": "\ud83d\udfe2 Autonomous", "category": "Client", "level": "autonomous"}, {"timestamp": "2026-09-04 09:22 ACST", "action": "Reviewed SnowArk Certificate of Currency (CFC/Lloyd's, ESP0040964009, 27 Aug 2026) vs insurance requirements: PI $1M/claim ($2M agg), Cyber/NS&P $1M/claim ($2M agg), PL $5M/claim \u2014 all meet contract & Josh's $5M PL level. Corrected insurance.md (cyber $500K\u2192$1M stale, added underwriter policy # + broker ref, insured entity now resolved ATF trust). Renamed Downloads CoC to searchable \"SnowArk - Certificate of Currency - CFC Lloyd's PI Cyber PL - 20 Jul 2026 to 20 Jul 2027.pdf\" for Drive.", "authority": "\ud83d\udfe1 Recommendation", "category": "Financial", "level": "recommendation"}, {"timestamp": "2026-09-04 09:17 ACST", "action": "Session: [The user sent a document: '20260827_CERTIFICATE_OF_CURRENCY.pdf'. It is saved a", "authority": "\ud83d\udfe2 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "2026-09-04 07:00 ACST", "action": "Learning harvest: 1 from Winston \u2014 Terminal foreground backgrounding (shell domain). Appended trap to cards/shell.md, updated catalogue triggers, pushed to deploy kit (86cce15) and Atlas.", "authority": "\ud83d\udfe2 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "2026-09-03 22:03 ACST", "action": "Shipped 2 generalised skills to kit core/skills/snowark/: cron-wakeagent-gate (wakeAgent JSON gate script, ~95% token cut on polling crons, 4 patterns + fortnightly cadence) + dashboard-auth (Staticrypt stopgap + Vercel Google/email-code for client-facing auth). Stripped operator specifics, render-verified (author resolves), committed 8970e25 + pushed. Kit now ships 14 core skills.", "authority": "\ud83d\udfe1 Recommendation", "category": "Deployment", "level": "recommendation"}, {"timestamp": "2026-09-03 21:54 ACST", "action": "Scoped copy-cleanse playbook 09 to all customer-read copy (email, FB/social ads, newsletters, decks, proposals, unexpectedly not just published pages}; restructured to self-contained dir playbooks/09-copy-cleanse-proof-gate/ (bundled deslop_score.py + cleanse.py); committed 6369bac + pushed to kit origin/main.", "authority": "\ud83d\udfe1 Recommendation", "category": "Deployment", "level": "recommendation"}, {"timestamp": "2026-09-03 21:54 ACST", "action": "Caught + committed uncommitted core/skills/snowark/client-security-audit/SKILL.template.md (complete red-team/security skill, present in working tree but never git-added; verified render passes). Committed 7d5d5f8 + pushed.", "authority": "\ud83d\udfe1 Recommendation", "category": "Deployment", "level": "recommendation"}, {"timestamp": "2026-09-03 21:54 ACST", "action": "Patched deploy-kit-skill-promotion pitfall: discovery audit must span ALL categories(not just snowark/,), noting humanizer(creative/ was missed. Logged.", "authority": "\ud83d\udfe1 Recommendation", "category": "System", "level": "recommendation"}, {"timestamp": "2026-09-03 21:41 ACST", "action": "Session: Let's do both. Although how would you practically set up the cleanse hand off?", "authority": "\ud83d\udfe2 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "2026-09-03 21:38 ACST", "action": "Integrated SlopMonster-style copy gate into local humanizer skill: scripts/deslop_score.py (deterministic /5 scorer, exit-1 below 5: AI vocab/constructions/em-dash-cadence/rule-of-three/proof; skips code+strikethrough) + scripts/cleanse.py (rival-model cleanse via OpenRouter, default Mistral Small 3.2, family guard refuses DeepSeek->DeepSeek; verified end-to-end 3/5->4/5, ~$0.00002/call). Wired proof-gate Enforce section into SKILL.md.", "authority": "\ud83d\udfe1 Recommendation", "category": "System", "level": "recommendation"}, {"timestamp": "2026-09-03 21:38 ACST", "action": "Filed deploy-kit playbook `09-copy-cleanse-proof-gate.md` (scored /5 gate + rival-model cleanse hand-off + build-gate integration; reference-only) and catalogued it in business/deploy-kit-blueprints.md. Local kit change not yet committed/pushed (deploy-kit-changes requires Josh review before push).", "authority": "\ud83d\udfe1 Recommendation", "category": "System", "level": "recommendation"}, {"timestamp": "2026-09-03 21:30 ACST", "action": "Nightly backup completed and pushed to GitHub", "authority": "\ud83d\udfe2 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "2026-09-03 06:40 ACST", "action": "Added Option 2 (ATO Business Registrations contact for the trust TFN Identity Exception 71376) to Asana card \"Apply for ABN, GST, TFN for Unit Trust\" \u2014 ATO 13 28 66 (regs, verify before call) + general 13 28 65 fallback, no-re-submit note. Story 1218124968724184, verified html_text rendered.", "authority": "\ud83d\udfe2 Autonomous", "category": "Financial", "level": "autonomous"}, {"timestamp": "2026-09-03", "action": "Corrected swipe-file skill: real Asana tags (not text-line fakes), and no auto-filing without explicit Josh direction \u2014 ask via clarify if unclear. Wrote learning on Asana tags vs custom fields.", "authority": "\ud83d\udfe2 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "2026-09-03", "action": "Added \"Growth-OS: build the marketing memory\" card to Swipe File (Ideas section, tagged marketing/ai/growth/for-paul) per Josh's explicit direction. Noted as prospective Paul deployment.", "authority": "\ud83d\udfe2 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "2026-09-02 12:18 ACST", "action": "Marked ABA Trades INV-001 paid: attached Osko receipt PDF (I 0119 3816, $1,650.00, 2 Sep) to invoice card, tagged **Paid** (retained ABA Trades client tag), updated notes to PAID, completed card. Created status tags **Pending Payment** + **Paid**. Sent threaded recipient-acknowledgement reply to Paul Chaina (thread 1a0239e9100bbab3, msg 1a06003e28286889, cc josh, In-Reply-To/References set).", "authority": "\ud83d\udfe2 Autonomous", "category": "Financial", "level": "autonomous"}, {"timestamp": "2026-09-02 07:00 ACST", "action": "\ud83c\udf3e Learning harvest: 3 from Winston (ops skills \u2192 git, render.py DEPLOY.DATE \u2192 git, Gmail CC+threading \u2192 gmail) + 1 from Atlas (no_agent cron exit-code semantics \u2192 cron). Deploy kit pushed (e3e5fd3 + c6094d8), Atlas updated, Winston synced.", "authority": "\ud83d\udfe2 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "2026-09-01 22:07 ACST", "action": "Session: [Replying to: \"Verified \u2014 yes, and more substantially than I'd assumed. You were", "authority": "\ud83d\udfe2 Autonomous", "category": "Email", "level": "autonomous"}, {"timestamp": "2026-09-01 21:31 ACST", "action": "Nightly backup completed and pushed to GitHub \u2014 34 files changed, 801 insertions, 300 deletions", "authority": "\ud83d\udfe2 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "2026-09-01 18:49 ACST", "action": "Session: Winston, can you see the information at the following URL? https://app.notion.co", "authority": "\ud83d\udfe2 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "2026-09-01 13:16 ACST", "action": "Removed `network-exposure-audit` from deploy kit's `core/skills/snowark/` (git rm, committed + pushed 17c46e3), verified 0 occurrences on origin/main. Now 5 generalised ops skills ship: session-hygiene, hermes-session-health, langfuse-observability, delegate-first, session-mining.", "authority": "\ud83d\udd34 Owner-Only", "category": "System", "level": "owner-only"}, {"timestamp": "2026-09-01 13:02 ACST", "action": "Fixed deploy kit `render.py` so a test render of sample-client completes: (1) inject `DEPLOY.DATE` (defaults to today) for Activity template header, (2) tightened placeholder regex `[A-Z][A-Z0-9_.]*` so f-string CSS braces in build-*.py (`{{...}}`) aren't falsely flagged as unresolved placeholders. Committed + pushed (03a26fd), verified render exit 0 + on origin/main.", "authority": "\ud83d\udd34 Owner-Only", "category": "System", "level": "owner-only"}, {"timestamp": "2026-09-01 12:28 ACST", "action": "Filed Google Workspace monthly billing statement (A$25.96, Aug 1\u201331) as receipt card in Accounting \u2192 Receipts \u2014 named \"Receipt \u2014 Google Workspace \u2014 A$25.96 \u2014 1 Sep 2026\", tagged Receipt + Reimburse Josh (payment method unclear), uploaded PDF evidence.", "authority": "\ud83d\udfe2 Autonomous", "category": "Financial", "level": "autonomous"}, {"timestamp": "2026-09-01 12:05 ACST", "action": "Updated Hermes deploy kit `skills/email-draft/SKILL.md` Gmail traps section with the CC + threading pitfall; committed + pushed (e99094e) to Snowark-Consulting/hermes-deploy-kit so it ships to every client agent. Verified present on origin/main.", "authority": "\ud83d\udd34 Owner-Only", "category": "System", "level": "owner-only"}, {"timestamp": "2026-09-01 12:04 ACST", "action": "Patched `winston-email-send` skill (the sending skill that generated the Dino CC/threading bug) with CRITICAL CC + threading sections: one comma-separated `--cc`, `gmail reply` CLI limits, verified MIME reply pattern, verify-after-send rule.", "authority": "\ud83d\udd34 Owner-Only", "category": "System", "level": "owner-only"}, {"timestamp": "2026-09-01 12:02 ACST", "action": "Patched `email-pipeline` skill with pitfall + reference pattern: double `--cc` drops all but last (store not append), and `gmail send` never sets In-Reply-To/References \u2014 use single comma-separated `--cc` and build threaded replies with CC via Python.", "authority": "\ud83d\udd34 Owner-Only", "category": "System", "level": "owner-only"}, {"timestamp": "2026-09-01 12:01 ACST", "action": "Sent follow-up to orphaned Dino chain advising to disregard it and that the onboarding note went on the main thread (msg 1a05ad581d6b1983).", "authority": "\ud83d\udfe2 Autonomous", "category": "Email", "level": "autonomous"}, {"timestamp": "2026-09-01 12:00 ACST", "action": "Sent properly-threaded reply to Dino (Lagom) re Harley@ABAtrades.com.au Google Workspace setup for GA4/Ads service account \u2014 CC Paul + Josh, In-Reply-To/References set, thread 1a04ba7334eae6a5 (msg 1a05ad322dc1aa1b).", "authority": "\ud83d\udfe2 Autonomous", "category": "Email", "level": "autonomous"}, {"timestamp": "2026-09-01 11:42 ACST", "action": "Session: Do you have the email from and to Dino?", "authority": "\ud83d\udfe2 Autonomous", "category": "Email", "level": "autonomous"}, {"timestamp": "2026-09-01 10:40 ACST", "action": "Retried the SNOWARK UNIT TRUST TFN application via a CLEAN ABR application (new task ID) after the cron job \"Retry trust TFN application\" failed at 09:14 by exhausting its 60-call budget stuck on the Associates step (its resumed draft only rendered \"Add associated individual\", missing the \"Add associated organisation\" needed for the trustee). Clean flow completed correctly: Fixed unit trust, trustee SnowArk Pty Ltd (ACN 700488179 / ABN 79700488179 / TFN 108676303, position Trustee) captured, Declaration signed Joshua Hancock / Director / 01-09-2026. Result: SAME Identity Exception 71376 recurred \u2014 confirming the 3-day ABN-linkage wait did not resolve the issue; the ABR web route cannot confirm this new trust/trustee identity. Per decided rule, did NOT keep retrying. Recommended pivot to myGovID/ATO online route or James West (agent portal). Updated LEARNINGS entry.", "authority": "\ud83d\udfe1 Recommendation", "category": "Compliance", "level": "recommendation"}, {"timestamp": "2026-08-31 21:31 ACST", "action": "Nightly backup completed and pushed to GitHub (48 files changed, 1224 insertions, 228 deletions)", "authority": "\ud83d\udfe2 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "2026-08-31 21:10 ACST", "action": "Built + enabled a `pre_verify` review-hook PoC (Claude Code \"Stop hook\" equivalent): `~/.hermes/agent-hooks/review-mistakes.py` reads `mistakes-checklist.md` (derived from SOUL immutable rules + learnings) and returns a `continue` nudge when a turn edits files, forcing one extra model pass against the checklist. Tested 5 cases (edit\u2192emit, throttled, chat turn, missing key, malformed\u2192all silent-safe). Registered in config.yaml + allowlist. Takes effect on next session restart.", "authority": "\ud83d\udfe2 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "2026-08-31 21:00 ACST", "action": "Session: https://www.xda-developers.com/added-one-hook-claude-code-stopped-same-mistake-t", "authority": "\ud83d\udfe2 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "2026-08-31 19:00 ACST", "action": "Downloaded \"org chart updated.png\" from Paul Chaina (ABA Trades) email of 31 Aug (\"RE CONFIDENTIAL! Updated ORG Chart\"), created task \"ORG Chart - ABA Trades (updated)\" in ABA Trades project (Admin section), uploaded chart as attachment. Discarded image.png (incidental email-signature banner).", "authority": "\ud83d\udfe2 Autonomous", "category": "Client", "level": "autonomous"}, {"timestamp": "2026-08-31 13:40 ACST", "action": "Report Card avatar switched to hosted GitHub Pages URL. Established avatar-registration practice: SOUL Core Identity points to hosted avatar, deploy kit render.py resolves AGENT.AVATAR_URL, sample fixture documents it. Kit push 493ce21.", "authority": "\ud83d\udfe2 Autonomous", "category": "Dashboard", "level": "autonomous"}, {"timestamp": "2026-08-31 13:20 ACST", "action": "Report Card: retitled role to AI Chief of Staff, removed manager review section and reliability stat. Verified + published. Kit push 342f9ff.", "authority": "\ud83d\udfe2 Autonomous", "category": "Dashboard", "level": "autonomous"}, {"timestamp": "2026-08-31 13:00 ACST", "action": "Reworked Client OS Report Card into an employee report: cumulative project ledger (brief/outcome/metric, no terms), auto stat tiles, Impact-over-time SVG timeline, per-project image cards (generated via gemini-3.1-flash-image). Verified desktop + foldable. Pushed deploy-kit 492db29.", "authority": "\ud83d\udfe1 Recommendation", "category": "Dashboard", "level": "recommendation"}, {"timestamp": "2026-08-31 12:35 ACST", "action": "Built the Client OS Report Card tab (wins ledger + auto/curated subject grades) into build-client-os.py; generated Winston avatar + report hero via gemini-3.1-flash-image; seeded report-winston.json ledger; verified desktop + foldable layout; pushed deploy-kit commit 95b400b and republished live Client OS.", "authority": "\ud83d\udfe1 Recommendation", "category": "Dashboard", "level": "recommendation"}, {"timestamp": "2026-08-31 12:08 ACST", "action": "Session: I want to iterate on our dashboard OS that we have for you and for Atlas and for", "authority": "\ud83d\udfe2 Autonomous", "category": "Client", "level": "autonomous"}, {"timestamp": "2026-08-30 15:30 ACST", "action": "Follow-up to Peter Carter sharing SnowArk's cover is underwritten by CFC on the Lloyd's market (per Josh veto on naming Webber), explaining the deciding factor was proper AI output + cyber cover without the flagged exclusion. Threaded to 1a0411c5dbaca586.", "authority": "\ud83d\udfe2 Autonomous", "category": "Financial", "level": "autonomous"}, {"timestamp": "2026-08-30 15:24 ACST", "action": "Session: Hey, can you pull up the last email that you received from Peter?", "authority": "\ud83d\udfe2 Autonomous", "category": "Email", "level": "autonomous"}, {"timestamp": "2026-08-30 08:45 ACST", "action": "Sent email to Paul Chaina (ABA Trades): acknowledged onboarding doc + invoice forward, confirmed CC on all correspondence. CC'd Josh.", "authority": "\ud83d\udfe2 Autonomous", "category": "Email", "level": "autonomous"}, {"timestamp": "2026-08-30 07:33 ACST", "action": "Created `invoice-lifecycle` skill (snowark): end-to-end send/record/track/reconcile of client invoices into the Accounting board Invoices section (GID 1217972006818083), tagged by client, with due_on locked to invoice due date and the fortnightly reconciliation rhythm (cron ae3cd81d3876, wakeAgent gate). Set ABA Trades INV-001 card due_on = 2026-09-25 to match invoice.", "authority": "\ud83d\udfe2 Autonomous", "category": "Financial", "level": "autonomous"}, {"timestamp": "2026-08-30 07:11 ACST", "action": "Simplified invoice template per Josh: dropped the ACN (not required on a tax invoice). Header now `SnowArk Unit Trust \u00b7 ABN 282 674 605 68` + `Trustee: SnowArk Pty Ltd`; footer `SnowArk Unit Trust \u00b7 ABN 282 674 605 68`. Re-rendered, re-verified (no ACN, md5 match), replaced shared-drive `Invoice_Template.pdf`, updated accounts INDEX.md.", "authority": "\ud83d\udfe2 Autonomous", "category": "Financial", "level": "autonomous"}, {"timestamp": "2026-08-30 07:08 ACST", "action": "Updated SnowArk invoice template to reflect the trust as trading entity: canonical HTML (`~/.hermes/templates/invoice-template.html`) header/footer now show `SnowArk Unit Trust \u00b7 ABN 282 674 605 68` and `Trustee: SnowArk Pty Ltd \u00b7 ACN 700 488 179` (replacing company ABN 79 700 488 179 / SnowArk Pty Ltd), re-rendered via Chrome headless, replaced shared-drive `Invoice_Template.pdf` (verified md5 match). Updated accounts INDEX.md.", "authority": "\ud83d\udfe2 Autonomous", "category": "Financial", "level": "autonomous"}, {"timestamp": "2026-08-29 12:19 ACST", "action": "Productised Atlas's gateway-supervisor fix into deploy kit as supervisord standard (commit caf11ed, pushed). Added support/orchestration/ (hermes-gateway.conf + start-gw.sh); updated playbooks 02/03 + maintenance to use supervisorctl; updated orgo learning card + LEARNINGS template + hermes-client-deploy skill. Retired Atlas's bespoke watchdog daemon; registered gateway as supervisord program `/etc/supervisor/conf.d/hermes-gateway.conf` \u2192 now child of supervisord (610), verified auto-recovery (restart \u2192 new PID 23424 RUNNING, Telegram reconnected). Records: atlas-deployment.md + Activity.md + learnings updated.", "authority": "\ud83d\udfe2 Autonomous", "category": "Deployment", "level": "autonomous"}, {"timestamp": "2026-08-29 08:44 ACST", "action": "Atlas gateway relaunched on request \u2014 found down (last shutdown reason \"Gateway restart requested\", clean exit, no orphan/PID). Health OK (disk 36% blocks / 24% inodes, mem 2.6G free). Launched start-gw.sh nohup \u2192 PID 14987, Telegram connected, housekeeping + kanban dispatcher live.", "authority": "\ud83d\udfe2 Autonomous", "category": "Monitoring", "level": "autonomous"}, {"timestamp": "2026-08-29 08:44 ACST", "action": "Session: Please restart Atlas's gateway, it seems to be down", "authority": "\ud83d\udfe2 Autonomous", "category": "Client", "level": "autonomous"}, {"timestamp": "2026-08-28 21:30 ACST", "action": "Atlas gateway found down (died ~8.5h earlier, ungraceful exit after memory-pressure kanban warnings; PID 6993 gone, state.json stale). Health checks passed (mem 3.5G free, disk 36% blocks / 24% inodes). Relaunched via start-gw.sh nohup \u2192 PID 31822, Telegram connected, housekeeping + kanban dispatcher live.", "authority": "\ud83d\udfe2 Autonomous", "category": "Monitoring", "level": "autonomous"}, {"timestamp": "2026-08-28 21:30 ACST", "action": "Nightly backup completed and pushed to GitHub (28 files, +381/-151)", "authority": "\ud83d\udfe2 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "2026-08-28 20:24 ACST", "action": "Session: This order for my new laptop doesn't seem to have moved. I also haven't been cha", "authority": "\ud83d\udfe2 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "2026-08-28 14:40 ACST", "action": "Added subtask \"Apply for trust TFN via myGovID (ATO online services)\" (gid 1217933476551078) to trust registration task (1217850353570384), assigned to Josh with ATO application steps in notes.", "authority": "\ud83d\udfe2 Autonomous", "category": "Client", "level": "autonomous"}, {"timestamp": "2026-08-28 14:35 ACST", "action": "Josh completed ABR registration for SNOWARK UNIT TRUST: ABN 282 674 605 68 + GST (accrual) both successful (app 2608-PJ-8179). Recorded trust ABN as PRIMARY invoicing ABN in snowark-accounting skill + memory + LEARNINGS. Trust TFN still pending \u2014 flagged application path (ATO, not ABR).", "authority": "\ud83d\udfe1 Recommendation", "category": "Client", "level": "recommendation"}, {"timestamp": "2026-08-28 13:06 ACST", "action": "Fixed broken HTML-styling comment on Trust card (story 1217898161079409), then restored rich-text formatting per Josh request. Final: comment re-posted via `html_text` wrapped in `<body>` with only supported tags (strong/ul/li) \u2014 verified renders cleanly. Updated asana-api skill + LEARNINGS with verified `<body>`+tag recipe (plain-text was a wrong first fix).", "authority": "\ud83d\udd34 Owner-Only", "category": "Asana", "level": "owner-only"}, {"timestamp": "2026-08-28 13:06 ACST", "action": "Session: Please fix the HTML styling on your latest comment on the Sasana card, and then", "authority": "\ud83d\udfe2 Autonomous", "category": "CRM", "level": "autonomous"}, {"timestamp": "2026-08-28 07:00 ACST", "action": "Harvested 1 learning from Winston \u2014 Cron prompt/skill divergence trap appended to cron card. Deploy kit pushed (commit 5e2c92d), Atlas updated, Winston synced.", "authority": "\ud83d\udfe2 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "2026-08-27 21:30 ACST", "action": "Nightly activity consolidation: filtered raw log, rotated, appended 6 entries. Dashboard rebuilt + deployed (40 activities, 39 auto / 1 rec / 0 owner).", "authority": "\ud83d\udfe2 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "2026-08-27 21:30 ACST", "action": "Nightly backup completed \u2014 commit 45251a9c, 36 files pushed to GitHub", "authority": "\ud83d\udfe2 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "2026-08-27 20:31 ACST", "action": "Received official Webber tax invoice (240339, policy 7711212) for IT Liability + Cyber cover \u2014 updated Receipt card with full breakdown (GST component $25) and attached invoice PDF as evidence replacing the payment screenshot.", "authority": "\ud83d\udfe2 Autonomous", "category": "Financial", "level": "autonomous"}, {"timestamp": "2026-08-27 20:29 ACST", "action": "Recorded receipt A$1,848.00 to Webber Insurance Group (IT Liability + Cyber cover) into Asana Accounting Receipts section \u2014 ref G2069637674, paid from SnowArk business account. Card: Receipt \u2014 Webber Insurance Group \u2014 A$1,848.00 \u2014 27 Aug 2026, payment screenshot attached pending official tax invoice.", "authority": "\ud83d\udfe2 Autonomous", "category": "Financial", "level": "autonomous"}, {"timestamp": "2026-08-27 20:13 ACST", "action": "Recorded director loan $2,000 (27 Aug) into Asana Accounting Admin section \u2014 ref T7555322642, transfer credit to SnowArk business account. Card: Director loan \u2014 $2,000.00 (Josh Hancock, 27 Aug 2026).", "authority": "\ud83d\udfe2 Autonomous", "category": "Financial", "level": "autonomous"}, {"timestamp": "2026-08-27 20:05 ACST", "action": "Session: [The user sent a document: 'FSG Webber Insurance Services_V31_20260818.pdf'. It", "authority": "\ud83d\udfe2 Autonomous", "category": "Client", "level": "autonomous"}, {"timestamp": "2026-08-27 13:23 ACST", "action": "Responded to Josh's Asana @mention in \"Apply for ABN, GST, TFN for Unit Trust\" \u2014 fetched full task context + parent + prior ABN/GST process, compiled all details for registration, posted structured comment on the task.", "authority": "\ud83d\udfe2 Autonomous", "category": "Client", "level": "autonomous"}, {"timestamp": "2026-08-26 21:51 ACST", "action": "Fixed nightly-backup git abort (exit 128 on cron/output deletions): untracked full cron/output/, chrome-profile/ (1688 files, 318MB browser cache), node_modules/, __pycache__, cron/executions.db from backup repo; synced live .gitignore to canonical (added chrome-profile, node_modules, cron/executions.db). Deploy-kit .gitignore.template + hermes-backup skill updated with node_modules & chrome-profile. Pushed hermes-winston-backup + hermes-deploy-kit.", "authority": "\ud83d\udfe2 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "2026-08-26 20:16 ACST", "action": "Session: The deep seek V4 flash 0731 model seems to be very verbose compared to our pro a", "authority": "\ud83d\udfe2 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "2026-08-26 19:54 ACST", "action": "Session: Skip this recommendation: deepseek-v4-pro on Telegram still drives 88% of your w", "authority": "\ud83d\udfe2 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "2026-08-26 19:16 ACST", "action": "Session: Based on what you know about snow arc, what would you say my value proposition i", "authority": "\ud83d\udfe2 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "2026-08-26 12:38 ACST", "action": "Removed 'SnowArk Consulting' wordmark from snowark.com.au footer (index.html). Committed only the footer hunk via git add -p (Josh's uncommitted particle/scatter work was folded into history by rebase+autostash, verified intact on disk == HEAD == live). Pushed main \u2192 live. Verified: wordmark gone, assets 200.", "authority": "\ud83d\udfe2 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "2026-08-26 11:54 ACST", "action": "Session: bring yourself up to speed on this card - im about to have a call with my accoun", "authority": "\ud83d\udfe2 Autonomous", "category": "CRM", "level": "autonomous"}, {"timestamp": "2026-08-26 07:01 ACST", "action": "\ud83c\udf3e Learning harvest: 2 from Atlas \u2014 Missing Data \u2260 Automatic Hold \u2192 agent-architecture, rich_sent_index truncation \u2192 gmail. Pushed to deploy kit (main), Atlas instance, Winston local.", "authority": "\ud83d\udfe2 Autonomous", "category": "Monitoring", "level": "autonomous"}, {"timestamp": "2026-08-25 22:00 ACST", "action": "Dream ran: 1,937 events, 86 candidates, 3 survivors. Updated dream-cost-v4-pro-dominance (v4-pro 88% of Telegram spend, $20.95 USD/wk) and dream-wf-inline-api-calls (40 OpenRouter inline calls). New: dream-session-rot-watchdog-not-cronned (2 zombie CLI sessions at 180h, watchdog script has no cron job).", "authority": "\ud83d\udfe2 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "2026-08-25 21:31 ACST", "action": "Session:", "authority": "\ud83d\udfe2 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "2026-08-25 17:45 ACST", "action": "Session: Let's move all telegram chats to openrouter deeps seek V4 flash default", "authority": "\ud83d\udfe2 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "2026-08-25 17:43 ACST", "action": "Switched nightly-activity-consolidation cron from deepseek/deepseek-v4-pro to deepseek/deepseek-v4-flash. Kept Dream on pro (reasoning-critical).", "authority": "\ud83d\udfe2 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "2026-08-25 16:45 ACST", "action": "Saved OpenRouter Benchmarks API reference (`references/benchmarks-api.md`) to openrouter-models skill \u2014 endpoint, params, response shapes, usage by task type. Registered pointer in SKILL.md.", "authority": "\ud83d\udfe2 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "2026-08-25 16:42 ACST", "action": "Filed receipt: Higgsfield Inc. \u2014 US$20.90 \u2014 21 Aug 2026 (Invoice JN6COQRG-0003). Created Asana card in Accounting/Receipts with PDF attachment + Receipt + Reimburse Josh tags.", "authority": "\ud83d\udfe2 Autonomous", "category": "Financial", "level": "autonomous"}, {"timestamp": "2026-08-25 16:30 ACST", "action": "Session: hey this might be a useful tool to add to the daily cron that checks for discoun", "authority": "\ud83d\udfe2 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "2026-08-25 16:15 ACST", "action": "Deployed state-db-watchdog (every 6h, no_agent): monitors DB size/WAL/dead-space/integrity, silent when healthy. Added to deploy kit (script + Infrastructure template + playbook 03 + hermes-backup skill). Replaced stale bin/backup-state-db.sh with symlink to scripts/backup-state-db.sh", "authority": "\ud83d\udfe2 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "2026-08-25 16:09 ACST", "action": "Session: any considerations for us here on a fix atlas made to prevent state.db corruptio", "authority": "\ud83d\udfe2 Autonomous", "category": "Client", "level": "autonomous"}, {"timestamp": "2026-08-24 21:57 ACST", "action": "Session: Happy to proceed with one tweak. I want the dream Cron to run on Pro", "authority": "\ud83d\udfe2 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "2026-08-24 21:53 ACST", "action": "Fixed state.db backup: Python sqlite3 backup API (no CLI), FTS-strip so 556MB\u219223MB fits GitHub 100MB limit. Added `backups/*.corrupted*` + `backups/*.db` to .gitignore (mirrors Atlas convention). Removed 556MB corrupted dump from git history. Verified push to hermes-winston-backup (23MB).", "authority": "\ud83d\udfe2 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "2026-08-24 21:53 ACST", "action": "Deployed fixed backup-state-db.sh to Atlas (Python sqlite3, portable over orgo where CLI absent) and kit (86ce63d). Ran Atlas backup end-to-end: 2.7MB snapshot pushed to client-notforgotten.", "authority": "\ud83d\udfe2 Autonomous", "category": "Client", "level": "autonomous"}, {"timestamp": "2026-08-24 21:19 ACST", "action": "Ported recommendations reconcile subcommand + PHASE 0 (auto-close stale recs) into Winston's recommendations.py and consolidation-sop.md, plus the deploy kit core/. Committed + pushed kit (beab4d2; bypassed hanging gh credential helper).", "authority": "\ud83d\udfe2 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "2026-08-24 21:19 ACST", "action": "Deployed reconcile + PHASE 0 to Atlas (orgo) via printf-chunk base64; ran reconciliation pass \u2014 dismissed dream-error-cron-path-format, kept 9 still-open items (re-verify found 3 already closed by Atlas's own consolidation).", "authority": "\ud83d\udfe2 Autonomous", "category": "Client", "level": "autonomous"}, {"timestamp": "2026-08-24 20:49 ACST", "action": "Session: See below a fix that's one of my agents did for his OS dashboard. We probably ha", "authority": "\ud83d\udfe2 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "2026-08-24 18:50 ACST", "action": "Session: I got the blow back from Connor from Weber Insurance. What are my answers to his", "authority": "\ud83d\udfe2 Autonomous", "category": "Client", "level": "autonomous"}, {"timestamp": "2026-08-24 07:38 ACST", "action": "Deployed mitigation for state.db corruption root cause across all agents: (1) Atlas: bumped SIGTERM\u2192SIGKILL grace to 30s in all 3 restart scripts; scheduled weekly VACUUM cron (d84ff606097d, Sat 13:30 UTC). (2) Winston: created weekly-vacuum.sh, scheduled weekly VACUUM (a0ba9d84c3f8, Sat 22:20 ACST). (3) Deploy kit: added weekly-vacuum.sh to core/scripts/. Winston DB was 556MB with 35% dead space \u2014 first VACUUM will reclaim ~190MB", "authority": "\ud83d\udfe2 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "2026-08-24 07:30 ACST", "action": "Correction: Atlas already had a nightly backup (d998982d2e15, 21:30 ACST). Removed duplicate I mistakenly created (27567a6d3b3a). State DB backup is the only net-new cron on Atlas", "authority": "\ud83d\udfe2 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "2026-08-24 07:17 ACST", "action": "Atlas git push failed (Repository not found \u2014 PAT SSO likely). Local commit saved, nightly cron will retry. Watch item: re-authorize PAT for Snowark-Consulting org", "authority": "\ud83d\udfe1 Recommendation", "category": "System", "level": "recommendation"}, {"timestamp": "2026-08-24 07:16 ACST", "action": "Deployed state.db backup system across all agents: created backup-state-db.sh (sqlite3 .backup + gzip, 7-day retention), wired no_agent crons on Winston (cb3d07296635, 21:15 ACST) and Atlas (8ed9962a3929, 11:45 UTC), added to deploy kit core/scripts/, updated hermes-backup skill to v1.4.0", "authority": "\ud83d\udfe2 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "2026-08-24 07:00 ACST", "action": "Learning harvest: 1 from Winston (LLM cron output truncation) \u2192 cards/cron.md updated. Pushed to deploy kit (4c3cff1), Atlas instance, Winston local.", "authority": "\ud83d\udfe2 Autonomous", "category": "Monitoring", "level": "autonomous"}, {"timestamp": "2026-08-24 06:50 ACST", "action": "Investigated Atlas watchdog state.db corruption alert \u2014 hermes doctor --fix ran clean, integrity_check passes (ok), 233 sessions intact. Backed up state.db before fixing. Transient WAL-lock issue, self-resolved", "authority": "\ud83d\udfe2 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "2026-08-23 21:30 ACST", "action": "Restored Atlas gateway on orgo.ai after state.db corruption (1.4GB, btree damage). All recovery paths failed \u2014 archived corrupted DB, gateway created fresh 215KB state.db. Gateway running, Telegram reconnected", "authority": "\ud83d\udfe2 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "2026-08-23 19:50 ACST", "action": "Session: is this still an issue? Action this recommendation: OpenRouter credits exhausted", "authority": "\ud83d\udfe2 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "2026-08-23 19:38 ACST", "action": "Session: Please record this business loan including the image as evidence in the accounti", "authority": "\ud83d\udfe2 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "2026-08-23 19:05 ACST", "action": "Session: I just received this in the post. What is it? What am I supposed to do with it?", "authority": "\ud83d\udfe2 Autonomous", "category": "System", "level": "autonomous"}, {"timestamp": "2026-08-23 18:58 ACST", "action": "Analysed ATO mail photo: backdated PAYGW registration receipt + first monthly IAS (26-31 Jul 2026, due 21 Aug, now past). Advised: nil lodge expected (no July wages), route monthly IAS cycle via James West as agent.", "authority": "\ud83d\udfe2 Autonomous", "category": "Financial", "level": "autonomous"}];
+function renderActivities(filter) {
+    const container = document.getElementById('timeline');
+    const filtered = filter === 'all' ? activities : activities.filter(a => a.level === filter);
+    if (filtered.length === 0) {
+        container.innerHTML = '<div class="timeline-empty">No activities to show.</div>';
+        return;
+    }
+    container.innerHTML = filtered.map(a => `
+        <div class="activity-row" data-level="${a.level}">
+            <div class="activity-dot ${a.level}"></div>
+            <div class="activity-body">
+                <div class="activity-meta">
+                    <span class="activity-time">${a.timestamp}</span>
+                    <span class="activity-category">${a.category}</span>
                 </div>
+                <div class="activity-action">${a.action}</div>
             </div>
         </div>
-
-        <script>
-            // these variables will be filled when generating the file - the template format is 'variable_name'
-            const staticryptInitiator = ((function(){
-  const exports = {};
-  const cryptoEngine = ((function(){
-  const exports = {};
-  const { subtle } = crypto;
-
-const IV_BITS = 16 * 8;
-const HEX_BITS = 4;
-const ENCRYPTION_ALGO = "AES-CBC";
-
-/**
- * Translates between utf8 encoded hexadecimal strings
- * and Uint8Array bytes.
- */
-const HexEncoder = {
-    /**
-     * hex string -> bytes
-     * @param {string} hexString
-     * @returns {Uint8Array}
-     */
-    parse: function (hexString) {
-        if (hexString.length % 2 !== 0) throw "Invalid hexString";
-        const arrayBuffer = new Uint8Array(hexString.length / 2);
-
-        for (let i = 0; i < hexString.length; i += 2) {
-            const byteValue = parseInt(hexString.substring(i, i + 2), 16);
-            if (isNaN(byteValue)) {
-                throw "Invalid hexString";
-            }
-            arrayBuffer[i / 2] = byteValue;
-        }
-        return arrayBuffer;
-    },
-
-    /**
-     * bytes -> hex string
-     * @param {Uint8Array} bytes
-     * @returns {string}
-     */
-    stringify: function (bytes) {
-        const hexBytes = [];
-
-        for (let i = 0; i < bytes.length; ++i) {
-            let byteString = bytes[i].toString(16);
-            if (byteString.length < 2) {
-                byteString = "0" + byteString;
-            }
-            hexBytes.push(byteString);
-        }
-        return hexBytes.join("");
-    },
-};
-
-/**
- * Translates between utf8 strings and Uint8Array bytes.
- */
-const UTF8Encoder = {
-    parse: function (str) {
-        return new TextEncoder().encode(str);
-    },
-
-    stringify: function (bytes) {
-        return new TextDecoder().decode(bytes);
-    },
-};
-
-/**
- * Salt and encrypt a msg with a password.
- */
-async function encrypt(msg, hashedPassword) {
-    // Must be 16 bytes, unpredictable, and preferably cryptographically random. However, it need not be secret.
-    // https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/encrypt#parameters
-    const iv = crypto.getRandomValues(new Uint8Array(IV_BITS / 8));
-
-    const key = await subtle.importKey("raw", HexEncoder.parse(hashedPassword), ENCRYPTION_ALGO, false, ["encrypt"]);
-
-    const encrypted = await subtle.encrypt(
-        {
-            name: ENCRYPTION_ALGO,
-            iv: iv,
-        },
-        key,
-        UTF8Encoder.parse(msg)
-    );
-
-    // iv will be 32 hex characters, we prepend it to the ciphertext for use in decryption
-    return HexEncoder.stringify(iv) + HexEncoder.stringify(new Uint8Array(encrypted));
+    `).join('');
 }
-exports.encrypt = encrypt;
-
-/**
- * Decrypt a salted msg using a password.
- *
- * @param {string} encryptedMsg
- * @param {string} hashedPassword
- * @returns {Promise<string>}
- */
-async function decrypt(encryptedMsg, hashedPassword) {
-    const ivLength = IV_BITS / HEX_BITS;
-    const iv = HexEncoder.parse(encryptedMsg.substring(0, ivLength));
-    const encrypted = encryptedMsg.substring(ivLength);
-
-    const key = await subtle.importKey("raw", HexEncoder.parse(hashedPassword), ENCRYPTION_ALGO, false, ["decrypt"]);
-
-    const outBuffer = await subtle.decrypt(
-        {
-            name: ENCRYPTION_ALGO,
-            iv: iv,
-        },
-        key,
-        HexEncoder.parse(encrypted)
-    );
-
-    return UTF8Encoder.stringify(new Uint8Array(outBuffer));
+function filterActivities(level, btn) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderActivities(level);
 }
-exports.decrypt = decrypt;
-
-/**
- * Salt and hash the password so it can be stored in localStorage without opening a password reuse vulnerability.
- *
- * @param {string} password
- * @param {string} salt
- * @returns {Promise<string>}
- */
-async function hashPassword(password, salt) {
-    // we hash the password in multiple steps, each adding more iterations. This is because we used to allow less
-    // iterations, so for backward compatibility reasons, we need to support going from that to more iterations.
-    let hashedPassword = await hashLegacyRound(password, salt);
-
-    hashedPassword = await hashSecondRound(hashedPassword, salt);
-
-    return hashThirdRound(hashedPassword, salt);
-}
-exports.hashPassword = hashPassword;
-
-/**
- * This hashes the password with 1k iterations. This is a low number, we need this function to support backwards
- * compatibility.
- *
- * @param {string} password
- * @param {string} salt
- * @returns {Promise<string>}
- */
-function hashLegacyRound(password, salt) {
-    return pbkdf2(password, salt, 1000, "SHA-1");
-}
-exports.hashLegacyRound = hashLegacyRound;
-
-/**
- * Add a second round of iterations. This is because we used to use 1k, so for backwards compatibility with
- * remember-me/autodecrypt links, we need to support going from that to more iterations.
- *
- * @param hashedPassword
- * @param salt
- * @returns {Promise<string>}
- */
-function hashSecondRound(hashedPassword, salt) {
-    return pbkdf2(hashedPassword, salt, 14000, "SHA-256");
-}
-exports.hashSecondRound = hashSecondRound;
-
-/**
- * Add a third round of iterations to bring total number to 600k. This is because we used to use 1k, then 15k, so for
- * backwards compatibility with remember-me/autodecrypt links, we need to support going from that to more iterations.
- *
- * @param hashedPassword
- * @param salt
- * @returns {Promise<string>}
- */
-function hashThirdRound(hashedPassword, salt) {
-    return pbkdf2(hashedPassword, salt, 585000, "SHA-256");
-}
-exports.hashThirdRound = hashThirdRound;
-
-/**
- * Salt and hash the password so it can be stored in localStorage without opening a password reuse vulnerability.
- *
- * @param {string} password
- * @param {string} salt
- * @param {int} iterations
- * @param {string} hashAlgorithm
- * @returns {Promise<string>}
- */
-async function pbkdf2(password, salt, iterations, hashAlgorithm) {
-    const key = await subtle.importKey("raw", UTF8Encoder.parse(password), "PBKDF2", false, ["deriveBits"]);
-
-    const keyBytes = await subtle.deriveBits(
-        {
-            name: "PBKDF2",
-            hash: hashAlgorithm,
-            iterations,
-            salt: UTF8Encoder.parse(salt),
-        },
-        key,
-        256
-    );
-
-    return HexEncoder.stringify(new Uint8Array(keyBytes));
-}
-
-function generateRandomSalt() {
-    const bytes = crypto.getRandomValues(new Uint8Array(128 / 8));
-
-    return HexEncoder.stringify(new Uint8Array(bytes));
-}
-exports.generateRandomSalt = generateRandomSalt;
-
-async function signMessage(hashedPassword, message) {
-    const key = await subtle.importKey(
-        "raw",
-        HexEncoder.parse(hashedPassword),
-        {
-            name: "HMAC",
-            hash: "SHA-256",
-        },
-        false,
-        ["sign"]
-    );
-    const signature = await subtle.sign("HMAC", key, UTF8Encoder.parse(message));
-
-    return HexEncoder.stringify(new Uint8Array(signature));
-}
-exports.signMessage = signMessage;
-
-function getRandomAlphanum() {
-    const possibleCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-
-    let byteArray;
-    let parsedInt;
-
-    // Keep generating new random bytes until we get a value that falls
-    // within a range that can be evenly divided by possibleCharacters.length
-    do {
-        byteArray = crypto.getRandomValues(new Uint8Array(1));
-        // extract the lowest byte to get an int from 0 to 255 (probably unnecessary, since we're only generating 1 byte)
-        parsedInt = byteArray[0] & 0xff;
-    } while (parsedInt >= 256 - (256 % possibleCharacters.length));
-
-    // Take the modulo of the parsed integer to get a random number between 0 and totalLength - 1
-    const randomIndex = parsedInt % possibleCharacters.length;
-
-    return possibleCharacters[randomIndex];
-}
-
-/**
- * Generate a random string of a given length.
- *
- * @param {int} length
- * @returns {string}
- */
-function generateRandomString(length) {
-    let randomString = "";
-
-    for (let i = 0; i < length; i++) {
-        randomString += getRandomAlphanum();
-    }
-
-    return randomString;
-}
-exports.generateRandomString = generateRandomString;
-
-  return exports;
-})());
-const codec = ((function(){
-  const exports = {};
-  /**
- * Initialize the codec with the provided cryptoEngine - this return functions to encode and decode messages.
- *
- * @param cryptoEngine - the engine to use for encryption / decryption
- */
-function init(cryptoEngine) {
-    const exports = {};
-
-    /**
-     * Top-level function for encoding a message.
-     * Includes password hashing, encryption, and signing.
-     *
-     * @param {string} msg
-     * @param {string} password
-     * @param {string} salt
-     *
-     * @returns {string} The encoded text
-     */
-    async function encode(msg, password, salt) {
-        const hashedPassword = await cryptoEngine.hashPassword(password, salt);
-
-        const encrypted = await cryptoEngine.encrypt(msg, hashedPassword);
-
-        // we use the hashed password in the HMAC because this is effectively what will be used a password (so we can store
-        // it in localStorage safely, we don't use the clear text password)
-        const hmac = await cryptoEngine.signMessage(hashedPassword, encrypted);
-
-        return hmac + encrypted;
-    }
-    exports.encode = encode;
-
-    /**
-     * Encode using a password that has already been hashed. This is useful to encode multiple messages in a row, that way
-     * we don't need to hash the password multiple times.
-     *
-     * @param {string} msg
-     * @param {string} hashedPassword
-     *
-     * @returns {string} The encoded text
-     */
-    async function encodeWithHashedPassword(msg, hashedPassword) {
-        const encrypted = await cryptoEngine.encrypt(msg, hashedPassword);
-
-        // we use the hashed password in the HMAC because this is effectively what will be used a password (so we can store
-        // it in localStorage safely, we don't use the clear text password)
-        const hmac = await cryptoEngine.signMessage(hashedPassword, encrypted);
-
-        return hmac + encrypted;
-    }
-    exports.encodeWithHashedPassword = encodeWithHashedPassword;
-
-    /**
-     * Top-level function for decoding a message.
-     * Includes signature check and decryption.
-     *
-     * @param {string} signedMsg
-     * @param {string} hashedPassword
-     * @param {string} salt
-     * @param {int} backwardCompatibleAttempt
-     * @param {string} originalPassword
-     *
-     * @returns {Object} {success: true, decoded: string} | {success: false, message: string}
-     */
-    async function decode(signedMsg, hashedPassword, salt, backwardCompatibleAttempt = 0, originalPassword = "") {
-        const encryptedHMAC = signedMsg.substring(0, 64);
-        const encryptedMsg = signedMsg.substring(64);
-        const decryptedHMAC = await cryptoEngine.signMessage(hashedPassword, encryptedMsg);
-
-        if (decryptedHMAC !== encryptedHMAC) {
-            // we have been raising the number of iterations in the hashing algorithm multiple times, so to support the old
-            // remember-me/autodecrypt links we need to try bringing the old hashes up to speed.
-            originalPassword = originalPassword || hashedPassword;
-            if (backwardCompatibleAttempt === 0) {
-                const updatedHashedPassword = await cryptoEngine.hashThirdRound(originalPassword, salt);
-
-                return decode(signedMsg, updatedHashedPassword, salt, backwardCompatibleAttempt + 1, originalPassword);
-            }
-            if (backwardCompatibleAttempt === 1) {
-                let updatedHashedPassword = await cryptoEngine.hashSecondRound(originalPassword, salt);
-                updatedHashedPassword = await cryptoEngine.hashThirdRound(updatedHashedPassword, salt);
-
-                return decode(signedMsg, updatedHashedPassword, salt, backwardCompatibleAttempt + 1, originalPassword);
-            }
-
-            return { success: false, message: "Signature mismatch" };
-        }
-
-        return {
-            success: true,
-            decoded: await cryptoEngine.decrypt(encryptedMsg, hashedPassword),
-        };
-    }
-    exports.decode = decode;
-
-    return exports;
-}
-exports.init = init;
-
-  return exports;
-})());
-const decode = codec.init(cryptoEngine).decode;
-
-/**
- * Initialize the staticrypt module, that exposes functions callbable by the password_template.
- *
- * @param {{
- *  staticryptEncryptedMsgUniqueVariableName: string,
- *  isRememberEnabled: boolean,
- *  rememberDurationInDays: number,
- *  staticryptSaltUniqueVariableName: string,
- * }} staticryptConfig - object of data that is stored on the password_template at encryption time.
- *
- * @param {{
- *  rememberExpirationKey: string,
- *  rememberPassphraseKey: string,
- *  replaceHtmlCallback: function,
- *  clearLocalStorageCallback: function,
- * }} templateConfig - object of data that can be configured by a custom password_template.
- */
-function init(staticryptConfig, templateConfig) {
-    const exports = {};
-
-    /**
-     * Decrypt our encrypted page, replace the whole HTML.
-     *
-     * @param {string} hashedPassword
-     * @returns {Promise<boolean>}
-     */
-    async function decryptAndReplaceHtml(hashedPassword) {
-        const { staticryptEncryptedMsgUniqueVariableName, staticryptSaltUniqueVariableName } = staticryptConfig;
-        const { replaceHtmlCallback } = templateConfig;
-
-        const result = await decode(
-            staticryptEncryptedMsgUniqueVariableName,
-            hashedPassword,
-            staticryptSaltUniqueVariableName
-        );
-        if (!result.success) {
-            return false;
-        }
-        const plainHTML = result.decoded;
-
-        // if the user configured a callback call it, otherwise just replace the whole HTML
-        if (typeof replaceHtmlCallback === "function") {
-            replaceHtmlCallback(plainHTML);
-        } else {
-            document.write(plainHTML);
-            document.close();
-        }
-
-        return true;
-    }
-
-    /**
-     * Attempt to decrypt the page and replace the whole HTML.
-     *
-     * @param {string} password
-     * @param {boolean} isRememberChecked
-     *
-     * @returns {Promise<{isSuccessful: boolean, hashedPassword?: string}>} - we return an object, so that if we want to
-     *   expose more information in the future we can do it without breaking the password_template
-     */
-    async function handleDecryptionOfPage(password, isRememberChecked) {
-        const { staticryptSaltUniqueVariableName } = staticryptConfig;
-
-        // decrypt and replace the whole page
-        const hashedPassword = await cryptoEngine.hashPassword(password, staticryptSaltUniqueVariableName);
-        return handleDecryptionOfPageFromHash(hashedPassword, isRememberChecked);
-    }
-    exports.handleDecryptionOfPage = handleDecryptionOfPage;
-
-    async function handleDecryptionOfPageFromHash(hashedPassword, isRememberChecked) {
-        const { isRememberEnabled, rememberDurationInDays } = staticryptConfig;
-        const { rememberExpirationKey, rememberPassphraseKey } = templateConfig;
-
-        const isDecryptionSuccessful = await decryptAndReplaceHtml(hashedPassword);
-
-        if (!isDecryptionSuccessful) {
-            return {
-                isSuccessful: false,
-                hashedPassword,
-            };
-        }
-
-        // remember the hashedPassword and set its expiration if necessary
-        if (isRememberEnabled && isRememberChecked) {
-            window.localStorage.setItem(rememberPassphraseKey, hashedPassword);
-
-            // set the expiration if the duration isn't 0 (meaning no expiration)
-            if (rememberDurationInDays > 0) {
-                window.localStorage.setItem(
-                    rememberExpirationKey,
-                    (new Date().getTime() + rememberDurationInDays * 24 * 60 * 60 * 1000).toString()
-                );
-            }
-        }
-
-        return {
-            isSuccessful: true,
-            hashedPassword,
-        };
-    }
-    exports.handleDecryptionOfPageFromHash = handleDecryptionOfPageFromHash;
-
-    /**
-     * Clear localstorage from staticrypt related values
-     */
-    function clearLocalStorage() {
-        const { clearLocalStorageCallback, rememberExpirationKey, rememberPassphraseKey } = templateConfig;
-
-        if (typeof clearLocalStorageCallback === "function") {
-            clearLocalStorageCallback();
-        } else {
-            localStorage.removeItem(rememberPassphraseKey);
-            localStorage.removeItem(rememberExpirationKey);
-        }
-    }
-
-    async function handleDecryptOnLoad() {
-        let isSuccessful = await decryptOnLoadFromUrl();
-
-        if (!isSuccessful) {
-            isSuccessful = await decryptOnLoadFromRememberMe();
-        }
-
-        return { isSuccessful };
-    }
-    exports.handleDecryptOnLoad = handleDecryptOnLoad;
-
-    /**
-     * Clear storage if we are logging out
-     *
-     * @returns {boolean} - whether we logged out
-     */
-    function logoutIfNeeded() {
-        const logoutKey = "staticrypt_logout";
-
-        // handle logout through query param
-        const queryParams = new URLSearchParams(window.location.search);
-        if (queryParams.has(logoutKey)) {
-            clearLocalStorage();
-            return true;
-        }
-
-        // handle logout through URL fragment
-        const hash = window.location.hash.substring(1);
-        if (hash.includes(logoutKey)) {
-            clearLocalStorage();
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * To be called on load: check if we want to try to decrypt and replace the HTML with the decrypted content, and
-     * try to do it if needed.
-     *
-     * @returns {Promise<boolean>} true if we derypted and replaced the whole page, false otherwise
-     */
-    async function decryptOnLoadFromRememberMe() {
-        const { rememberDurationInDays } = staticryptConfig;
-        const { rememberExpirationKey, rememberPassphraseKey } = templateConfig;
-
-        // if we are login out, terminate
-        if (logoutIfNeeded()) {
-            return false;
-        }
-
-        // if there is expiration configured, check if we're not beyond the expiration
-        if (rememberDurationInDays && rememberDurationInDays > 0) {
-            const expiration = localStorage.getItem(rememberExpirationKey),
-                isExpired = expiration && new Date().getTime() > parseInt(expiration);
-
-            if (isExpired) {
-                clearLocalStorage();
-                return false;
-            }
-        }
-
-        const hashedPassword = localStorage.getItem(rememberPassphraseKey);
-
-        if (hashedPassword) {
-            // try to decrypt
-            const isDecryptionSuccessful = await decryptAndReplaceHtml(hashedPassword);
-
-            // if the decryption is unsuccessful the password might be wrong - silently clear the saved data and let
-            // the user fill the password form again
-            if (!isDecryptionSuccessful) {
-                clearLocalStorage();
-                return false;
-            }
-
-            return true;
-        }
-
-        return false;
-    }
-
-    async function decryptOnLoadFromUrl() {
-        const passwordKey = "staticrypt_pwd";
-        const rememberMeKey = "remember_me";
-
-        // try to get the password from the query param (for backward compatibility - we now want to avoid this method,
-        // since it sends the hashed password to the server which isn't needed)
-        const queryParams = new URLSearchParams(window.location.search);
-        const hashedPasswordQuery = queryParams.get(passwordKey);
-        const rememberMeQuery = queryParams.get(rememberMeKey);
-
-        const urlFragment = window.location.hash.substring(1);
-        // get the password from the url fragment
-        const hashedPasswordRegexMatch = urlFragment.match(new RegExp(passwordKey + "=([^&]*)"));
-        const hashedPasswordFragment = hashedPasswordRegexMatch ? hashedPasswordRegexMatch[1] : null;
-        const rememberMeFragment = urlFragment.includes(rememberMeKey);
-
-        const hashedPassword = hashedPasswordFragment || hashedPasswordQuery;
-        const rememberMe = rememberMeFragment || rememberMeQuery;
-
-        if (hashedPassword) {
-            return handleDecryptionOfPageFromHash(hashedPassword, rememberMe);
-        }
-
-        return false;
-    }
-
-    return exports;
-}
-exports.init = init;
-
-  return exports;
-})());
-            const templateError = "Bad password!",
-                templateToggleAltShow = "Show password",
-                templateToggleAltHide = "Hide password",
-                isRememberEnabled = true,
-                staticryptConfig = {"staticryptEncryptedMsgUniqueVariableName":"af9aabe2169e5a0922277412f6f550381f16ebbbf34e0ed47148528394942c2c327428fbb6af62523388cd3921f280b5527255d2f0f64b598e71fd3752448f5b0acfc36af26565d4b62da9579cf6b1272bad6463ffa54752db46447eb607cec00d687c671f134eeccd855165da0f5792516e2aedd0bdf9cc04a117ddab7345d3137ef2d5a0ba0b21bd0a2d8b3f2ff80117de58b412551cc05b24ff08b3a828afaa833c58ca5a73a851222bd0bfa178d128faea0bf100cc9e3e6f84dd05f43fa81f2851c1418df3e4596633d8ed1afabbec7ce031d3e61774ee166f047451e261c6d97a93fffe7dec6bbdd8dd3e85a23bddfc3521be8c0e704d88be0c69b6b2c93fa955c8e8da25184c49552b8208710ff30d008a4eedb88575a259a040c04b7778f1fa9be188d742053dd2764b4b78445a0a89b21056ce7c6bb20829902b6235d03c9080e0943be8943bf518534f50fcc69e7011c4019fa71e13a5496a23e205ddff2d7917a75e2e7c623950c750398afd0e0882b4d43cceaa941ac196e00a5d15592de2d2e591a83e0b4dcee9be6951d9da2d50931e1cae10e9f990c8e1f3eecbc31fe98316681c14a31eb16832cd87597a15075fb83dbafeb1a48dd1afa8f3319b78061476ae3336c5fd5e4e27462b42e9754e26dc898ec759613718d088dccdd118948e59b3eb5e375c80fed61d23a8a99b4cedccfad158acbc6b6070d29ea1c2c597f35da1b6b292f2b6d458cdf32276af7fc8813f1dada71209ad4109410376d6825b0569162b21d5a98a98878fb2a3746b44417323290c574aa30d3874c017fb2da242b86078866fb9f831112642b6445db3ee008770fa532b9fe4a93fda93d7142afc4b130609739cc58fd8c28a4ecd48d8fd590459643949b6ebd827c4ae9449ddae60267fc98809fc2eecc78cfbaf322108307ae10ce96b117f68b773665a8c8419b278f362305d06b4adba5916c382e403fd350a568e45ef02414a47b8087385df2666be939de13a4615c4abb4abe7a2a44d88a60044d84a1876c7fafbb1e5480b59f28401c6872385a6a1ab0ddd29b0d5d936d8146847c13f07079235091cc359d376e54547c99761636adf0dacc8c175fa497415ece11f7d3a8a208e0f4f273dd6d13fd3a3d56faa804b6975c2d55a0acce804ec4968dc33a2ec63c1c708dea0aec24d8109e9ba305a1d5d71c15c51466b101234277bc3856663d520c6a2ece3cf4bd7240667da989cd585d114bdd6fddaffc3cc888e014ad2609ac272cbda7fa0a822d67e5f2b9c858eeb998459913cfc465cfb51a8b3796bf68c71a2919d1180164b44c1d2cb824ed18fb2bab5e83ce2807400737b7929b95dd3743aa3c0a8bd13e119122b856a3c7a28d4119e0cab2f481481a9f248646749c0a744a9d12783bf30edc48fccd4fc9ca844131f49285d83d650eca435780c2f0c57c609105de587c62f7e27bd4c9589cdab3b3eb6e5db9ca020f819e33a57840a44b8c0c2ffcd22f0321c9b81022dd0e3e2fea6fdab1a86a5cc1ed16f25af1a2e3c0b99c68aebf439f41366ce205fa3ef307e58287d41807f8b4eb45bf0ea1153ec0928a0ee0d86adad3f350208224f8011536ffe86fe61000505cdca808a5ad53bcd6ba705c427a788837141d4bb19f4a30c894e76b71eaf6cc93a80524e49be21a35be4aa2e6aa12aece817be23bf3a433b8370d6875bce4cde472a946c7678b63b03878f4e76e37bd4431c260e9e49a949a8e73e7fd35d6c8adeda9c72b0f05769f89916a2afb379a63c7bf640dcf909797e9e4427988399ff2d7eccfe2da886f44be8670092afc6f782305af8267b05df313ac9821dec3229f4c7cafd913b79e14c7d5b2a3702920b54d22c8183db55138b98e05320039130b86a58c4ad28c944c57f9eab31643f0c20b7c9fa88fae67186a62d8ab061b4f4d93e213ed69a50e049860bc4c7bd94fe9470d45dc885b8f6d766638b4c2e2f471c075cc2bab60b70a3dbfc3e12b07b0c2e60287d9d343d199b59ea14f7ab9fd9a5b3cd011bba0a932ff87aa4b9d5eeb2a1d696cda4a0ba3b8380ab01063279702da831b8c1768c7fa052120ef58ae13cf4dbd37ac880acdc90538df6084687550f1b4335f1549db64513475b921eb091ba5629e533495fb24b346de0865ac82a4748faf8d5894d160a9c5c45ab9f055bfe3d95756931102858fa2a76987f231af4e31aa0a281fc54a0e0c4b552972342a04ca3bf70c9adb5471bc34eecc17c7521528368f16d2f5b1fff491101cfe6331db7121002087ec9991963ad7644ecbe58b5247141e69c8ad6b076812c9af2e9dc3ed27e1a0cfa70ed8cd4130dd499ca1e67e6948985f0f10de82b0f5845e5fb3278984a39a21c0bb31c4036621a0d5998eb43902abbc4c273b00e979d5c2208462a74a4c86bb345bbe3706508b3354db398a4a7439a2d5c9385879f9d92709d5ec1af6d6a37db36be221905dc0081f22f3f7588b661c5d9016d053b25abdef30cd8577456d55f8a1861a953a4e0d068d0f27af95e68047600b13b3c52aa1679e193cf7b13fd3bcbad73a8d1c3c83853493006c8711963c550327ed4e71b28953136029b0b04ebccd37a2e93fc717406362354bd10e8fab433ab6db4cfdc750324d4142da740a959d67a72d2c99de1af6ce6357fd317e6b701aab0a5701fa8bf59dae92af45dce3650165eeda5577b9749f526b2d70775bdaa1cf695563668f2223304b527024586c20808020797d306b4a3aeec3a8021e7871c5df0b6eaeb9b1617c4207b961005e0e67dd43cf216ab6037770f62777e143f2e9db07a7da1c84ccfd95a1a0025f9297ab6f2824f9fb41f5db34a09d4e49ec999df172e5c6c189218b5bcb75f780937fd0b988688287309d573102c879ea5af6786aaf9aaabf29f7d29bfc3dabb7e6aca9e38c5851b45b37106e9d46f7ff7414de54325146712fb89a1e3fb7bf3e991c9ae08e822e9298b735f65076b66663f5ed9e16f7d1c52e0b0a5f269a2f58e085fc106601214c445c052e20c769bd169db0399a45c4eefc97c3d778827984d00440b0f0fa6064dd316b9a97875cb8626226ae9d42ac08f51f1eabf0405954666e2856da901db6464904e7912b06c1ce38eea3912d6c1b08b1edc66115500ec6cd9d3c0797e89beeddd247efec2a3e209a501a5bad9557bc1bee788483b4a1d89492184ac2502ec434bea6e1ddd51cced6c37c4a173e8dc9a4ff27e1508f9225dccf92b7918708772b2d39886c2725826170dc67f78b8e542afac54225625bef13d9807f0510d01064fa87d435908ba918018158b504fbfad15c6d5b8d52937df58504a6cfb20cb55c327829ebf6a067df0773d93a6473ea30fe07b0efae4850ffee8bb88a598a6b0ab060b2bd6d7e84d3d0fac6d44a3c2fc8d2563c81b8ac2cacfe7b37cc31e77a663be4fb32fe83e551063044f6843db08e0d7af8a3a51352370fe817b427de1b1b946fcef269d45276388b5768459d58c395c5428a9e5fdee63cb3677f55f200104133fe2fc4944251699e9559625177d450b087cb319757867aa5a02e6f93fd38e179be91f2ab86d93a0816f4456e44da6f383a47499308e89cc4442ab287d8c47629125b8c54a80860a2a2f4f6d6898bbd0ddcadfb1435e8b2ac81f977ba9155c39b524648e76c037dce7eb206ecaab179a4cc7d0f0e897be54323205b842d351016d73dfe9dc0d68970b620f58b1fd33db5f4be08ea8448c5415bb3745bda1ddf4de9c9ca65f0e756494972f3864e4c88737dd2a5c6be6895fae15dbab318cf00d257aeff7b389b761eee5d925dc57e9a64d25a7f54e44153e139226770413c3bbe9053434f108f7d9894e2e2294d447b185d0aaced1b6479340010f43771a2fc1744e6a8c4d844f08e5a6a2ccc45d162f573d4073f59890c1c556bb353424203d7f9599e2ede6b6d10293f980676e962095f4bbbcd0589d86c6991ece340e4282fa358c559875c11736b3b88ace76eb300282f824f0cb2ffb8ca043bcff59d74a4c2d95babe5d037f7fb81a239b03e015dd68ec100d3392930820a13404c60475924d7f34743bcfe48ce5dfcde88b33b1db316dfde0bf335e9d8be8c4e6af9c0d267debed2ae2760df7d677e9df7d5ef1174b2c7f7b816f55f034ed375568b97e4250244ff7d25d08dfdf6bcea3a3c17d4492e35d9df2489315ad84a2a626caacb141d8b7ea03358c71870031051e9da05a6c37b98b0ac4a6dfb2d15eb24bd367ab90cff2f391169476be5779d2bc9682295affcf7359d1b6dc3428f9c641fa1f84137878b4c106a8910eacc016527c575b19ab3b2e2d2144cd767f85e5bcd87f7cbb43cbc1210e8182de36ca048aed5f705990bc9e17677dc12d588405642fd98aadc62f50fa364500215257db48cd36c341a2014de56a3ba4dfff1bdb8e797fd485aa600cf41ef76bf5aaecd6150a673b950ff34752d453ee1962f85cb9ca09e4102faf3e3328ccd1c5467de6960c5570ecea425823c030e1cfc4d471a2fefbad5c573515bf54f9cb59bc3c7d67599a408c0f672e68131a980adc6ca3857c040ed4bb04af2f467719755a464bc71155931dc527be665d9ec477909007c52d3436b0d70c7da6811404f3f6fa05a2ce732907099715fb57e0decc3f164b7aed68dada5f801d13105722a645bdfe2cd0473bf97d1206e3bdee2f3410b56b43356d6bc4dbb2dbc5f8be3844a8b786909bde7600db0c7cc65e30ef7c4454b22adb674d90c119feef26a331df96892e681d3bc69ca017db0f812a61c0af0c90345a07cf4b296a46e3902266c859b08f95d1d674da86af945ee628fd19cddb208dfc0d85342f0f63fee8e6d87c4378ef53a1421ad8c1c823f8fbb0b14ba70fa0aadfc7b0bdf3a89ecbb0b18e9286b4932154a32720460dbdff1f08ee98f243700b17e3df4f048b29c700615bf5c1870c7632696d22206f7e3d123b16d94bd833e9d428ef343106567a07ec6d78b0d3d58310551fac86b4c291204ff474bfd68359606d8661ba91c14f9fb097f8543f7709913c856a89e268a2ac1015aeaad3c3ebf6a8696a24084498c9ce1e2ba6954576bb526a4c9fc68c4a98aeecfb7fe2ad99738e80236772994abc5969f76548267eab62c675916dc4b46349be204ecd10f5aed38ffbf4ead09614f85a0ff1a8691419dd50cb39d9b8ab2d0700d17367156f3b41a79181bdafd521550ca16e1435c8dabd1e03f961d23b026ce1226b3ce6de6cd4d1b60eea08002ef7bceb76e329812d36fe6e052dc7c99638f60fac368f000d99fb18ff9d81843056acfc43987a2b55a2f9b9dbc4234f1da8067727a0582ef21604014f7ad58a4d8e7503869fad02b6a76d90f3c1dd2d71efc9ca43c30a8f052361d52ad9b070e26235dcf8e901b5fe232b331a6a307c0e4496dfa675732a0afd3a1df54fff4dae133c7a119ffb663e08531ca59774a61a7f36a95ad533d991e298eab0d343146196d3c2629258d27b1061befc4e3bbc473280c2e1744dc218e5b9879997cf45b4b2c00eb22ef0c7dfc55dae0b32da50a2ea14e72a4133297bad4cfc463a5cdbc19aec9b6cf450290cc7009b2c31ef4059a8b4374f0185380bb68484ee4b44c3377bac0740c26c6beefd1a46deb0720a2bf7641b859d79493558fd2855c1c3eaa50f7bd9f29d36488ad39bb6b4765791e57b5708606a7c4c9f54ccf9286aed272c32fade70e1623e1c69ed99f62730d92ed9116afba17a3e30cfca8dd56cdf20e5e178a1f0327388055573493072dce38c1ae4d54a91fe42c93d4ff4c80c892a4f365460576a36e22f74c3c1c08a47e0da41f9e9c9401481920f9e0be9b0a3bb1ecbcbcdf336a0f5460dd31c6f422f9855d15251369641684cd79178138c8055032225f5abf9c2c3cfd9bbf42b1a82899059740e0382d0e684617a8da091ac132b16178d6187e6dbbcd1842f9e6c05d273b45ad828359ba72f04421939fbfd0293ae043ee4cef51dbaea934fdcbb0cafe377a59ff7399152d5f237d8ce2ad972ede65a39c3cd6edc8bd95ac7e2baa839d489dfeceb10995c9ca558a9daf693ae030de757dda3ac72821937884520e88896d1a03b9f00240cd63fb77ec2d066b92856d8869cea317965f484042af1e00b8db625c3e3216b5bca1d54a94e6b148789e704ad57ace2b602c01307621c6bdbf586343942e2adda9a288a6d94e23c378048b81b9bf4390f436f67230b49cc7931dbc7083170844f865cabdfd96fcecb03c124232e569477c9ba030b6ce29942bb51ab8d036286494cbcb686c8a411883817a735e16949afc5670aadc04d28be8548e8e99309abe96e3594043ef381e92ae7e80b10ae4b9d013729031ecd5fa58c3f253ac2f78bbc691d644fff6cfeef3f9191983076ebb8a44008fc6b98d70b1e33ea1e2a6da79c9c1899183bcd04cfc7159fb4db0f999b2777218f4627328d09f3584400bd7c4998efb32645dba1c3fbc2022523c1e7bf5cf7041ad30681a3ee9bf7689298194254f537d66af707710a9ffe767d5578edfcff96b63c601d07d42a753cb4dee96c6a94f86cc852449a4fb60e048cc4b52e6e33be11d55f4f3cde194ee7732eae0da206560d6275d02fa9109a1d5aea335a617c2892a3a8f64783ee7d962193281fb758944994984446aa4d2718e50005861884d374a3fed454cd6268343037e8189d59ee297138fca96087adbea7eb73a860daddac7f555be8783471a3bbc2d6c81cb5128bd3afd9667ef70137b056041d0276e322ac970c0b9ec83c8580d8a37ae44cdd59ff5cffa43ec673ecb6999a907d43f59e615987236081a9ae11e422fe93b58e0349f870b6f1d04e6104c9ba043d1c0d353c350eaedc9323f772acf4352e5a0d9f664e1bf1f5326d0219a7495ea2dda96a3d731e941b39b532ad9fd95e08539b6c722b044e6186b85488c1ba1e8c4d2b86c93d72032461c7a71169c9feb89a87e718d81dabf9dc5d31eb0b16076b9938cea6d6e2df2309fa4f61965e4166d4cdd0384a02741b6cf042421615ba0f7be223b939a2ae4445f2b7b364e4cbbdad39208fa9ec239102041c4e2b9fb239bfef538845d064c6827e043cec9435f4676c080fa7c570b8bfe057dfa791f0143a4098c7fd415060eb201a1ffd0413c22c6478a00e1683a2b5328b746c1bf71de8497993ebd7ae054dd5b367b2086781b16470e533f3f35995d70b836a877da204bc68af43d7d7faf48d7049b6cf73b94f570eee0ba3fd1a71f8ad3b9a0cd7f39ab73fd3e305817a8742a51d9358ef98c48a0908994f369c40a1d4b28c2afd5fff3863db56241ed4f0d818eab25419e32842e3003b10e7606972c19eb30b91265d14fa9eb2de13dc50747c5fce68296a2ecc9a153404afdaf2bb958520c508a333c99ef13ed305221541e6fcfa5e071094a563ce8a7c4afc8a11f4d4fbae20d31b70ae829d2535f1a51d06704b233228a6430b0bedd9f8bd368a95a491d4ff029560689fcfac71c12787f31f70dc1cd44a662aba944cb5aceac0c87c108f628a11cfa8ec45b8a54cd533e0b4602df7af705d55bda946f9bd5fadc2c91302cd98eba144d20afe8e8b5fc165d86e810efc682a1a151fc7e0cb08cad279e267927398b6a65340db98412b5f2a3df24b66974e4c1e0d733113d0ad1f0a66726f32714f4ba9a3cec46c9a38aa4d38a6fb945258f4d39ea8f7738a8ec655977c874024845acbf3ecc1e895c9d8b69f291618be212701a05cffbc2e8ad546f16a9fdc02cc00753b4a77736d0ebedb6f7fa5f40bddd8af3bf00a0ba422dacfd24cd53e8411bdb4a05ec530a8951541a1a8e60cffc769e7bbf3c2126308eb64d57e2ba6f0fcdebb51e2fcbf55a90f7a4c2074381a7cc891dd0a1e147005043b888a21964bf6c5211e4a48e443126d86552e9ca2e8a05823a375267ca0015ed30c66111d5b9323250132a31c77c669e138247060c42a0ffda22ed66d4c151ce675fabe22fded38e6fe1edffb876f40dea7df8a1e3f74094c0cf4ac0018b45e2334f7e2247189bfa46a954aa809930139147a8a576f09c2bcbc802c5d7b4a0b8a61cd2d1068b81ec04b57140e4be5d050484ed6c8535f234f097efe1ee049774c05677887d775ca3031be4a81fed2163d3a4cfaa52e4d1f21523a2e3c9796241c449f1d10544946eb0cc7cfd8417324040033ccf87e23f1913b35a220e49fbaadd97d2e11749bbad9f1daffd58d04649c8b890ff5abad1d08d35dcb388ab506166301e384cb91a05a18e0918feb6be2a44ca5abb2a6018094c93c168c2256172dff4071d4881113a543324ad968304f4d450dec2e63a223659730259f5c2d0b2dc8d3fdb33710b48479329ebc058471e80558cd76d31875eb4bdfb89fac0e9249cf28e6ad6139ce334d136c613edae63fd88c8bfb25bf9c86977a91f49bd9e5ec35a33b1ba636e4776cad09eb089780133af6185fac0dcd3abef300c7150f89897e61bb626da501b85c59126238e81504555b1fcbb05c1a22fd1e397fa65c7d8545be849b0c1653c35abbd22e07e1cf0dcfb59fd0daae0eae9a7b064e2a4ebc241f617f3fd8b8d7fd5a59eb19355183df45a898846bc5c129954fede907c52698d3de7b1851e10c4404048e37f4bd27b8a39fa74674d762489475195c24b0d63cb863f65a706c2b7f2b14fecea8ef14f4b390d95bc61ab6d3d9573260e098d243224d569a58710c7cc58aac9f4ef01c15c4bab140c4c1f2098a3b96d7ad90d1eacff181859080844ddd5c2b20a2c2ce0996b999f3f41527d5c50a6114bf3825e37a3e250ecdfc8924cd931d856f82b1f6406c29aa27479485c275798a91a0f51fd3e60d538e553702390d5b0f82849ff4dcd19fdfd34c0a2048a69a2e2b0d8738e6b4729514ded9ad9d84059d30cd9be327434508bef68ade89d3278f8cbbce8c88da72e0fb31130204878de7f2723f990f1ba99d9941980dd290a6fb770f17d0a498a6c0ece64c2dd5461fcf3e3bd2909d4ee1b80ed29c621afe583ff712e0c4800f316cd7b003050e0c6bebb9c1305b52ac7d422f4d0da58864a049f2e21625cd79f4f6e28bd5508fa7d5c362cc996a632a65a901766cd2b3ae889d5787b3549b3c94aa875157b7470c455882fb7749d66b332f9c6f9e6b6c35829e488c1948625bb99ff6ec5206c988677ca10e57b1982cfb82a2371a6b737439279b8a18afbd1456dacd2ee1c7816f13321ca8ce3d04a2424a4351d25f472d8ca0578d809460e87d0817bfb2c3b581fff9a66e0f4e71bff6e50417b8c1dcfefd9655cb97afabf9993e1544ba383457209db6183c347553a186b0b80b8363f7cd4c389a3ea451b92cd1a6fcff73d337ab8ac78358de7df084b6d36b4e189565385f089c55e9452b7647cde5c642e4b0fea169a9d6f820aa0ec76040d04466dbd6521933f03682c4997a3629b85291f6a6ddf91aa0759439a7e954627f9c0da7a9040e5cefcaf2713ca7f98597ebf822de01826d16d366730d06a2fcaa1c90a9fa1b6f3edbbe2d91fadabe4bd5d7f91cc22bb4c335e6c6c5609ccde12c1d7c878173fd63f29f63b6cc21bc5a80caba53d41c8eccb15d23fda7619bb223ced4eae3956c8410685a5092927bef4dd2c6f3f4593a77964c2696841c6db104b481406f626441e2b9933ad92d4b7f54da6d002475b4e7c46eea700702c248b35ed2e819ee01c1dcb880d9878c1544f78bb998440c192ca8c9e0b7da06aab2e545e5cd6b4eabbf17125cc67c5387758e2762b0a08c3562d49ea9044ae8dd62d708cb0d5e57b488a40581688c52a819f43af09a9d4e254073dee2a07737e7b596a5e37cd4db230b2f1179b695be8a406a98d59c3754e7773e4c0fa1b539819bedbe70ae062508ee8bc9caf367aed14d071ae0e7de28cb7bf88d746745ab3b991411c3e6821bfd20e39ce98fe3235597acdceb5720f4ae80656cbf68c8e22a119bd5146345d3de5ff4ab3b960b9b4161adc22844124b9968f08d8aa82246c45cd7f610509fa08b0e516923fbf5b9d6919ffdfdaa2b861a7e72067575fa60b305b33051a36564fbed2e60c47bbbfd2d83dafec724769051cf8879fd24e8c0e4fe430f86bc2385da54ec76ce5b4f6f9109530573c14c8d93ae3ddc494a87f36886ca0f77baf6ff5c3d49e3c06ba033b0c0484a9d0d5b31fa78cb2a5ca3b52d6d31444b5c065304245588667f1e899cc13e9d5a08139198bf036ec677d81a5814a78e65cad612b69573e92159fcc6f24b04cd466069f05be41e8bbad6d1095eb1fae081fc2733375bb18876ccb406edf4213837d320f9a06c889ab85019378a2a767f3fe265fdcabb1294c0d486785a5ce3a19acf9f022c7190add7bb9d9ddf7c00c14469067318dbd61a89290a0670d9671943273c0b4f0fc63b12eefc598805e49cad591b7c70d97641777d167681175d345fe9addf695e89795e461223fbb559cdd9e659530cce642ffe1f0d949dce7027af41b46c30518dab2ff76f0152a24f71261e381520c88ca44da0ca3e11385c5f4cafc94a0109ed75ace5b4ec9050c968132fe55b63636a1278619704fc8f52589f44274840bce45c718613517002727d13990b854bdcd8cfa7d901cf02559f89d045f474530c61acd19e0c5003aba7ff37a12541897bbfe33e457a1be7bffaba46f724ea38f5d27eba20c39cd65f92441ec769206c80639b8b646a5416aa1c8bc235eb71018a18ac2324ad717cd46e139a50b61ff6a0cb740370d07e1c6663388e5972bd16323ca63a5033fda3d33d5f3eb1cedcafde9172e9034148bbd007705b01f620c115e58be98d7693ad0ed7323f2948a00140b0deaa915ea6323e20cfd6dca3a999e4885b10653ec742bad863723a18ee3a3da62df842df104ab22dd00849b986c5fa1807d44afd2511d66ee8d4dbd4d78b610fc2e72075ca1466e0adff592448f0cba0759ec2950eb85f8bffd97b67d3cabbf10669af549ecb997134eb7fd6e8ebe14cfb5238980a565bc1426ad422420f46aecb4d881f81c174ed5265272d41a59cbc9a0486a5e8e1eb8c6fd01a0151395e0d769f6a974c17b61ec5eb009edf5d49b01562e2456201acda89b5d9a65c7e00d4197bf04980b4409890b9cfeface9fec510388b7b7e494fe3cdb893689bf5ec96455cf36981e49cc04ec5ae1e40568ccb1baa20ce408e765e8d598170c0b2e52eecb41a81fb68b67117ccfd40efcf8ece2722cb9ce925579286a2cbfb57b291def7c4bba69172cd58469ccbc94e0a6d22703c869b1f7c310470cd99addc694983db76bfe5858bf86aafdeb03445dc06e82a8874a5851628531d045fe8b069397fd706e3703b4cf195fc253dacd5b2fb0a57f20bd4847a4229276bf0a15effc1b1d7d3a90afacbe45309279036b8f1e88cb12f3077da6dd5d190330e1a3ed23bf9c6a203c9d255afde3af8a2649ce8831000fcd93425e1b04b7493d3ca59b510d4eb90a610dfd7195f8417311f67d3577a5b1b2845683c756059bcb3dd41f9f009ac150f2e220756bb9f74ec712fcfc01e5d91314913e431191aafd4bb0c26c8c84c0f35ddb74532cad0a7a26a2fb811967dafaef33bd0e03addd590458dff21c10d0a15b19e7c5f8be89f4e26d729959e039fead0fda47e68f8ca166d74b509012b525eab043c1ace36c3c2bbb1364dc6443b9193482b97464a0d5dec4d7b34f378cfae24a8ec2696467e08e5cb39d3998aa41aab96e140f531e21e0435ac658ea6c2d9a4dac4caf0da217dcebb61bc0feb5acbff26d981d7aa377955730a095657204f68f1a3b23212c5ee519d4a340eecdebbac5b6ff690b38a8a2b2922bced749992eeb63378998f620505cc5b0f652d51e699fff19981a1cfebf4d0593638aa92874a5a7150e0efddc437fa89955832908acae188414a18e288bc0158c37b804db6fafc49d44a21683f3bf55718b3297fd1652247e6300eb22e4e8679094f19e1b600d0584686a85c5298bc59f439f265e953447c6a0d6d6208e25269b48537693386dd0a909aabed6d778d2a86dae0e314bcc485df16d95b4fbbd24124e0b4f82f685f5cd44d7fc872ca97166f138e70e3789f1b7d180e5721fef59f5a3e2095f74e6c1656d9ecda65d6680fd7fa7992e00e67cc04a6fbc2d26d576add55e3ec1257cf8a9a0115be5ccbb1720edd348b46278310c427196904b5efd0d265cfc25022e24ffd546a04bd3596f31dae72752a53f37f7024614c0d2e2781037d1c8faf45e23d6ff541ce215b467f4350c618cbc0d58eb9a6be7d2a323f33307c998d7bd9d7cfaa3bd32bbb4404366d55a6df45f1d127679d0d05d0016fb37c101b80447a13cfd709709e7b865265da74ab526a187730c01befe9d8e8ae189d0368904aad92506ed4c207d8c6d1c929acb9067b71cb49e12fca9ea7b4f6e81d2b66c2ce1b880b29208bde139d0e3f0bccf1697ba84177bd45b5de539a4207e4f98df12f01fb69ecc25d621ded489ba064ab08955050f3dd21483c05b88138a4f3babeec3ede9504628e600191302cec8df7bbd9ae1a87d66e87d0f57a9a86d87712bc78b530ac002cbc89d7d0b0b5c90e7fc7daed76306d64bbf74ef109980a4c3bcb044014c63f82ce7f2cb25649206838a5afcb85bfd30c749bcf812488c5d0d7d269df3c71c5c4ef2a68c098c3b450840715152e6a9ff32ee63c495e5e92e31e4411153fc4263723ac1b2774530a892a4dddb2f33b8b26810920b27c0291f021050f74bc2003acaecb1220bff099836345f7699d1a2add8e07b6cefa638b62a7cc80c3f40d1e0d950085c36081d4f13787855e3b6293d80a44be9eae351fd49b75c9c90989d66bbdc2f5ec9b50cc85ed40ed4250a5eea145b664e5d7a95e74e1a90a6f8b568ebb4a8b56e5e4c2ce71ae08defc03388d4473e6cc2d007f20fe937b52146d0fb9b4ac36930c2cb52f42c19289a494bf6eb73f7f19bc543653c5865326b181b6e387d47829c85685930dc5ce47475b30b2e49af8df347a39d571d04e79819b80e10e8107ff1a3be5bbe5f9638cdb4c0f7c6239038461be646fc1c1757f1572c6c672051f9ce6401693fd785d16c91d95050a10b6eff9c87c1268d0c988038b4d9359076f37fb7f4e458709c969681531a9494ec852676f30dd8458a8a2e9cbb4231b5ff141f41f54c0bd3392cd6b5278ff48a644dc86387d48dc03ed0b42c302ea53cf17f61de8492e5bf821a5b52517b5d5e4f13d03abf5a4ebbfe47e6210b5ee41e0b26c90439a221c77fb6b20fe6667086597c5c0c6a0f484fa768d9dd9c517b2562ddc63bc5c7d9791ffa4d5caee105e6555d9a5c90f768efb1b1b719c746410d223646001c5278a79590f3ad051b988415fe2c1a5c449ce8a1adb2bd454b3986fe1780faca62751c4dc97367d6cff9252f6a8864f10fb19631def3c32dc4287d3298d137b6795df24f57660bcb4f6d843dc68507b7d19c97f6f05fd5378183cce7c62ea7616a5ceedfa1cbebfddbb950e689935b5cabbd55be8e6cdae53d552d5f227eef81eb907e67abfb3a659584df1865f5a88551d1c36e1e617f539519348c9df0f41879b6a346939257f8c9bb8cf6dc73020db22752ca7534e738442eb9260159184c3dfd72f8b3fb2184cf042e8b86916c3aaad213436e4e62261ab2837342f97eed016c90f1c77335869ede40be14e864fb4308f0792d5abb931de9843e17fbf69822c84999ac683205d40054a451b98b8bd0aa7d53c5c009e1fef2e57bc44b884d7cd7ec205010be1f031dabef2adac4ddad942e35906353abfd859ff607f0e4a51d06312f3f04e61f5dcb979bae31989507564a2fc2331329f4fb7776d8e5ccc24c841444149c790c3a0cd2a1c3d2c4d4b8c4506254063016a9bf09ae5419a91e3d2f3cbb348134814edb461b9226d808714264e785f71cab2b455f9e40356a06208c53205e6d723f07fe2f37f27b67ab61dc17c8b6bf8c7fc2e1acd74a209bc1b6c92db3a02869d8b4aeeddb4a683ed3863b5840775acc8ed289bd4a8058d7cfe7f27233610c1f9e5f34fd82691f1e988166c12ec733d5a6094ffac934e631debf782218c9e5025f44f099ec7bdcbd9b932faf0059258bee4a89ad844fd6c26ccc0dcabe67b59e300782fdca375bc2aed929f6f0a0489b1d19f15987755b747dba498043d7e7f1bbe00eecbb434125b7daaf2eb34b601f90ec1f0da93bf634cf4df3c01199bc0a4afb291f7da580cb8f58fd5e58dd7df18ec91d413555d7cdbe95dfa338cd691c22142943093cb6e6d7ccb2ba8170ba6ed8671f5661b4ea01db8068eaa35b855534a96c226999fd4a23dd5f8f13f795eb52c2f8055f37a580c11ef3a9ecc916d6970b87c028370469a4edb1b1db568d49415dd3b3e8b1ba841e2093ea9dd33b269006a104fa0937c0b9dcc99f08bf9261d9d12267ac8cacb9d319960b7a7d9f36ac924ee99b5cd300a18496c9a254deda79e8996dccbc45662532447e4ca321090f384433d8a684e36f797833ffb1dbac8a895a24e357e2605cdd3e9e56b9b24748069a188f3c0daab591597da68ffd56a5c458a8fce9524d1bb7775f7888b787a1336e1d872d7ea966b21f875a8f7d1c37f6f38f72c341169ea709c2aba1185b3d75f418bb20d1afddcd0c57b8e03b5c32ef614dd4f9320ef4cae51c2fa56308e6c9cb0e1a142a7d66a0dc92c233475db62074d0e3051680d4879a3a774832259a16dcd51b1f2f8d9e46ff182dbbd84715557ecf472770b770015fd7dd673f36789d1782f92b3f0ed5178f01b1314da0d72b6fc076c98a529f080b202ca19c7e41ad62e4df61a076487c6e3102def9e89adb77aa7346ccc1f232cd5726035803d5af87cfa8054378d4cd09a1a1543e2b9207388aa0f5f496d63199a6c4d4561a788790a72e69ea37b2fe0c3d03a80a0ebf9bc624bd43d7f4bf3196787d369e3a43629b817ac160eda2222ded90edce70037bb261bd44ee5446ded17f3dde9f7eba080134c7bce3f78cf978ba3433fc028c960dcd0b405eb064caadb2653ec27785220612258a7d9a780de12f940f9ac2ad8878596ab7fe1dcc1c7eba79ba92eaab9960b8c83b37be6f8f218ec4b7d342ea5f85d796f9286f7cbd3050798d6e9714458cfd22941798491d751392b3f4e8141d98fed2cb794419622f3dc81171296894a31d9026bdb4059a41d98b72f96eddb856dbc33468a9b7af8d055451f145f7525c8f6a6ec2da0823e2a873dbe1995994ec2b0555d9924cdf1f576c4062373466cf5b2cad2c09f03fee21dae40001dfb6f98273f2ecb55b7b4310044c61b90451cc82dd7d5d74690155195a2549c366b74d80a90380b62803278f821e43569e197f48df2dd71e65b4e6f009cce42b40644b833cc80d45f5f4cb846923f9817b1a338fd85d90cb6be67cce670f4fbea5ef044826ec140a65ca6ba4093b0b7d3edf55141db273dedb4e28785d8c45ab7427c7e85556ae5255189cbba3fb5a887b91372a33f3a2d74627eefdac0945fb0794c3231a7c1cfe28fef3bde4a23b37a66e0e4b4286b3eb6acf9358b326c110dedfcee9548bf6c12b8bc3820c4dc90e222dbeacc5416b673ac0ed1ef7b04dd9a0ce48c879d8748967706bde8d4d1b3fca47d4156820d1a744c4692788fb1897949c36b7a38fd24aa6126f418f920a534c97152818fa7251b1886a0c2675a7e87693514b06a403fb7ddbdbe944bfd1a8f3afe0011a3d9f7c9e8b922942602c8585bcff55e64dde19c8302716109d67151fb613830736437cc590b555a756d018bf0f8a6d156e2f8a84b1bdaa769fc83f3cac5cdb9a9230ab9789d68a1f04b24e4ec7df5a0286777f9e1dbd5b6857949aaea8226e5f239700d4eccedb34c582328770914cfcc08bc98fd627408202d618fe04a580d5697d22ae234da9121bd75934a6fd154607da923ba5876aedbbbc42ff023bc2e7b0aa9a19baf189bf7e2366fbaaa6f8c072db79bb2cac6566a9a498a20b541254a21f69445fb5c6c34679bc322e3641e0373c31333f8aa897283e561fe64c5bc0cae28cc64cbe19d5a20a77672d2d32c33e9d06eeabf8ce4f59b250776c3f7fd21cf6c7e8387cd9c50b33630b9aa48617b9dd183338b826f5e3f1dfc919b8609fd6b5881f131771f3a2ef46778d9cb74ed2e3aca50e887fb87760339ca33b7f269d1e7787f0f16fce6b2e902e74131a78b41b1f8ebc9984f576ae3e48a7179aea96c6f39a014185ca930225aa98727c42e29fcd87b419b6ce057ef78bcc55d151bd3bdc2fed050d3d6878b7743013a341f3a2ce05dc4d36f2fe4d65a6c053e8458e57e2d19c4c1d6bef6aa6e354332dea06f73396c4d9398108abf93d6e371c52eb15df0ddf5c0b7f3fdbf20f6f0174519de392ffcb65ee97a2ec936a6e53de8e19619876e3c3208e6627635a07cf2d0119fa3440a2a55113f60165a1abab190637ff7e7c03ab2c26a04410ba9b7c01c1260ff7b1e5af1ee0b253874a307d177fc3c88a6a42261026860146f27a2b6a7d3274105f0937b0895384720bc001747885bf2fd13deeee1351167e28c85c97c7f1a31a02a8cb8aba4e7ed38a7895cc4fafc14b1a78fd6f3a65375fafe3f1c93832c037e3835ed00cfe9628715a51962f36c450e3bbe03a1e1f1bde28a5f0bb0fd62d184d06ffb0dc9358232e7e00f67de2f6dcb984a70df46a1c2e8ae269b780eb1fcbd747a0300482a6e38931780d9415c9114a946684e7675a9fdb69a2d13f5ceb2468f67452917b00e5a07542d3e64e1a6f13a534d148f2b785bdb15df2ac60af49cd29f92c43be79e3a9c848f66c25fec9e22042edc67a597aef106828f21a983cfbbb4ccd5540c5989900a55b9223edd34b34b1767efc02ce122b1fd7a3af1f0f0ee5bfc48364fa26ca1cf766ffb9bce3b27b741771d23f3008b3ed7224b0916a147c5c82bfe27094445c42f2e98806d048a585db253a4f7e7582f7f1492ce6ed15e236c0c602fd5b20d363ccb8e50d8d3f20804b83e5f8baaac83b3b38390f843437f1d0c0fe4701c982e09fffb85e12bc2916e16e4fe0f2c7bee6309f8a6311ba77ae9cc34dd6bf31106aa5975b4752be981999769d337a8c2973575c3091b27b266d18a9918d8ec8d7fe208fed69d32e172ca7bda345b3a6003df2d58044e6ca5f7b79610eaac05dc58f326083a4e11163572d891c888919383971e7f1f5955e6c34f713564e985eb2766ed2fa9d1070d4ee6798a5b67cde1c6ad69821df7d7243370a892f3cc4df04fbee014d6f0bd344c5d1e771d0d9d30db4930e3ce682a7723621e241654693912522401a4e5dc7cc069de1ddfc43826296c7bc1cb3ae45fb8ba3bcacdfe0388d66ef972520053b1ce071c3a587292264e09dc5405445f6b4a7def2c0ea79fe455f49f8edd0040731e2e9aafbc544032f76ae68a21d4f94b6beb04f5678759ab1d8451f39583bae8d85a68a93bce08a83189f1cfbba4248bfdbd0de866b6c0ba25ff646ef85ee8e4f7581062358a34b1a976c07e7f0bc0618f80c6d334793e8b28076b84c219bd4eb406ecb79bb30b0ac85d25e8046bb712d3601251c4e57c86c75374daf20c8e9954bf725254b09e3e2daff8be9d506aa420b0079800fdf4c44d083ed1b52f452ac848ccb772dba26b012e82e2c37497e59d3f14a5dee039a9fa6668d2b7e0b1338c7acc1bd403950f1ce822fbe3245ec4ad92153aec43398abec0f90913f03415d9ffd8c9a9881e4d84292ec4da3281c3e8d88ef3e39e3b2d2344862d4a982af658ae25bc2d0c72affcc6352e1e626eaaf64b18f35586499da760bd3115b39c4c9d5526ccb8d0a2bac9eeb2287a5202535db2725673ce92195f664964c4f14812a14e138b196b4b88cfff37d0738b0bc5012ba2b4634020ddc6429fc57e91ee19689f2dd980de7f9077118b48dfd29e59edcd9024b3733443fb7f2223b78693edb2de89b27bcd2c361142c08f2d939f6d248250e4e98c47ccad77e3929193eb257194d12a48b0f6ee6fe73845a2237c847c80e2536c88dbd5a5929a4a5487116a04540c904bc307490accae5169c2f10dc1371aa53b85cf33ec5e0a7d4a185ed4e4288c21cee3b06b294b53818f35e25e583e940b280d6b3692bb81dd3259cec504e1d17da0e507554c09e99795560305cbe5c1c259b3832f170f12eb81312702a672c0225e6229bbe656b513b8c497347b74b786efc13014351d0b12748e5cb0c67c194360195275e5479d6258e2e4c62ee9a0c8cab39393364550a800be216bd40070a0f59e2b58ef6bfed3b6168156b14b2a558f7b8acf61bf1ddc6a4966ca61c427d311a7b6ca4541bbfd87a1d385cea03fe08b1b701ce27ca95590f00353c7e6bead9f97f7fbce1f98754a3cb705d98809bc659cc6e1638f76805ff5130e846d3a8c0c792c11272ed998d09bdf5c891fded2d99615fb5dad3e0e638c139b9702ea6c9dfb08003ebab1f67bae98e75f055768081cce1c96f70b1655656e7cc17acce7c090ac44e030c39c7889dee9381ee651872f2e5924c118ec82241f8eecf08048372da920de4f2f249858d80e3547a5d6f090149499ac78c417d7ad811377f453f0f6a4dbe305ac02252e76bb705a50ad1196658720f5a1fe2de53085e225ab0e22c6f7ea923be53125c8df77ab590f59ed626cb6f8966eb368122072af2d4aee23e6071f1fcaf9c6c96ad37e758e6c1adbbbaa6f063d17fcc97808904d9220382babac67ee4ae4ede1190068e1cce75e12d4fad83d2f36e43ff1fb49f1ee1750426bd34fea3cef56a714c2f3c816c822b4c55e15a28a4c78a9bcfa957c232e9b419147bd21c39387637d7702ae31515424eab25dfc3e404322a71b978fe860f1229e97456592a9f5cb1c4dd5e06721feb0e7511cda6e33b567fd73d08d74788b6fd18a88aa63a1794830e7f3cde709edb88f5ff4b10cdc4c8c76cc9f842dcb786e4798a981d7def00744109205a15ceab02f60d2b5c59993c019a59a3adde768242b5ac0082b09e4710af668691abe496cb03ed6792bc32e268c9de254f52824fb2253aa07a59234c0d7c9d64579ba963f9aebbc2c5a26a8fb64bdacb869f1de8cebfc45b51941bdb919353f41c8915362f54ca826a9e653d1e231ceb9aed37ec1e5779ecd7ed0e995eb988c2470be145b62df31e193f3d2ba62a38a8090302e56fa54a0ba4d9d28a727cc191e6ca76e127b8871728ba59bd13190f107d68e0c452ea5cf996a88bda3884392f3c06aa186c090e6156590a9cd3a1ca66da594e92512c68960185b2a0d89260663beaad5aed0d9b517aba8810580db4b466850ffdab1a6e5276c0c6b31de6dc82652e8766cc02a4b6fdeb71e642248d854b957dead28ca5821d3fd60308d9b05ece21ff03b09d1213427a1a86b640b19f6b90917e7bb06e37000b49f65ae2aa19e006f1c258cf3096612642346ed8ce12f522ab5e3bb6344b6ff8386a82505155c65c6a3fdd556acd9bd39f251e6133f12011d833e1d739872700c81cdf8b425b873ddcb9604d723d5bb0cd60ef75bccf2d31d518d74399da346e9017af1d40afcf04313d207757f1548ca06635c2dae50cb6ab8761ac1a140db964a2cc5b38f55efdb971729742bb0a1b645a4437b17ee383e54363deffb7eea31d90095ee1866b7651fa1924dbe6880af58f7ba964d773f64c543ac776ca9334ad03884704f353e0a44dc254d125fcbae2b43e40ad9fffe0e6a43104373d924e65523e5d0d49e6859cfc5cf86d6017a86e5a3e9d57b4683cfc6f5b35058ff3557704a730174cf4d63ccbb907a431307c01f88d63a96d583fb76c26bd999eb39b0f26cef3a2b5ca2a656f09c741e64f66782368962a684e6e5d692dc79584e8f0ea591e821210f6e4903da4c01908c4d4f942e8a0ddaf2c1698a378e8a3e828bfc3fe5e005956c475d8bb19865e15593adb71fa9c673bfc79e9aff8c64f5a7808c11b35d8aa5b2209fab1e79527a65dee7c3ccfd5c632b39c06a72f80f3c301cf63218209877d8d85916388116c7a819e231f4263d69ad2d36fc23eede0ee24f85a3eac7619cc0f89269d21dab89ff299ffbf48fe5495c8b40a43d7f3df8b1eba87f3c8a30c7b5628d585f49c031cb3cec0535b709f70aec721203e014573e5e427836bde843a55d689a24990a30089c275ca55a48b4149611a69d655bf5c36f2458062797481458db7199e92c9388711a7b450d2240d3c7311792742dc91d155e1cf5fbd2b5379c96c2a74b854c80b61b7c744268d6f0d76e094187e0e993c26b9978e2580061eb3fb8c68b3bfc7b2664e290d3dde48ef4ee89ffc767c2a0ec50a43f8fef10673f25014695853cbf9f3286d9522c50f5deb8b4744defb81d2b0239ac8ee2c64dfe461b15c7281801857385886d8864cb061a731d342cc3b76c1a457d76752035d8ab2387b00e88b2ef6920584d5d6618fa6f23ba3f3954c805089e206d500f08c0ff74cdf8a23441b5d8fdc88f364e326fc0c3310dbac8073a33d8402d3802b66ca97d8a79d6426c957f9d6f26111fa88d3c22fe3158b780fdc90f198e07fa0f3ac8b3e6fbd7f491e2e1d0c609ae5c4fb9acec9849161cc635553d130904319faf3ddd07bfabd8042c56ad29ab41ef367c8b1a9e9ef165d95677ec9a85c963f689c803da5dad2e3f15f22516be871982cd368c78d2f1ead266dd4b21bf203be53ea47587afa542b8b6078c8dfd9aab53a00535e5102e2a116ec68b0cdd755032b17d2293e5e57a009ae08c5ff8df1e1b30697692ad47ae567f529ae0867dc5b98d87b8cbd3cddd98f2a514900719b1d6721e0768973aff96ece2d9ba06cc336cafa4f457e5fd9ec5d0522979937885cc206ff0831aa29278ae77e5ea7488ded77587599f0222b37e1eac3706bee69b1c6688fb95bc817f230003e07c8eccfb29a9c45516474a7641eec4622730d9c3250e971d4ffbe6617b851c8b1aaaa24617e5b1f416ae9ddbd0615f0edf611286b37eb3157f052ce2c93fbf262ff73fdb9b31c420be81e1d4186dbbf80fe0a402695c99f82cd75096a5cea3ac5a1ad2a3bd928d75d1c7b8c05d97a87980570198923fc4cd446cb0bc8a4f50c49fa8d85b43078c02afd186564e0dd12a5952bea6b3c1acbfefd35ab638d43c6bbe1cc17e6eece8c7d17892ba70380d667869fcfe56fb0e762434aff8700ea3f130d559780cf2f8226ad282585fb4e880c80c6aeff47dfae4984fff865fc83241510ca7ba9f24befb47aa9a2e292c118d6b1189eb44bbe0f2e279468ac12c33ab2e6d7ebfbbd47a7c45631f23b78f0ae207871ad62650753bd2f75a10fc28c3ef9c8bb183e68d3b103a3e3e7fec45cbc1853f5895a274781d566a0fe16f31058ac6e6571431588b798f98c289fdaabdb68784daa5d7db2b3155d7e98ee794e71464e850176b6320923568eb6fbdbf3efcaea573f555920570effc4396698d154a2abcada84fbf5dd61d3b026d7358f928968e4269a11a6ee89a0126415fe4a17dfc4f5dfa516cd744097f062f4a3fff0b34dbd3c129097e58adbc836d5b663aec905e55d5248962a767ceecb2821ecd30e2d7321d8a241093bd9d9e1a098d4bf4c51f4c0c3dd10f67407410e062ce1819b868d654840d1083e0dcad4ada638b5ca92758d1b11d1410f3b5f3902665051645d35ad7eb4e0c97ed5d594b7f409bd1f7d5d746c3bcc14bb61ba9eba701d69ac2756dd73daa0ad96f81f62cc835bac0f58fa9b13ebaef5dd44dff27218d5e55b430e9f6aaa11284b36fecc5ca05860f9dab5afd9ae0748236e3932a017a1a241b02a3d03f6d1fd0cdacd2781d22e0f151d24149c673ed9ed5987c2a6fa2046753129d17fe9f47ffb805acdb0d1c9d953a6166f6015e9cc9c2c2d5b451634ec89a5a20b8a3f43b6a9ef91a6229ddea5e47d0fa74ac33923b635f3ee5f770a30fa488561f5e65116d1d395fedb203582a0326f0234ea96026176fa3887a6232f367d4f0c36efa620363dc00b7df7e3bae4f3c343b002104146beb313404ebfed5afe64494bd8a3cfe368eb61fffbf06bd029d0b66a760018e6df7d0d4510be6bf10126c023072ae789b8252f9bcbff7399fad663771d6cf0621ee189e40051bac8f80b5ffc39086fdf167df16f9f366cca67c4de22f1d7c0175106433506c3ac5c873f7c8f07e3e2c960927c274c887bd791feba9b8ac7261d198e29ebe82f95ca89d54e71f1f4c9019d917e7f5c5327428dc6912e57a21b33b74e8aca91ae55c41481342faa60e8042f776327ae2ee69b6fcd70b787c09ece59a8acfe665e9bec1b58170c84b6a3e6920185dfa1c1ee946a6ffb6e4ef837e61a369956637d075ab8db2137ab9858ccd3ae227cf8b8afebfe9e52368dc4d23685e870fe5f790840245d58f81fe5560e791ffbadc6f8f19a756f9ecfb8090c59d7b0b6f425e2a62c9c1f5fc97b96cb2fa5fe6f7631d3fba43038a94a02e52361d71e96dc986974d3ed87be15f22245e09547277402bd7f0ca6ee46f0213f382bae93d721e2590f8a70026e0497c5f814ede41f39fbaf5a30c7fcc3bfb729b02e9e194bba25d95cd4ac4d6934ba8b6e4287cced14ff1af0be44f6e904a42a8fdefce3336653c0c5e1359336ff0eda803159ccc399e9c87d4fe6811d69acbc64e608254aef8150a2afb09f22250638790d2e5ada4d7cc3527c87cc152f97c7b1759ef38ec03ac229588472916a58325181db11fe7ca4a1f010e1c80b35153a4ebadbc114b8de462456fd83e9e1aff37bea0d18affdfe19162f6b63084401af4cf8fb2217f3990676a60cb48ffacaca527141cfa0909e8718af54abe9b0fafef1205b5fc1baa6c80b454a9fbf405ae92ff2350d53329118d7f5040554fb1ead857897784ba387be37befc5c1723751a47d64aaefaf769c309d3a8269546d864f1de138d96be8c08ab2b44935d67acccd729c020cb5193c06c23b16023cbb616e9ec334e1712b8880329cacead383ea40b27f2135914d5cb53ecacca5826c786b26d21696a93569a7ab8a0a8e002570e7302e999cc8fc02c8984586d11c5724a67d2ba135fdd42ccbc73d3e406723a46f0dc26db8304a980f0c6e797bd2ea68e05438e757fc65f234e1d24fcb87e5f00b7dc58d4f14eecc3d46a4c5665150462b82dd1b12bf74dd43352a2590473b34387da9298962bbf02d1b26d5f7516d014a0cd906626fda546592567bdd5ca4bd2897344167c89e80f7d5da9d4704317edfc2986a9cde51475760c0df668acd1a0c683371ceb6df458bd1e931ccc8751a2044f5164a9c5ab168a1a34003d1932b72f9ca3304168dd418d46308dec0317476ac7e4f6b702114009f33ae8b04701745830e0285fe0ed6da85d5e33e8e812d09e1ab86f78972a705774b9d91e02ab9d67ec06efa2fe7675cfa0a8d55ff7964e667994b796f85d69109497cd9b0fdb75db7b750b9ec303a8bda77b8377a292e839450c339183dad1c387ce8e66ec7b660c3cc8a80fd2f9791a32502cbf34505bd6181181270e55ee6f4d7a7e2804922acfb0008779dfc68906b3730cb26a2633b2b74500c3819a3082952eb1aa15b65b89772cf362aa2fa9a1460e595f58b26f8ce2d4577d7bd6e7ee3dbfe031a67959ef11d85488652e447925426599dfc1e8fd0e6a2a2b73dd42779a5c54a704679d660aff78e02897ccb3d9b9f36a7ffc49577b678e3444e305a492d9007373731a5d0ac891a9df7703b9812dd0152366c3897b5762ade04575a6742813c25b7cadc89d0715bdbea34bf17b21b675255fbb923b45fcfb9de297c9793f5fc3a6372ef23c0fe32e5866121357025040b3622891efc15222098e771a4e647e8e14476dcede74efee90a5716ddbe7370353e5f87d0a46cc1f862a9f5167a845445c2ad1d5a7af0a0601504be08655c6c6961455c2332a2ac682e5497a9960b8549db825d035ecc262fa3710976998ed1932eb834502388e562395c656004bff2d547910a97d00a1f2b759d8fd40e5f3862b5b867504bf2cf0be6ab2a467ec3eab32abf2e35f6aedefa568c47c4caeba01b9311eb69b241cb2538484a8cbdf34194ba2471f86ec1d8e86975e40ce03712dc027a5f38878202f118a4f661e4518e9b25ec7ff525778dcec73f14a31b27db694ea3b07b446cf7924a35c5cd7985bf8da0e8cada31c6c299b9683300e8e1f00aacdd3fed92f8ad8b913fbf1c779bcbf09065147f10185d9baa8864927f2ece026bea3cd82181dabbf16b2a4e0a9bc4fef203408b15854271190f33de5dcbc551e5a4f044e379d5bf6be4e36b8e2e9d8d14656ab21fd70fa02275ecf5d456212f3b14612310e1a955f3275105c1b11aadfdfbdf577814190be1342666474a9df6fe5e8cb0d1591155f3e3c78056bcd2794177f23de3179215a008b1d94a1c8dfeee76d6a099c98ebdea9d1bcf0a8c8a6af0160c2f9995a86686d435fe657b8852621759d69e91e00a283631ada85b01a60fb1f41b730b61fa4e258cbac8ff7451693ff8731ae0ffc2c78cae2ee9ff9538cb34efeb8fb2eae0464b1e27f7c5a9b23f6226631f1ff407286b24537093fa919dfa2985af3138c481e52097331642857fcbf9617b5d03faf47d6b4e005f901a986e612d7ec3a1999e3dd20ad37bcef5b6fb37bba9a57ab0461b42d1c0b87877a88b18754e3fad9be99020d33a634dc3b5619b3f99a12cf7b8073704d41e4fc497e27f1587b3355c10010c23fd7b16a86e8fe7c73bac65c410c4a2f3ea7d30cb88b96d4e373af31934dda7070fc80c90ebc89bc1be981eaa38dcf753d87e247a7f85f5650e502e742d1d1188334d5225004e7f0408d0e06f7aa2d35cd9caa48d8eb44a917cc68e45da9308a5cb3606179d4d1166538251a47d4c6beda6c5b55a8256c91040e0c6ee868a8f960016edf6e9f5a63ad390985a111a65b54e0b0d1c0e19c298b607a6a4a30e01a32b5f75d552df55ae00862c0ad1a94adb32f9d4a47c02080660e2f1db0ba1ce44670e5e031c0845b26c35ca1df7cdfe0789e15ecb81693eeba38bed7a2d92acbdd66312bc960c79db5bdbe7230f77400731ddef5fceb89ce85e17fe5987e8abafc205ba6da62cb85c6e095ef2adf88725c64fe169070caf3493b1df64d3eecf4e5cdd972a37f917d75aa47011d932fe6a6708e4b6061ef8da4129e0630db7bca2e400074d100fa690cdb95aef3873e6127804eef50dfc98c0183ac1a039b9efe6c3aca87bc20b5706d95b3fb1da16004c87a302121a77cabf737adaf8b32cc2ee9bf8de359bf3d17cfb5f7e4cab976880b412f045593ab175778255f1232f73778755531c9dea0045a4062a0e6fc5184e6d380e794a1a06a8588b5b9bac24f9155400b4a9d9e6bcd9066b1078cf67c39f671779e930b66e68a09d7d7029fc82bd0c964e2c762738f465cfa0e7067fc9563e788a12e238949412afae795ab88918a884866a57cdfc4336d72a3f4e7833ae15ab13d1313dfcd62c112df630d5ae211154b9f6816f27d0b9c44d332e21cf813b91020feeafc48f518b2298181cc0b6d2d028c3678fca6517d5c4bfb128369c944865f6efe41f52e81a54c8fe7a07196eba8d2d9f82b174f322519f6ba177a41c4530a9e08c274311f36583e000dafcca2e203c0248a98a701865206c850716a86335736a7a6d10db7c4e4491385bb1bbab8ad8a7533e5fc51a09052602ee466a15d04dae7f06a6ddd9dc273738924d58a7bad8c5017acd8e8c88a2a8579225a3fb5b6b708d259abd1effd43a6bfd239c52ef081963942ee2c9f50bc454a5cef592e91889c5f7e6692d5ba645e4945994b3444d8499768e987df15afd608b0f9ad62dc8d3469c5b51403e3648d25784714bc96e24884de9f4ff80c44262b89211c9014416349ba5ee2a41427be8c4bf10b6db0fe954ba2f6a3905e105498ff69c02ffca547928f17a0227d487ec775f090cd61c221be1ac741e0422485416dc46ebeecb75abdb96dc53aa3ebe26aacdee299beb02804a91b6c62402ed5ec7cb8131bff8477e8691204f2d0f883fcfbfc36db4f306168b2a3d4cc2794179a96ffcac084c9eda32b47bc11449c6f660767e292d18f4b196d74e3c6bd6970dae64c4b1b43a02467af124384889b8a1eb3dd6cccc0f7d8c8aabb3d4f17e46eff4f2ef93f13109530ed02a98ad9892a62bc1f41294ef2354affa94eadd1a4e787b352e66ab3b6afb7cf19144fec183485569c7173c2ee70039c0b8f69e10f42568744794081e7c61a3610de06063274f8c30f9c2218a86f0d3dec4fd7ffa142dc753c66fc21952f659a9e46479aa38580b6772b0d19643cab32e7e7f7a95cf2b20186c3127b3d4e627888a690580c2d86f5ff56c80d177c65aff08bfd3b4ab43fa5a8875e261e4b102b26fb4c98244c63ea17018337a838cac29309b22f84a96459cde22aa5ae4310df85f1128e5e58f2efd5c59279733adbf0ec9550cd922fb11d7111891d8dd24f535f6df442e885c104a6e5bee1e18d2a6c083204834a033f3cb8558d1b159a2fe06f3e0e54fbef79049a2348740512cef9ed62962d727c014cec1df8f11172f091755446ece12294503390eee29c543fddd1c43f7e5a9e6a1e06443d726aff33dba2704d1ce52acad5081d77df11162803663694820e1b4fadef789ceb90c57de43a0eaa16891c0c56a905e9c3dc6d97ac8be82f74e6324c0b2947ce3dcf37d1830d8ba9e1c14724fbe8cd784dc030a2144c43036b411152a17f9bf03c0a3c9afe0ddf601c7992897d8256ec6d276bcac5179ead52a64e5836d85c3df9673696543f0bc317fce05b4714dd2bca2c45e67ea2979d010ef32a81e00b69e042ec2402c9105d014f9b051f591ad73e600496df3393eaf7f0709113419d30c3d616a4c7d79c0af99f48797713c8f8f85d92405d0c50e9ad735733429553512c0cf39a21e2110e9528abea8390c5f53b9d03ea0543ef4c9716758813efcd1d7aca0e1ef65e7519a9256ac77ea467aa47e6309c81698252bcf473d72d1ef2b6824cb172c7dc2465247d67c336057eb81786ccc665781eddfd27c5105997dfb2fb2cde7e4c0d3a8446f29997cc02b2c061570f1ef679dfe01f06586dd58afee82bd580fba3153d374d62aa667283a64332d8fc85f9e4ef7c65feaf0d63c7a3b53c919d1b4a63379730d10e3d9768889c480e84187d6e0a3effd5e0744004d5b9ae056b848f3f9dcc661e18141b458c7e36ace5fe3a83f60080563f9debb9bdedde65cc7df3333fc651a03f063cbc1e66232a03616ce0a87109fa270fc87697236f2adde5fd5f7283a8602e61af26fdbc8720e49f3d4d97c57138608f1215434e7e852df37243280e683212eec4e042f0153d44ef5c12c6d177ab843f9544e9074f4ca9ceb2c39ec61862e5bd0f2bdcea9bc946850a319e059eee20182b3273b6f37f52bea707225788d1fedb5a84d37c20f12efe8f22229d15e3c38d5e8c6d224ee71e931809e36ad65bae99eb67e6f552264fa8ff7267b02603c635930414243d3e6965f668ea2aa9e33e3e4f9e2e34fd6095b57c786f6fb9b7c66f5edd5189e7d0c34f45d5fc25a99edbbd79e3b07c1152bf6145a4d19c2c6bf7d24e21e3b3b87ba5ae3b9bc17c0da6948a1aae87e0d5fa4bb720d4e639330303af41239324002bfe1870d659477b43e3a4af7d137a6922732897558092e683b63c6a6a36f48e9a29e61a56d199a0e1267afd989cc0c8c0a22e953f8676593d76062740c0a3058a66ef929cdab9c3be933d6fa00c79044e725b56aaaf7eb16bd2df75a414e4b8a3b3307af2d999cd547aec32163f5cf48de1dbc3e981e348aca72606320bbbddfb5a1aad49b8d7a0482075dc1680d82862425c2f838db7a61ae7130af5ee41867bff44d7a5fb8b87595820531c82c5245d511fbea8fb8a620b96f8557913f26683dabd1ed24454630b59c823a779a31c50313224f17623845977f886d8e7389708f5429bba5508120faeb4c70be508e44e89a15b4a784d7c4371e4f79884ad9856c6e2abf7d8caea67177d63687258c96f3ec2619ee664f751c7121cee5695a94e6eb4b06b30adc871fbe2f37068ced163f56ee343fd0a238ffc22fc1d2aaed10a5f61d34c52830335a38e77a0daee09434b4a4bb4fc1fcbd09bd931c83167f9032950596f7f7b29d5a46771f44e803450576c2348d1119108e6dbf366fb4062067560594d7333c27cc95169e66d9e3f68e2dd663ae3e26fa4f37ed1a92fc497eaa765d720b294e5130585b8d9079f2cb31b1fd0f1c54b71f5ea2881e3c04d62b8de645715bb826f2a268eca5a6a9ac5a6a0d43c8a3c85c679a604f7b811fca90a3f62bba056fe8cbf146a7d8253ece2008b5190802a8d0a629b4ad721d53cb95645e498ab429089de3d547211aa1329e4520bbf15b457e996220075a591024d848701de2d5c354696c2d9944c05d8a104d87c1be34be2672c770ff072dc7747955d6ef7336f2f7040f3a61ceb827149980dc4184bf5fe328f8b0bc7d0981b2dbb30a35c672d3cbee71e5549f98f419163c5b0bb34b1c4a9991fb0d27098cf4177c2056b4ac0daed82561ae6f4b6940d94a880f98f6729f9bc041fb82280751939521e14981635cd6e23f6a2a149b1878ca429bdd068884366350c7615f1d3fc14c420141a4815466e35c1741db19c3a291527a26ce790577788b8ac1a7f0e49b6a44102c400bdacaa32792f3780f7b79204fb172d410377138ae91139d17a3f84028ae006345683b8e2617a9a07c1f3e15bc703f1668d4c7c07a5c4ed3b95f4bfc90bd4da09113a14b6c724012f753239c5c1f0d87fbb7cf8842e092c00192de79a276ddac2604edd193df09426629741ee62b2de200a25789e460e22e31495adfecbbc7452943f3dea254e268aa78cb779c1b1715d6d14eee6755890f5f4278a3fbd93f97f4dc64f158e3e34f4f4d69d9b93a03de530e095c86be54640aa2e55e2c944d329de6e4ef2b8915ff7a5e33db203a779eaef16fe5110b338e51433bd26a47af275eabe9482b775628d26485305b93181cd03ec14328d671274d077e717f13681730da1e18454b1e773daac6efaf95e3aa2d4a3bc93159ff1543e436544e818afa4310484e27ca1ee1ac74e7e470f84d8fdab066c758c297f2a5b59c34cec73868557df905912dfa7bdfe8b6e397fcec5d6e2a8c00731c98306a14b16816d5dbe6552fee852f3d16cb60f48d2f14ccf61a5b2c781c9be7e80f0b97320a29ef8ef98df14f15bd70ee0f11f0da28f9a84375913615b938399686c5558e4818c3b62ac1b436cbfbcbc68306e9545a001c04ca414f790d84d15dd47584dc9e5ebe2c82d8740949ccdfca02faede9f9de180c3be51da6f3bc92d90f0c335019d41363f4c8ec7b1d5e766d2bcd1ad9d605e1bcf9795c2486c77b8b1ce8be20ab2bd8f44bcd560735c0ddd3455c2f6501246e8d0147d5c1ccd502cb00b76f3e371d3ed878b0a0c6f43edd7a096d8639ba9a331883c65df81a195e8ac3ee06fb488156e6226b02c87c7224e1287983621e0f71b21351a87c9a2a97b856d0f9aec224924d67dd6b14a8d5d55092cab31d21fdc9dbc5212dad018f05371e7c713b8aef9a496a89284a9bfa511204e8a35b552390eccf395f4058a6fd30b03eb0d05ebb8effafe429fcbcee16a92b0cd20b9026c7163b9b17d390d0889b1781ed481a27a8338bf6a8c0a44e40456c70d285f551ab8e5da342955029171fba99ec647436cfd58346b50cc566d048b02129af580264b72869fdff42a0499859eb52f944501bdfe8ccf3bf8d80ae1ead896a6e0d8f97d5493374769a49cd1767ce3f1695daa0367ec113db3c1a2513c3805711747fd274c4b1e4e3e14dc702a031ad641a71684b1b70980d742d433d2d96c8cf92494e8203961a3ecf9dff3a2aedce22a9e1169fbb3c1afc69cb8282174401e6654407d4288a2a6784ef822dc718f25b7fd5a1cea12181e92763cba2cf6f228a22d264ef9b85ba380341379b17f9b2ec774e76f13c83bc88d5be257a63d2574f574cf35c23e11651b9b6b25f3c3e373c6142505b88f92aa41c1f450e33ec852d3959331fb0bff26b8edd26834dc7a880f9ac95422adf250b04d013de9203d4946a2e3b4edd276455f4cad8ecc627899f4aab5ade4bfe5ffa46c6c5e3df82d1a5f8b7aae4fcb101d3857121d20e6423060bcfe7f5622806ee8c4bbdd7d82206043ccd211e4f8cdbb1aacc617232003d99b6cdf756c37288b7fbb9cbed402d98db690f7aa423561a549f0a8f49cfb1b84fca3fc4e630ed12bf09101e6b37a3265bd272ccfe366d1ddfa2a3c2f172d59330ef652e9d941028adb6ecbe9d32333df37853a39d64e97f7014a4d36cb85cb20d849d5ce0c401ac93888470e4acdc0f793765da788b250576a383849a719837d964fc906bf4209e5bfb40ed5bb6ee95c3359c79d2e9306de98a93f28d05775d37b97417bed17486a957aa82981de5ee25bed156d50633b8e6c696622a46390a463a5d9db5cff1e2e2b08c147646b8c18b76dd1166229a70ba361c9cbd6ad25ff92c4e432ad6a3ed8301c3a5525344febed3d6c2e6f421d382bdda499fd4cc2daf8c39fc88a0dd7ae83032752fc4dc49acf096664e89aa8b0adb2fed42821e2c6a8b140c5b58cb41d36ff0440d616c6f08dd0639ee17cd4774d3215be8099e8f387b5b4c10079e11723939c9feea28d2b5472ea86026d8216ba680ec99e4e1d7d7ac0051b39c14dd494bf35fd89decaf4be12af712b134e509902d2ea06f654ff7ed09b871b876008aaa6fd6b94850440687b0d5cf2cef994f0da9a76fe924005101d15244b3d07cb19b7b5f7f7534b5e8ac1a58633226dea65d2d2cc256a7cfdf174aaa6281d3b122f6d174faceebe713dd84018e9a684631c93158283c7de1fd1dce8947ed263cbc58a9767aabb2bad8c96e7dc7a32560467b31129393c16cdd405dac02493981ea532fc639c0077c87b952f143cf15eb4a93af975b749fc33c27827b5183e4ac7c89d0d92d1ee7b2586d13d44c33299397bed6031c7abe265bde1768fd45604e443512f74350df617ddf5ba42faeebecc32ea7ead6fcc90b27e68bddec49acf86bd3532e87e7c8b155f18b0f8b743f56464f27c48a407768b6266abe411cbe180063db93a1d4bf6aaf7d7dae276e4017a3f2f98b0afbce5f821e2ec987038cce5bb601d4ffc2e9f2342cd56becf730d1c7e88c619521cc0496a6d8900a75df721e9ffe1391f7426704ea3e03f09cc7419af86ba89a8e58ca91fd6f3d6dc19705453942798c1adc88f30ba45c2c6e927d1bd45c997b7e1799cf800923b0869308669dd858a24c9209e1d06e4fb6a377deccfd6d64ed52c8b69f42025723130e9e47a2fddee2a1f48f1e682d0b1ae8668f18dfad7ebd73cb3f27df28f08091782c9556c8826d89f0a62f0badfb2b8debc309a49620cd5211d6f15f487bf2c13a632762fcb3d5c05e9923c543a849e9ed22d962fe48863139848b054122198b13450e11fd2c8aea6041cc6a5f78e0d63d38561e8a4c09cc33ee368df7a66d5bc3b202e2806f1cd4ee8350d2fb0edf92d48b368c12f86fc1e5b596ab73f14e18490648e5e97d4b2d90f98094c18092b4b06e3eae1ae09fc291e461d7ece196192beb45d3df40a740b8fc90d2f66948c7ba72685895532fd17faccab39d1be8dd8c99a60eafd242049304489428742c6dc2d1b47412d069f479b2b99e8ac385e8fa1a6f2c4e714f0fb2f678da910726481d6b8adca287f6dbfa60fecd8d7f56ba9a50028a982ab955c3416155f3210bf2a02fe9bb234c35cac22b14b357144b300686bf5d3539b7df90015760f26e01f3981322d4b832eb1eb9033ea2141d335f5e05c9e6b612a77fbb4e595cb0ee50eab951bf67e725a126996b231550c8e609e6c51c949211c70d815a0ddd87a6c22e7c85010c7c56c3d4641fe265f47df91afac79e6d2ac4ffe08104113fe93d5681a99faa826fc2f95c60dc3beca0a891ab7a448ba121915f9c3cd2496a2ff07f43374d9b838339ff3ecdc19fc488c9c1bac5bb41bfbac5b1fdb38e2cd7b596f063aee6612c1f58cb657b29d10b298e7dcfc4990eafb67d46ade2ddb4cd01d1a982f62ceb6a4e7e6522052fa1a4ca58e8b21d0de83fedf35180c5a41346d43d50f6a842ad6476665ab68c71b2bd54007421d40b408a85012fefb8818ee5bfd43e2b92606cd1af5158703cbce2fe0cc53d37cd97f92ee824a7894cdd2a7677181e3426d88b4e8d3b7aa077c2bf775b2b7dd242bebdc884399a5746d499e2909f40bcb08dc99f2aaf8105b6eb6c21af6bba4279a29eddb0fb7357db754b26a753e22918a4885488fd39e468be978619669b0e09dc5bbf1c4a6adf7076ad20c74bae3dfc24667efb057352a5d94dc6c509b63690dffe160a989d63fa87217e87c677a3a67bb329d274067ced05d93499309131d0f248da2ece6a5b8b19f0d9ea890abff70d0a6bd1b897a40589dd051f054b8d6bb5e0de68644ad50c4e95488787feb3d2e96f2f87bbfce8b2e715df6c06a0f8d6726da4e4694d46abb280b2bb11806837099b11b9ad4c6dbcbf95a96a5aac102749e6b899e16ecbabff8f50b0cc52186b47dd7fda015ab01659b680ec4e2b3c100481dcdaddcafe87402efc03e1d604aed73cbcce043a6dda2a240ec816c14e7f4eea7996f089483a06305d0d2ba194f955f94af72205bd54e0685fcb68dc8d536d46cb622af9168cdaa9e4f5cb2002b456cfbb8f256a11a2021f0de9c5224787baa21d802715397afc0f3d9878c9b18cddb13adfb089d8803f2a9fd474b627720662a69c2f46e5532f5db1f9a4769980dddebedb9ef42d574df2d2517cafaa8693f4ef3da50bb081c359401db76df26f555ee9e0a0be078be686902df4a29fa941d86de9f51f388fceb904e5cab193111b7d972a55e9e3326f37e415f5ef1d6a73201060db587e51d5a384f71a211645276a7fdaa403f93609b48fba4d1ded0feadefa9857df11b3d3f910f9ae13a476ee7d60aa139a58bc068d83293bd06923e7a4231b5802da15f76ce0697972cf7008eed97ec58e1346dbc2b1f2d499c1b0e12ff27726d4a65ee51cc49f5c4b27e4757de3e01ebb7b053c55091d0735a922e84c9c1edb76489cd530b6ead3e407cd14a55bf09e904ccc813202bd16c8419c1e14b2179ebdb1155c5717ce2d0f3094c06c7f6674278e4935919e2dbe813476266f03f156bc2674b672637567919b6431da12e0c188d7ef8050dad880e3401a7eee1efac07f76de73901ab11970f532c680957b0e9b9b0fc99bf4e2084fdae012ce0bf8a931ae126e27aef63502c104e5240e280f0d4ee343d2ede8ebdfb33e40f2f83dcf93f3d9be8512c513a62b67ab5d44c0611a23c0ed195efa1fdbd4db3aefd6c68eca719c4f36c01a51d59165ac66728fa915d28a8724e200ee1bcfd9811fd7fcde6389bb35b9f199f4c93c582711b094306be9bcb51504b6f60934c34c64dc2d02efcd83c0cfef617f2f6ac94528d1c93329c0a11d560c97f3a3ad17480c9292a6b993e3e43e5da0e3699524bbadcc810add9806514b378572ca468bb92f17d3e4640752f281e5550b0f49c9b801bfa741bb7717a9d4e2b22e4fd07625e8274eaef293df6a63403ca2f365230c54843878050cd901ff9188561834cccaf3b149de126d4f6764991431e95891ebd2964a845bdf681edba9efaef4ca2845887507822c621ec2cfbe29a1db4fbe3949bb9bf112f5943b897f7ca08a588f4be2a0545dc9d9fbe67f74651926f58e34b313d13c8f70af395aedce2eedd258f58b9a94f38c84d6a992a0b745123e9c0d57b8725a1259d708656dd095aed262ca46347ae47ef11c55647a297a3ce4b646e04dc044778cc43ed8fb2c1180a74a3cde0e0d84011dafbff9fffb89099c35d3279beadb63587ba63e3a1a013bd2f31ac6cdf3f3e460c7de6e4dceb8f72e97503ddc3765b5f1c9f1c5bd39ee2b0871fdd000e3a9a50149291d0b371fad52b4a91651af095dc5db9e098cd83482b2f92b6fa538d3cccc1e963f11569042acb15c4a3797d67af9a6f46c3137a351315d921d36905575c16099b67c54a6f537a0bd33958e7983daf3011981bcae4afcab01a143e802a48edf66cd392b0855fa5dd664f132149b27b061d62840ec6c68a5e300a8c151c221d259137ffb95d0a6a32fc71ea3b522415593b1863543bd20a5188504820fd5c93765597d43b92e13e9eb2e68b134dafe3f053becb170781e90d72ea85f6bf49eb4d29dbfb376105ebd9eee2cb1552a1bcdc3de8b18a53240c69018ffe034b21203ce799710680897a53bb198dc797fd8b8e6d8787c9cd107d7a7c9f1a679479c7b9ceb6f9ecbc00d891c87f6d4c42dc09be1993d0e5896c4dbf52b188e710cfb8c1c15562d0177203e7f4dd370eae7a7c098220c1f4645559069ffb0671fd031967888d36d38ddbbd9cbf7c31faacda9bf876d0f28977e94b6404823bd3c01a9c34d2e3743298daaf83cfbafe36b8ddc1a445c76e8d12208b7ec4d55e426f7864fc7052803712b4f4650ec1863153c2523846e748bf2e86cff40e6b14eb1c4032b6066b025f5ff60604b1c12502e98a3847b7d1a456c8a0d081a38d14471bb6eced934b01b13d0922ea417dd737384e365766dc50d0536ddbb4399cd78e7cd7a1d5ac295ac0bbf53b64784ffc4504ac30be4ee7744ff13d5f411d840f8cf8d051697fe521c09fec2ea0cf0f0daeafa0e92e169cc376129d4851d57ba63188e3216bd519eb90feef301bec8986e6a78d9923bf9411365d5409263ff5dbce8ca059b5d0412006313cd88e656b64eeed5c8a0f85158bd035d77f5aa931a75427a0e6b0b5fefe4c1695bc8ecefb1f765167edbd75da7ae57f9fd89587e5cc4dcf2576b5627c592706a6c448736fb44d42208473b1d132bfb84b94fd817c8095dcf58cb28482c1be0076c99a447760f272d9de2949656d21280943e2e4323db1caa94f0e02636bcd16bef8dc3fca0f3d2db10c4211b7311af2db0b4f2d18dacbe25dd00c3e09911dd9c5b3d41d77f6397ab8237ef32e6fb28b3017b6427ef4d74ea3e382d87baefbdc07ffa65a676c499a39074d47ebee6e79b7f7b467ddb0af92c8d55f35c6714c213bb3c18b321b2dc2c1296aa3954e47bc63b4c8c152c02436201657d67d43bdfcb909613cc8094e0e1ae06b263acccb03fd6b2b28b5554b4f0f90a126a893578bc9edddd7008a9a3cf6845563d1125862d01101de94621caff9e764508f0e152c96f53e52b532c8765b8be9d2ccaf0111a0b837f387215c58575c9c7873cafc37d129f4ff1af9ccf1e41b5caab90e42e9f5a191fb85087d8a20819dcefba0edae453823f2646891f889b96b8d718b73dec0e032fd58778e29e1767a4e323b706fb2ec595b47f0ba64643f396b2d8e66b1eacb1974867e55f1cd1f9a22015471d61e1a38d301ab70da906b3e5b8a3a41307c6bc1578d3ad3c7d5046ce6cb648650a220c0809df059615c4f70b7ca3ae4214f8f6ae97cc7de556ef634a5973456bc1d3c4d8a3828195ac0e423547dba3bcab11b988a9a1f8bdcdc7787f8f6fa71268fe8fa64ff2516f8e9aa34d1f9a595978336550854d8d5a7d3f1f3e8fe88e5e71caf6de29584b93db6a84f093289ce4b664ca91d26b4e17ebe8ad2d4f2ee6fb8905c318f77bc0d4a7d370d32f67c4fbbd21625134521bd332be19edf2be1413528d77e2b90103aec14baaf8656067766503a8d977ddaa79d0182b5e2dbaa2f02f33b7ff724bd2d9a8f05e29965ff36a06f830f5cdfb673fbfdb60b86115eb40d09c2060a529faf28efa6335545b235b90d3c7ecb3711d2d9f61f5d4d6adf17281107b83b2ca40bad807fb313bbe4fdd4cc398146027f4d33611d745bf52005a6fd14212e3e1d6ef25b64e6b8600db6aeee381bdfeb275628376e0c080179d820a2fa1ef37a83f1f1570d4dfaf512c002403ba5fe30af056a338729198913485db5263b9b10e6d769fe91df3c96929e25c10e01d7bd0ea0384f403a16cd4e8340332921b63528f722b9d4a202774a571366da9b12b33bc91ecee9c39ae73308b32a9288b8c3ed5c04a4c6cf37db541913692e4cc70c84fdf62abf8eb7f9432fde20bfa857fa6fe16c0cc7cef2e7f32757e9116047b0c81d5f70f003172c712cbee14b36587dd91e6422d415cead21f19c8609019b6bdbc4eae2293619c3e6294db66fa3fa29ed2dcf6a9917faa69d4c1efd11145bb446ef9d442efeb5c3dbce9b22874ca69679cd913b7e2e8fbfb2be3d24344d7e8063778e2ec3bc89a164a515f98ac7a482b3fbebdf40b519dd939ddff43c5c2f7af0e4196c4347b0329b664224d34eff1062c8122661ea4b27bd40ee11f945908604ccc6fcb2267136670254c4bf62d3f428b0156665e1284302a9452d0512852118569da4f094a2a3c401e910b02e98236ff8a7d08769d147e6653709d2e24384e0714f760264a05673b0bca072b7e67259d3b50cee7e037b73d04b9b05db82d57f6e143d7d6ab4bbf0e1f7d381ada0790ef18dcfc956d1a35b81be91541ffc0502e249a53e632dd4f0b48cad9ce5066e70d602186e9aaac7e43e3f3ad02f04eff007e523e9b67db92f7403a35dfba436a433d2c55e144513154ef589b3ef9f33aed64a6491633f2d3761038f9cf7ba59f7921d93e25c248ce632b0f17f4109b0a74a03b2745c8874efe1167573e945dcddf8b01e6b127426fff28173fa1392d0ef5fdc1a251c68800a478e75756e181390bce4eff597a61a17601c80f4c79d9d8236cdc39bdcae0b55c4c3c92251ba02eb73bfc50a1f97f204a3a1efc8fac49b2605c7880a52b9caef6b74fe72ca48cb03a704571afa0c8c6ea6cbc104d83bdf9da4ae7e5ae0e7327ce502ffc977ea58c0aba397d2c8bce417d6cd8a6b79ccfab169d6a76bc5f5606114593b3f7f238f8ac9ba3da37bff669a8de5bb8830cf70b3658af90370f8ea7c39712645085a88b277e075d128682e6b90b4212ea27feea18e61426114fab6aada2f86bc66cb8bf92df5324ad03d47d2fbc45f568636199a2432a9ee4d9219e3964f7bbb99a96209bcb4cc7cc3856b84c1ea883c2d87b06441856b97e035c2357fc86d2f661fd87650c8a32a2cd9aaffc93931ed10b97adb952fc1ba33fd8627a508b9dd1285e96e39a169ec938725377dde564479004b2f59cca48c245002e2fa8a98dcf0a12332d7913f6aa0359de8508cd31e9c2ff2ff842bf8eb2f93062cea859f476fc690e0ccb67f462f793bbb98e50bf08608fd3262973c5b676c274247d38ee399dd44eb3bbee5644beac0f85619fc651ec16489d6aa1010f11da61c42d18adc3e1147c5c5688b9ef05178c489659a97b3a5fcb2083872fa299ee369d15ff58155d15f18c94d2010c150e767d77967d21cf372463bbceb4fc218a4e7bab802e7dfd1a8476cac9f0cd9ca2e74d64bb5b556ac39aaf364b7655f3e91c14467bbdb1185ff3b418f85fc3778a8fbf41b3934c26ca09e4941ba617263609e1bb80c09abc732134d0f6ae10f87c2886567d4cc84ff932739034d763bce0f7cf0e5d4044e38d10eef1aecc779175afe2691ca88f7725dd745092457315a61abfd8b487d26d3c5c119258eb6cf9ebb1670806c1c44d39687d958a2aa7c77c8d896bed5342936131007dc9d3edd75375990847eb9e05fb033810c357e1b68c470bef96d603574b6fd02ac8dc7a4532bd6dde313d0736a52e5215fa0165b97fd60f8cda26dcabcece52955f107a8542b85f4287e9332e73207ab580e8882e7e202cae4e6893fdf09e1f12c763e73ccb92c8f71d5cdf089cbeb5fa4ca243e66c1fbc74a7b2422d50cad89e4afb1a0f96eac1b708b64b637bf4e4498456f98beb0e7be59d9d1d8d36596d7357238074e8d0c0595b075b04cf38c6a7c223f2899ccff0206802e39b56024d5fdbf27146e14a29adc8cb479adbe4ba1fccb15c655bdd89248febb5a7f885d29f4076e83c9927495188268329df77b10d64649fabbb8536b3042fe5aa55b76ab86284bcd595bdb7fb39d6cab65ac8319bcee18462761680d8a7c533a9b26f3fe4b4939ab980e54f7e51c006a400a74f09cb889e1f82e4b75da299cd84100f03e5c8dce2acd30bf525c487085c0c3fd4959e9d82e471e12331afe7349702f331ba4ef8c46c41e6036c0e2b96b8b08e4368e884226153e0771366d10d937b36e249b39d6d0cfd745ebe0b9b927cc4a30a2b5cd0a0d4b7f630865d327c43980064318f4db79f0cb8ac55ceafb0282ed53f1efa500336951f4c4fec9520bd444c5a60220b663c409f37541a85fdf8bfb8d210c49a577b303b35fedb80f067aa1f22721762fbb77237812852407b452123809ecd69b69aa7edbe5484e142f63d6010de9e2b5a587907dd41dba70eb9f28295cc4c910baf89b31a4f97fc93b0ad077d8b3645824b31f89d1d343470b45926a785cf0cc61d59250468fb298f2c55fb78e5eff7a08ce4c6b6d7e5469671d39b0cf682b5f6faaafa77c7aa766cce34adba3a1dad257dc4aaddcadcf8e1abb77d4d7daa90de521f0804b319a2654b069987f13b11e5468bc7435fd3bb38fca179a5ebfa003b6af7523fccf702a425336435ddc853f61fbee5c265633f5ed71eba94540dc5131b972f075e491a9d4b3deb8fbcbacdd5ac636ce9716b1759d007fc234b7fde1ff296a3eb96334c68c2c960360903c992a60bfa3228cb0722ef2143e3ac713f53c9799355d7c8d7cadb4bf0acfa3dc48d1b18cb51e802098a638ba438defae1a387d07876804c479c20a7230bc650f775241c6fee1fdfeca332e169e142669bf7f9d23ebc4f2855e8ea33d90dcb561c8735ff1d90ce42c992acf160a3fcc05d4eae3dbd0141fa6d425028c259a91d098f703c55698889e046dc8d43e1cfb6e277feb73d41f3d13f4d1a4f14f6b6000af1e05c3325db77f2238255f0c9142b4ad14af1eb0f7c04b57278c0f521edd4999ad64554f01f65552ee9df9eca6a093b04de9bfe64f64208edc4178fd65c2833dd71de1a441fed4d02849f335a19da8d1ff92833d39d3fd83dc4429253844f25d0f5ac0c2a920221ffbef7844248054f62116b08a2c181b3412b53996ae105c5e141a1bbf3cf19ad731c20d14924b64463f3f34521acffaeeb10f013d10352487437c9791411e8a7bc9b6ea15daf14aa9313f84c9a9888f3b39f4d0a48c075c7de9b92e6d40f66c0c5b951331c7ad2babbacc04723eae7667cf8ff5a940c0b4a4817452477c9fff67cca07dda0bb4ad5d7d0f89af03f46316505333f6f342ddaca968cf6398ef27b9f15d5f2629e80b61d418e135ad0044370f5a97d16420bec351699b24c0cfd4780429c3c6d506d324876044a21692bbeba0f4b7aff64b17cdbcfad605d1f1ae8cd007c59ced357b3871124ea4ffd2bc42b158bee2f5063da684905c69d1abba6c4004dfe60b05e3da4974d21c86b1494cde734b9d0e4dbcfdfeb0018893bfb15d6a47a81d3325b7a148d01b50c287841f27f733e8bd1b1cc732a24be15f0b0582db657a432b979c4e0cff6d789affde7876679e00dfda5fac9af7e0ac8804bcda0d6e57fbe705004a879db4178e44223f9675896af828f908c26ed7b9ec1a066557afd1b4054d5a3276dee801e444fa2e2c642a339f467f22627e67a06e3532242384e3e7a917c363858ed8d89a7d2d46bf9fb0103fd0a698567a82756fc90f47864c06675fdb45e7e8e95673571483fe9b23af3b42964820b56277f34cf764b1edca89ffa8c58495a337c2252a5585de78376257359084945c1f7fe3e524008f7b1e6e04fc0c993036beeaf8ca31a82edd4673b9366fcfce2f3e0236757f7433f8935e576790252bb78ae518c8466ddc2e7914b51054b656ea1f864155b85a207df426a0f769e255dc45321870075f5d20eb867cc335eb55f4ad94204792adf62c135fe220d42d8297118ad31c4271b0b63f686108f58fb020729e2581990f7531ac18bd264156755ae8032681f934568d1942bf6801bb923810eeb83529eba420154d05bf1eb8a2cb5469563119a01d01a139a31361717f375858fb35a3d90bc672db9b7c83c048a9ec14af4bbecee2ba6e2f33fbdebbae714e92a141c018a632d92555bdb7e11898ce903d0dbff3f22b2c33010f02d5dc65abe2efc13bd38fd6308216921d64340ed252226ed6365912d64d0e7442268532096c8dec4773b05502c5ae0214097329dc902e2e1568a4120bce24656d81cd5d476ad8f3a71364f5f9c9780f50913b3bd2b919d77175cbe127c351ba0bae0b7e635ac14965169955ad24088491fc6a00437bd62db4583788d6276a1233c9cd7df5125135a467c5524f4d34b68aa132eb1a52067700f558156f404a9d1ac6b8d1d7784657d7abee3d0777b7394212009efb8bd91d618b10e9debbc64c4a89eb46116873996659468cea8b17951bdde22ec22ff32d8a0d003c9fd2d73930503944d7f6d90e3ef4fe2b47f3c96d15af590363ff998804331d23085ca80425e1a685b44ea885f8fb3481132aa8205f3ed155ff1a870414cbf347199b3c915836c9ef1c70904de4264324f7f6bc81782817186b8409492b4d6ac2f7006d05410a2636f295e584790a8d1ff4359934303980e6085c9d366318352c869e9411e77f54ba3fdbdd6bbb64a085998d8f1c9e79195dc85b1d27714005aa45ad9770df1659432d3f49c3020d86ed0deabc03eb11d8638df1c7e5dd7fce11625f69369d15a9873f9b2f9a00d66a7b5ee600ae0778a26d88cc43216cb5aa695d776a4b2e713daa380188f3f998cbb0d7c0c52e878da6eb08d118b88785890e4b3d4d4d3a094d0ccc6d3e2204183891883803e87244e2cbcfade46827b02097a264b37eeb856ff3086db95260aaa89b6f6eb1905f0a1e975ff40d3bbe1e332e1ef15d576b836f22a1cd56c1e94aba5c2b594ceb934168d9d8e00816223aacdfcfe6197344a5db17bfeac1ead364735cc43393885466f6bf16a79a4c7d0c85ca16f8178092e15c2481e6ab9d85676735d900c3e5680bc6a1463c804b3f220d7ef46f596a8ff650868dc711235305a3a4940e89e9469b30a82e0c4bc66cab425632733cae4c95624db55c6edbce24c23e621f869a396de68c9fce0201c2558ee96a348e769a8566cd6e14fbacb0169a5a8a8e462416843d8e71f6107ec5f584f74e5b4d6ccc6688aff99de0127181325d7ea2f2bf5316a1eab702c6d9bf09a028b0decc2f7331d904ef833e9ed41d6ed85b907328571a98f5453a275bd3bb2629af084a94e5570448708a96482d95be50f9f627d62bf089978420eba4b243cfb27ef483afd8fe6c798906b7bd5711dd400cc32a4d143f94f59c7a95bdea6811ac0c38aec41bbd49f44598de34eb2f47730790f25971a7fcbc22b6656ed826a108e8a4c0e0ce84983337cc13f6de17c66518639930b4ee2df4ab82abc3af65d38dc142759d434619447cf9b5be086b59d948d5188a62161a5995f9a477e2393a10a8962594862883931b287168aa91795be02acd39e52eca66683f1b06ba3e6a19703294e537175bb74fb2e3fdd65c363d17580ccda8010a03b97607d5bc9588c384c8d62f67ddd38a046b963328f7af076c4f723c3e962a738bb6d40529080bac5eb4712e58bbb1accefb0b2cf30740792f8cb7f87d163895d6d6682e42b4eae77183736ff8b65e3d2a6b0a7c717ae72360a2cc98d774468853ab23b36968caeb628b496903e122615b90433427143482691852efc600bf47edf0b97be506b9f913ee4e6976270c7528c6ce814607481c4f3bb410dcc97e3cdf13a7a69fb4d619f7cd89b3bebdd3ec1b406f57d5df59f110c6ad095d26fbed177943cc57665075800ade4794c01b4c997fe172dc5bc2405bad68c1503bc82aa81111359028a0d7be33dd80a72eb15b568ce7e9093f4e1e0d911f47fe504d97b6cc05451b0ad721e699097ee00aca0f733470874d42ca77b6888d133d54f990a38cce818860edb781d3169a3c437c1dad28d97ae92c0e6f72f606488c4c70ba0f740f6165f130174e9cd0c67ea68d1b53bc61e3df425a42bbe99dc01e4720872982113a33654bd2c914c323c26f29e6ec61f8745ac696e044dd97506a78397bae5f141b4da58070b9f1f227c4cd1593153eab14ce8bd1d5fceb2e8e304c161c7f493bf29fb88bb21264d2589c8f1915c2cb92199264c5868a42df2aced99511620215f7955468a224b5838877b3082b53d436f6e3bcbc73536ee52498402adaf005fc024221527ef4b9f47b1a4a51bade450c327160116d3567d71c6a04defc690e2006c232ed4e9dedfd54c53593efcc3fd2954234d05da2841e9575316c95f7caaed5942f06bebb88fd23260bdb3a66fbed180b97765a93df5654e4bfc4242042f2060281c621638c4556d1dd76501d093b8125579d924ec60f6fb2df226f8e1f80f80a9cabc9760b01532a3958aa7ec7a18f76e0b5b1be5e387e9f10093c17372d4193c1bd5ee1fb113b9cd2d7305be5b1a7957cec10a2f421bf70495df01dc2f888dc09d734f927fbf5530d5c7b6b9f2a8f0da4b0660012da511d7ec531804c3016cee1151ea483a92e4f9dffbc13f7385c786583cd3d06800a7f45f52c62d30fbcf5a409c977b48e73fe5279618c06197716bc45d7f50f644da64eb66dfb1eda7c016660af405fb5afd00650913acfaddc2a5773378587870e0336381313ccca3198f84e3216d8c0cf9ecf9bee3a5dcd453aa0154f3cbe306f1247e1606f02f52352060c6ba0b6f5407d979f7aa2603eb6da79f36be563d12daf4c2e1eca160813577991bea572958c39b18369446e98f7ed58dbb1ce95317c915d931c7cd5b34d01e17c4e68faacaed7e2d694f32d672ded1b9be25141b4a483bae777ecbfe04d13db41f71109b5e7b0508056e6110a533bf057a473feb44c688098d2b7280e50e38651e16f5e67d0c88d2adb68d6614afc0493f70fe5cb5200f487caec0f36e6fd1b06dea6110ea8e20cf4ba96f9e364c76316923c41446b9db6584e42bfc78f9c19198991b07c8899124cb8fdf2bcd653eb60cd014c6212670c16f555ae0fcf6755a9de7f65364678ca690cf4161d6be036cbfd59c70b64b169d7b52914eda103227e76d0cbf8cb4c0cc3d742f6f665a299f8ea7d7b27400e876e88e5cebd99c899ddee692e4a82bd92d12a33f2313c292c5f9d16123d5fb1acfff9e775ec1217a2200ff6e72521c3afd57fdcfbcc45297c7dfd0f9530cafdecdf7173e7de759818eb6d270d23d2299ab50d9eb7de3c28cf14247ca8553563861996884cfdc4663beb762bc15bebe0237713272c801beb10fcf24f35f0d01b10b07aa5020a99346cd430cd793a56694975ae904cfa3d94352c1f1ea8acc97222ba56c6b524c608b111d497f9e1f40da9e56776f1ee86dfe90cd3018ee3bf0b4d2b4b0f62b895ff42fdbf812958ecc27f55d954711f2754ac72fb5a54faa4f87f543d085d390f091827cc1721fab8e3c9739c8cd144f5d842a26ff94c6ede472e024b060bdffeaf033c4f674ff2dc14d10214b3e0bfdb24fe250141859c764e0147cea22fa0b9faf2b78ab44e9866691ea058b4d11ab4dc3ea203a47da61b5a8cdbad194ac79df433f495dfc9668c9906fe8b34462199115d601e3d5ed565d2d71ab1d34145fa157318b462adefc1fffeca52077276b4d942a28a818dafb795777bead0295ef6fa3463e34547fd98e9636dd74c936430419ceca91b5650b1a96e631a51aa82e84972972e4254448f67e78d29fc0016c7cc80fc95af8743b41e3be6f5cea5792daab6a8da3a72a98dc3be930aed10b2402f04685268505b4d1492e0465ea6ee046644fe5452b99b0c82819352c507737566b3c019d022b0669a0c7167d2d71c131b5be6715b3a9af343ed5345cdd49ffe9f29267c3005d1e33930cb53b619e079878179774f2f835334bf70ed4401666c25f66e4bb8bf4dcf0e521d0181e761e5c7b0e388a8dd8e7c97507d7dbefd286d4ac276519f0d8801d4a00a994fbd1fe00d58e776839fb84bb5773b26643b9b8b7e1da7a078028c0fbd45a723d6f7d870bd8d53eb559c8547bbf34580fb6574b7520d1bcfd0d328a63089b9e11bd13877b5b34ecf4ef7346d23ff648e7a582dc3dbdadebefbfde448bcd66f5c4804d156f6e8db84ec338c4cbb1596ec40fb9b8e0e56b19c267ce6be5f4df0fc2e11ad9baa19fd012d038b54674502402c7747aff394bab8348e32a823f55222edb99bf9ea1f61c7a1d5f9ea61b084c974c7c61abc95d99e33b83367fc46ea7e031a0de3d2c26244f16edddab2192ac45d1aeacb10a6196e2c9dac2eaf63ab219be62ea3e8850b81f977f88a6232dcedd407f9797bf73b647f92d8090331cda8377fa58b796576dc71b00a082eb14e9be538fd5813b1a0f8d161284e362419d742e2884a5d4356437ade0b7791db2fcd5796132ea5b09fe438f541dcaf387eb88a6dbc182b17ae2979f8dd704265884a36897ab958d49c2dd21833ad3bfc5dc31dffebd6afedb2daa1c90b3035ce6414195a79b9705a338425d085c35c1769e00940ac56308e2ba6311097fbc3515eefd530d7bad5c2e2ed830e292ad22651232734965e3ff91a5f487a4394901dc084434e2adceba292da51b52634326b67c3b24cfec594bc165e150a803a67de97fd44c7cb88427d630c18df98d302baae2bed3e6f1cd43c394421aa0baf790ba1494ec3365c4cda660dd4edf0cfccd27ccf9308e08f1440bc60b785d20b0801472b56bac8a734b07af98d8e3ac43142cda9eeb052eaf44a919a1f383fc31b2549697d433cd7b248f3d5eab505efb9ededf8dd5fb7d9946c06c57cfcf5cfbfa63c7b95848489916f5dd39de9a62a384bbae4ec28cb1bca1a0edda5c53f0b3477c8795307bfeeca6f18f46ff98568d5445c1154aaf781ac23e1184cb8bd53ce0dd6c17c7fa96207a2240df0d0867a1dd7b69fe78e61a2534a0267f5c857c1aa758d7d27bd61e2e205bc4f90d0b30a7ee4c1b2d61a8af56618a038dc0ff150c3c928708ff96d0736853f77495332315d148831c9373767670f6de382efe55b033710216282094143ab3918c135f0d9d08fe5bf221a5988810b56e68b7275e8f10d37dd60ed6e26afb6ef2857d75ae010bfb380193c681a76a82bd912c503d2d1e899494aee7f02e55cd35dfa2d6b95eb11257ac1aa76bd86025eb0d19795f669bbceae34fa5ae03daa97d8a6bb7b9745192ef3bac2999b6390130f4bde59e625847dac110035bb2b5ac9e92d7d20e3e3ae531ce41980758398cb3dcb8bfcf619e6072f1ae57de1327b8107bca95881e7f99dcb355a00fa91390faa6e3e3e20b2508124b1e82374427a4b25a2162f6c306a58cf75f5597fd88e0f027cf2390625f6cd8812b85a2ba831536d1cdf8f4adc60a3addead0620943f04de16d64472523bb900fd4c859363ac025fd982d936805bb9a12889ed311e833091fc3628336ac12c0d1e9e2160dc4bf419582cabaa0de7db72d73ebd7d6c9d7ad82211b2a10a1ad66c708d5badcc96c6bdd202060c2570199249b2e93fb6cf5feffb063aeb3230f85bfc7d0ccae0c89a80ab310995b788de3077f66d8dabf4057ac27e064fff365d12caca5d6df10bdb3814d35df133a54caebf24b2a704145c25730c03a0949be0d333b453c42f4eb3194790fd87f63c88b000a81fd58ceb44b2c340cdc29a7d00e3f97dcd898e5142ff810c44761bae2ea59844307cd706d893b84acf6a59cc0f435a2229d13f3c953d24725fa6e247486310ecdaf0503edfbc9068ec59ad98664fb09d5788585b5e4a384dfeda3dfe34072bec088567395b3d21f203aa5369116f656ccda682c955b6e889ff6d68b28b79ee5ef4b4beb8d27fcb9848f0d553e1cc404fda76f3f7186d00cfab615b0bdac02f33c940c1aa226c6282542f839087b84c26a54974c18a3c63f6c07e2bf0bcdf59911be556067e14bcc2fbfb9b6aebfeb76fcd2ba76147347e333f39df88baf073c75cad9fc18aaacafe23a2833e23f5f05151f88b6d68616739d4db12185bfa062307ee31c737a445dcfb2111eb9fef0a6c28bed5007d1eabcc0550c3d6be30a5104e7be3a862cb6d731c45984d0a6f1749d202fccd48249cb324efef01ce8e39d435f4d8c045e4e01ecbf7cc77c0e7665914ccbe01bf17d360edd832ed4820b840987bc942bc2428dec0b7c1aeefe92d4f019b3e27becba3712cd52f8ef9a80936ece5c2a1b2700ff45480efd9bce1a31674dc84361e8cad002af34de47e90b8352162bc297388da9d94d5e341e2037a8846f6dd5c1a6a9c97f8958d4134fb13f50f9c789b4eed0f4a4c15ced566d3b845edbf9c82b3a577d343b411cc641a20d4a985887785d55b0972fafc39ed65c1c4454519818ebd7e040b95c59a2e088edfae87755c223dc6073dfe56d5841dbd5423ec0624d1dcd8eee0f62b1ba9bae56f4210326c96d84434b49e6b0c3560d7de0ee5995bb8c8e4c0ebf033e07edb7f6d6f0b6ff9ec209de8d3c08f576625f7ed76eae1bccbd8a5da0e7e20a32fcbd2eda3dceded18ceaf0a4d4703c411ee3abf4e3805fe21e7892e2aa0510dca456e95adc42c084b8ba92c5b6df83abe89202ce08450f24f8fc1fd6d26030e0f9de865914007e5d708fb85072923f186e7f02aef5f6404e8144172c354f34dbbd02634f57cbc4d1d41ad37284a55627d90f15a1123de035aad3e56f51230fbcf8fb5a009fcc9942c4ff4ae1820433241b09f826e5aa906e6fe4aa9700d0e2fdcf0cde5b1937c288fe4435c6c91d1eb8774bda84eaf81695cc8f0769b6cfeaf11491ae5f7c0be9a4dfbc3ab962c8bc5ea4f54a2c43324d2316e91ec1b988c71dad022e7d059638b558756670da7c11b90857f2355e984c9770b414bde405f49a07510b7b43b8e5b628cc07e0b4584bf5aa5f0d0d406db910c6e5406c7d1bb483b70cd88a7d4f9908d88d1ae58f605c04d95cd903e15f073d8098676513cd215096d794ea2283353ab0968b3799b6707d687f759a514e21fc5388939cebf4b45cd856d44f34208bf5ed1ad5337cfddbcd20f8ca6a3f789bd30cad066706a10e3d7650e46f6589de76531b9cc2731f7d086bf3217598f4a4a2ef7afadf7b8be7484793f85dbd253122f80228cc6119dd971086d85443aef523d347a47ee787f63e16c5e96d5bafc140af0ac882c08f2d18bed02cc3d91be185c3ad91b7707254d7a1f1f7a2cc944799e0faa1817462077783ad1fcb36e341e489705ef03f8345e0c6419f6f626ef85352236f2ea31e311cde4d6aef51d33b87cc81f7bfc13ecbac713bd38c45a9f6b0bb9409753a5d0f956bd03b6dadde043ff24109111a4ec178b261cdde65c3fdcfb455ffb7ddeeb2153362d450aa93fb075befb65fc6ed4514897588334ce55f43fef89519d65515dfe7932532f311e8895245c9b32abd376887da0208b9fadb5f622f01c6f7ecaf6cf66f2d35326833aba1d842f7b01bce2978bf62c65eeb4174f036537d11661d8f2af45a2e503895a3dad54732d321017a2ef37d14f4f08a9dff11122052501ee06c1c0fe7a1a6c1172227a907f205ba9dba24f1f8f0e5c7b6bb954c1d3aefc920caa66816a26768b6263407359310d0ea1221f36b63054c6c5232a741341c1a9f7326378535eb0b04cbcb98e0d01fa206231b579d11666e2c75ef3cdce4cbd77721455e755f49ce9d33de8922c330b17631259281fd4a1c77c129bc698b38f74a3d4f777a9336e0399ded6f439ea9d21b1eb791b8f2717a3c4e7250d6b6b411f825cd6fa198b3f3c99ab96fa057ad94100863dcb755736aa967c241ee8f8efe80d4f501caf11c220c4eb8e3244eff97f95b1b3eb96aa54986c3ddec0054d3769657b0d750993368e8e12f4623eb1a6bce1648885c7af071cd4e52c5f69dc53a95ae75d60651695d6061341af1d216f3580049a5879d2177cc5d3ed618fef622166c4163b681b0018b624559aaf14535bd0beef458111852cfaaba7b8c29870f776b8bc96f00668e19a2ebab7fe11a561bbe6d14c6d733d029fc017a26ff1ed70e48ae3171027bd39a5308dc5432096ac778f576aaf1e1de67168ba1cc4ea9783d11058ce33bb2b6b8413a4a1670bb1a1994f7a9a3dd994560c36b927a1769e2a70df87149405071b326d10c4a98b433bdd3546719620f284cb4267214b8bff5da26b544e308aae99fe8271ecc0a877830e9e3f6826a158f608fb7a438bd2391966ee63e657256a9c14cb68cc8d91b5c455de5d3a4e46f2091e7e999a33331650858a42441b16d3031f95617117d67128c7f0c90790ab5211bf7793439f5bcf47a423f00adf9a95be698654e23d0c189d02ff038d83cf790675ff58d13a902f5a69a640b57932cdab392e7cf5350e15239c5ebf6034015b65280b3b2b95ea6c1326abf165f04527e75c7426861cbee40cac07baaac3d27ddff88ef2967b702430ca727f4159324461aee0f3fca63a0973b7ccf18028572c9bf66737ea1a81d97ba3041c60230101d2de52105862fd2acb76af03a2e00870d014c92ae23b7d5f5553b074190af01df6ad2b09011fce55316996286b26efe793ebbc67c3e210aba00a753307769044a4d1a25d43102e8be53e4ae4fa6e63f8841316ca87524406bd7296caa1b06acacca0e42df95a6c430d140587695ec5989e781658ca7c1703d76126339f017a47ab261a54c00e727a8d35d78ff5cee04faca8c376ecf264c63e2e438f2d31ed81c9862a6d214c8721e1db8f1818bbbebe3d924b5ea5a93ba7f620c4d088100718a0738f8be2e959e0bd44649a18b1fcbb019adbb5aeea3e32d62e79ce72ab25b643587b554ec9b79c1e152f4daa5a72f36f8633c106542fc0427a9580b6ce67a87107b0f7af0adf48f9444d1c771a67148feeacbcce1a9e8fc325c5ea9680d26bd6817bad536b7deb2dcb23da3218c21d936ce1065f5de349293e98d2c4df6faa773bb8ec6d2819b4877df4bb418ec38a8c5a532d97a368919542846d8775a53fa81ece98dd3bfb159c3f689440db3a57491f63c1c74c80222acb8ab53bbbbf89771868abd699b0126f057d6c0ab73dea3373a39555a3dfeb0a1972ddc3244c3b864cea4976e3f33a35d70c2bf5957982deaef5714737c7880dc4b6faf2c3cbf470711440fcf966352f3b23e79872b89c2dbf5acd0be55a6cd56e6541dcd44a2793192650c1e2cbcd10e040991dcac969195d670ce508be747edb93a80d825d62d1b5dc1152488cdc148823d3cae5fe8060bcfc02cb0641f0b96b1672e585e54a036f39218492dee43f72806b59ee29cc417dda99fd62e7b09ce90e63f8645305480b62a61188fcf1358853ddff4fac02eb94fd27b15f0208fd05d5c060a88a6da183dbacbbd0859bcb2974d614ad8282ad06b2c7394ec33f2cd0e34076535611f41f76008a386a41f9b13e06f11ca2c63c25402588a2ce16cd9915abf6263c1113899c54d28c3d126cc6f2b7ce300254c55f5e33f89b57f6ac9fafe6c62c4935e732b32bb70e08f0cf365aa351799cd32d65bd2723bfff0a62f5d5da327ba9f8540afbc0afa86c8b174e83686445d3a36d903e52d58dd7b610063b8223825c9bafe2db66dd18618cf5a4bf019e1b20eff72c2c8f5f47c6969c3b456b81e4b3738f5e40b00ced47cc4d2090d714120e8991f740ff7b978121a3a99072dac715e7b6f258c5fd45907b9c03f780e5e34a13a5af4c96a1454da54c5d5ce8639ee509ec74c99658ab65d6c1d7c98f3dee99bc307bf26e245f8352c9bd362d4260d0382f76daae63faeed1d3b576d46f4933ca55be1802a17d247b99897a2a8b09f1bb06cc490f45919ab0042d731b2663e3e4e0fc0ebed7f20562787b6a8a90bafd492d0e9f47cebffef6e577d581db443330fce36e339d12ccbdf3a92d4bdc82bc5b1b9d711eb6edb7cbc66e11934a7fd679197a488c918a1cf06ce59373aa7ea50ffb5953e1eda3542536d16efa7b0c3345d1931f39eb61f40551e7b82d8151fdc764d72154cf877c40f726bdfdef9cd11e49e3ac0320ecd000cd9f98e0f92835fad6b1d27e6f21e0ce70b913801b599ed28ac9010552d0352d28d3a745560044314fee119970fcd34fe33d4db7337b96b2c16337d66a54526ce307ae6d30a60920aeb697b57d8d1929b19f5523d3eed17b2e5c2c018ac19da8dea1926703258a49222504da6bfe43cc25ede020f0d574282175bd7a83cd47b30b843aab73f4474164ac1f13ee85b9fb8922c42b7922c0d68021a8b2af2c591e984f11fcc686cd79516f40e526a8b47865e44824da716853a8a1151d770e813a71cea736b2b8101bf16f4d7cd5109f0733a20094a76a3978c29f24b443501173865117b1078461ac63d9f315b53d4aedd4d0f9faf04416f4e566f35fe665ce49f640445a364839bc58739601f4814b839b4b76e0619129fd72e651dc6bd416801275f07c932c1a9008cfe2b8a5e4c7e340db93a5a07af5742dbbb01e9a205369eb7b2c0cb6a7187a83795a8feef8f8238af501ad5aa11a287e38a8eb3576ccb901a515c1db07b53890e4556035dd5c320402fc7d6efb9cf099ca4a80707a2344554f9706afb7843db5abdff0bd667c7a8c55f73c5c36fd89dcca134acf20246ad33e009457c4d8cb472fff42bba251866e699da47520c6ebbb1c5b85e5d10bbc74e7269c322287314f27d96dd6d2c6ae438a758179051ae2d86e6a92c848a6d464d23e30b9c5d848b14644ba35145b0398822131db9e2d4bc2eafe60fd865decb92d43a5af05be11d82e1a9ebe17c2ac9fe1684baa7b4e9fe801ea0e2693d311f893e6b1f2f75831a9396a5f8cb9844e5d014c89027f1f820f3ea7a57cbbfb79198342c0374a768ac08c0e697f01c4132a3ea33dd00fcf9d93f3b38d6b869ef63c0c5fbfc33bbb72adbbd31d1eb89881f","isRememberEnabled":true,"rememberDurationInDays":0,"staticryptSaltUniqueVariableName":"0ec99702b39a814c66cb2f41ad09b930"};
-
-            // you can edit these values to customize some of the behavior of StatiCrypt
-            const templateConfig = {
-                rememberExpirationKey: "staticrypt_expiration",
-                rememberPassphraseKey: "staticrypt_passphrase",
-                replaceHtmlCallback: null,
-                clearLocalStorageCallback: null,
-            };
-
-            // init the staticrypt engine
-            const staticrypt = staticryptInitiator.init(staticryptConfig, templateConfig);
-
-            // try to automatically decrypt on load if there is a saved password
-            window.onload = async function () {
-                const { isSuccessful } = await staticrypt.handleDecryptOnLoad();
-
-                // if we didn't decrypt anything on load, show the password prompt. Otherwise the content has already been
-                // replaced, no need to do anything
-                if (!isSuccessful) {
-                    // hide loading screen
-                    document.getElementById("staticrypt_loading").classList.add("hidden");
-                    document.getElementById("staticrypt_content").classList.remove("hidden");
-                    document.getElementById("staticrypt-password").focus();
-
-                    // show the remember me checkbox
-                    if (isRememberEnabled) {
-                        document.getElementById("staticrypt-remember-label").classList.remove("hidden");
-                    }
-                }
-            };
-
-            // toggle password visibility
-            const toggleIcon = document.querySelector(".staticrypt-toggle-password-visibility");
-            // these two icons are coming from FontAwesome
-            const imgSrcEyeClosed =
-                "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NDAgNTEyIj48IS0tIUZvbnQgQXdlc29tZSBGcmVlIDYuNS4yIGJ5IEBmb250YXdlc29tZSAtIGh0dHBzOi8vZm9udGF3ZXNvbWUuY29tIExpY2Vuc2UgLSBodHRwczovL2ZvbnRhd2Vzb21lLmNvbS9saWNlbnNlL2ZyZWUgQ29weXJpZ2h0IDIwMjQgRm9udGljb25zLCBJbmMuLS0+PHBhdGggZD0iTTM4LjggNS4xQzI4LjQtMy4xIDEzLjMtMS4yIDUuMSA5LjJTLTEuMiAzNC43IDkuMiA0Mi45bDU5MiA0NjRjMTAuNCA4LjIgMjUuNSA2LjMgMzMuNy00LjFzNi4zLTI1LjUtNC4xLTMzLjdMNTI1LjYgMzg2LjdjMzkuNi00MC42IDY2LjQtODYuMSA3OS45LTExOC40YzMuMy03LjkgMy4zLTE2LjcgMC0yNC42Yy0xNC45LTM1LjctNDYuMi04Ny43LTkzLTEzMS4xQzQ2NS41IDY4LjggNDAwLjggMzIgMzIwIDMyYy02OC4yIDAtMTI1IDI2LjMtMTY5LjMgNjAuOEwzOC44IDUuMXpNMjIzLjEgMTQ5LjVDMjQ4LjYgMTI2LjIgMjgyLjcgMTEyIDMyMCAxMTJjNzkuNSAwIDE0NCA2NC41IDE0NCAxNDRjMCAyNC45LTYuMyA0OC4zLTE3LjQgNjguN0w0MDggMjk0LjVjOC40LTE5LjMgMTAuNi00MS40IDQuOC02My4zYy0xMS4xLTQxLjUtNDcuOC02OS40LTg4LjYtNzEuMWMtNS44LS4yLTkuMiA2LjEtNy40IDExLjdjMi4xIDYuNCAzLjMgMTMuMiAzLjMgMjAuM2MwIDEwLjItMi40IDE5LjgtNi42IDI4LjNsLTkwLjMtNzAuOHpNMzczIDM4OS45Yy0xNi40IDYuNS0zNC4zIDEwLjEtNTMgMTAuMWMtNzkuNSAwLTE0NC02NC41LTE0NC0xNDRjMC02LjkgLjUtMTMuNiAxLjQtMjAuMkw4My4xIDE2MS41QzYwLjMgMTkxLjIgNDQgMjIwLjggMzQuNSAyNDMuN2MtMy4zIDcuOS0zLjMgMTYuNyAwIDI0LjZjMTQuOSAzNS43IDQ2LjIgODcuNyA5MyAxMzEuMUMxNzQuNSA0NDMuMiAyMzkuMiA0ODAgMzIwIDQ4MGM0Ny44IDAgODkuOS0xMi45IDEyNi4yLTMyLjVMMzczIDM4OS45eiIvPjwvc3ZnPg==";
-            const imgSrcEyeOpened =
-                "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1NzYgNTEyIj48IS0tIUZvbnQgQXdlc29tZSBGcmVlIDYuNS4yIGJ5IEBmb250YXdlc29tZSAtIGh0dHBzOi8vZm9udGF3ZXNvbWUuY29tIExpY2Vuc2UgLSBodHRwczovL2ZvbnRhd2Vzb21lLmNvbS9saWNlbnNlL2ZyZWUgQ29weXJpZ2h0IDIwMjQgRm9udGljb25zLCBJbmMuLS0+PHBhdGggZD0iTTI4OCAzMmMtODAuOCAwLTE0NS41IDM2LjgtMTkyLjYgODAuNkM0OC42IDE1NiAxNy4zIDIwOCAyLjUgMjQzLjdjLTMuMyA3LjktMy4zIDE2LjcgMCAyNC42QzE3LjMgMzA0IDQ4LjYgMzU2IDk1LjQgMzk5LjRDMTQyLjUgNDQzLjIgMjA3LjIgNDgwIDI4OCA0ODBzMTQ1LjUtMzYuOCAxOTIuNi04MC42YzQ2LjgtNDMuNSA3OC4xLTk1LjQgOTMtMTMxLjFjMy4zLTcuOSAzLjMtMTYuNyAwLTI0LjZjLTE0LjktMzUuNy00Ni4yLTg3LjctOTMtMTMxLjFDNDMzLjUgNjguOCAzNjguOCAzMiAyODggMzJ6TTE0NCAyNTZhMTQ0IDE0NCAwIDEgMSAyODggMCAxNDQgMTQ0IDAgMSAxIC0yODggMHptMTQ0LTY0YzAgMzUuMy0yOC43IDY0LTY0IDY0Yy03LjEgMC0xMy45LTEuMi0yMC4zLTMuM2MtNS41LTEuOC0xMS45IDEuNi0xMS43IDcuNGMuMyA2LjkgMS4zIDEzLjggMy4yIDIwLjdjMTMuNyA1MS4yIDY2LjQgODEuNiAxMTcuNiA2Ny45czgxLjYtNjYuNCA2Ny45LTExNy42Yy0xMS4xLTQxLjUtNDcuOC02OS40LTg4LjYtNzEuMWMtNS44LS4yLTkuMiA2LjEtNy40IDExLjdjMi4xIDYuNCAzLjMgMTMuMiAzLjMgMjAuM3oiLz48L3N2Zz4=";
-            toggleIcon.addEventListener("click", function () {
-                const passwordInput = document.getElementById("staticrypt-password");
-                if (passwordInput.type === "password") {
-                    passwordInput.type = "text";
-                    toggleIcon.src = imgSrcEyeOpened;
-                    toggleIcon.alt = templateToggleAltHide;
-                    toggleIcon.title = templateToggleAltHide;
-                } else {
-                    passwordInput.type = "password";
-                    toggleIcon.src = imgSrcEyeClosed;
-                    toggleIcon.alt = templateToggleAltShow;
-                    toggleIcon.title = templateToggleAltShow;
-                }
-            });
-
-            // handle password form submission
-            document.getElementById("staticrypt-form").addEventListener("submit", async function (e) {
-                e.preventDefault();
-
-                const password = document.getElementById("staticrypt-password").value,
-                    isRememberChecked = document.getElementById("staticrypt-remember").checked;
-
-                const { isSuccessful } = await staticrypt.handleDecryptionOfPage(password, isRememberChecked);
-
-                if (!isSuccessful) {
-                    alert(templateError);
-                }
-            });
-        </script>
-    </body>
+renderActivities('all');
+</script>
+</body>
 </html>
